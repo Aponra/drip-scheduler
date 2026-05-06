@@ -3,39 +3,94 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { saveSchedule, type Schedule } from "@/lib/schedules";
+import {
+  documentToBlocks,
+  documentToPlainText,
+  plainTextToDocument,
+} from "@/lib/doc-model";
+import {
+  buildBulletsRequest,
+  prepareBlockExport,
+  type GDocsRequest,
+} from "@/lib/google-docs-builder";
 import SavedSchedules from "./saved-schedules";
+import RichEditor, { type EditorHandle } from "./editor";
 
-// Build prose-friendly drip segments from the original text.
-// - Paragraphs are split on blank lines.
-// - Each paragraph is split into sentences on `. ! ?` boundaries followed by whitespace.
-// - Sentences within a paragraph join with a single space; paragraphs separate with "\n\n".
-// Concatenating all returned segments reproduces a clean essay-style document.
-function buildExportSegments(originalText: string): string[] {
-  const paragraphs = originalText
-    .split(/\n\s*\n+/)
-    .map((p) => p.replace(/\s+/g, " ").trim())
-    .filter((p) => p.length > 0);
+// ─────────────────────────────────────────────────────────────────────────────
+// Document parsing helpers (client-side; libs are dynamically imported so they
+// don't bloat the initial bundle). For .docx we now extract HTML so the
+// rich-text editor can preserve bold/italic/headings/lists from the source.
+// ─────────────────────────────────────────────────────────────────────────────
 
-  const segments: string[] = [];
-  paragraphs.forEach((para, paraIdx) => {
-    const isLastPara = paraIdx === paragraphs.length - 1;
-    const sentences = para
-      .split(/(?<=[.!?])\s+/)
-      .map((s) => s.trim())
-      .filter(Boolean);
+const ALLOWED_EXTENSIONS = ["txt", "md", "docx", "pdf"] as const;
+const MAX_FILE_SIZE_BYTES = 25 * 1024 * 1024; // 25 MB
+const MAX_FILE_SIZE_LABEL = "25 MB";
 
-    sentences.forEach((sentence, sIdx) => {
-      const isLastSentence = sIdx === sentences.length - 1;
-      const suffix = isLastSentence
-        ? isLastPara
-          ? ""
-          : "\n\n"
-        : " ";
-      segments.push(sentence + suffix);
-    });
-  });
-  return segments;
+function fileExtension(name: string): string {
+  const i = name.lastIndexOf(".");
+  return i >= 0 ? name.slice(i + 1).toLowerCase() : "";
 }
+
+type ParsedFile =
+  | { kind: "html"; html: string; plainText: string }
+  | { kind: "text"; text: string };
+
+async function parseFile(file: File): Promise<ParsedFile> {
+  const ext = fileExtension(file.name);
+  if (!ALLOWED_EXTENSIONS.includes(ext as (typeof ALLOWED_EXTENSIONS)[number])) {
+    throw new Error(
+      `Unsupported file type${ext ? ` (.${ext})` : ""}. Use .txt, .md, .docx, or .pdf.`,
+    );
+  }
+  if (file.size > MAX_FILE_SIZE_BYTES) {
+    throw new Error(`File is larger than ${MAX_FILE_SIZE_LABEL}.`);
+  }
+
+  if (ext === "txt" || ext === "md") {
+    return { kind: "text", text: await file.text() };
+  }
+
+  if (ext === "docx") {
+    const mammoth = await import("mammoth");
+    const arrayBuffer = await file.arrayBuffer();
+    // convertToHtml preserves bold/italic/headings/lists from the .docx;
+    // mammoth strips most exotic styling.
+    const result = await mammoth.convertToHtml({ arrayBuffer });
+    const plain = (
+      await mammoth.extractRawText({ arrayBuffer })
+    ).value;
+    return { kind: "html", html: result.value, plainText: plain };
+  }
+
+  if (ext === "pdf") {
+    const pdfjs = await import("pdfjs-dist");
+    try {
+      pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
+    } catch {
+      // ignore — some bundles already preconfigure a worker
+    }
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
+    const pages: string[] = [];
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const items = content.items.flatMap((it) => {
+        const str = (it as { str?: unknown }).str;
+        return typeof str === "string" ? [str] : [];
+      });
+      pages.push(items.join(" "));
+    }
+    return { kind: "text", text: pages.join("\n\n") };
+  }
+
+  throw new Error("Unsupported file type.");
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Local-side chunking (for the Sent/Preview cards in the UI). Operates on the
+// plain-text projection of the rich document.
+// ─────────────────────────────────────────────────────────────────────────────
 
 function splitIntoChunks(text: string, chunkSize: number): string[] {
   if (!text || chunkSize <= 0) return [];
@@ -70,6 +125,7 @@ type ExportStatus =
       documentId: string;
       written: number;
       total: number;
+      failed: number;
     }
   | {
       kind: "stopping";
@@ -77,10 +133,29 @@ type ExportStatus =
       documentId: string;
       written: number;
       total: number;
+      failed: number;
     }
-  | { kind: "done"; documentUrl: string; written: number; total: number }
-  | { kind: "stopped"; documentUrl: string; written: number; total: number }
+  | {
+      kind: "done";
+      documentUrl: string;
+      written: number;
+      total: number;
+      failed: number;
+    }
+  | {
+      kind: "stopped";
+      documentUrl: string;
+      written: number;
+      total: number;
+      failed: number;
+    }
   | { kind: "error"; message: string; documentUrl?: string };
+
+type UploadStatus =
+  | { kind: "idle" }
+  | { kind: "parsing"; filename: string }
+  | { kind: "success"; filename: string }
+  | { kind: "error"; message: string };
 
 const DURATION_PRESETS = [
   { key: "30m", label: "30 min", seconds: 1800 },
@@ -131,6 +206,8 @@ const labelClass =
 const cardClass =
   "rounded-2xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md";
 
+const GOOGLE_DOC_BODY_START = 1;
+
 type Props = {
   docsConnected?: boolean;
 };
@@ -138,7 +215,9 @@ type Props = {
 export default function Scheduler({ docsConnected = false }: Props) {
   const { user } = useAuth();
   const [title, setTitle] = useState("");
-  const [text, setText] = useState("");
+  // Two synchronized projections of the rich editor content.
+  const [docJson, setDocJson] = useState<object | null>(null);
+  const [plainText, setPlainText] = useState("");
   const [chunkSize, setChunkSize] = useState(100);
   const [selectedDuration, setSelectedDuration] = useState<DurationKey>("1h");
   const [customInterval, setCustomInterval] = useState(5);
@@ -149,14 +228,23 @@ export default function Scheduler({ docsConnected = false }: Props) {
   const [exportStatus, setExportStatus] = useState<ExportStatus>({
     kind: "idle",
   });
+  const [uploadStatus, setUploadStatus] = useState<UploadStatus>({
+    kind: "idle",
+  });
+  const [isDraggingFile, setIsDraggingFile] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const editorRef = useRef<EditorHandle | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const successTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const uploadSuccessTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
   const exportStoppedRef = useRef(false);
   const exportSleepCancelRef = useRef<(() => void) | null>(null);
 
   const chunks = useMemo(
-    () => splitIntoChunks(text, chunkSize),
-    [text, chunkSize],
+    () => splitIntoChunks(plainText, chunkSize),
+    [plainText, chunkSize],
   );
 
   const intervalSeconds = useMemo(() => {
@@ -165,7 +253,6 @@ export default function Scheduler({ docsConnected = false }: Props) {
     }
     const total = PRESET_BY_KEY[selectedDuration];
     if (chunks.length === 0) {
-      // Fall back to a reasonable default until chunks are computed.
       return Math.max(1, Math.floor(total / 60));
     }
     return Math.max(1, Math.floor(total / chunks.length));
@@ -195,16 +282,28 @@ export default function Scheduler({ docsConnected = false }: Props) {
     if (timerRef.current) clearInterval(timerRef.current);
     setIsRunning(false);
     setCurrentIndex(0);
-  }, [text, chunkSize, intervalSeconds]);
+  }, [plainText, chunkSize, intervalSeconds]);
 
   useEffect(() => {
     return () => {
       if (successTimerRef.current) clearTimeout(successTimerRef.current);
-      // Cancel any in-flight export sleep on unmount.
+      if (uploadSuccessTimerRef.current)
+        clearTimeout(uploadSuccessTimerRef.current);
       exportStoppedRef.current = true;
       exportSleepCancelRef.current?.();
     };
   }, []);
+
+  function handleEditorChange({
+    json,
+    plainText: pt,
+  }: {
+    json: object;
+    plainText: string;
+  }) {
+    setDocJson(json);
+    setPlainText(pt);
+  }
 
   function handleStart() {
     if (chunks.length === 0) return;
@@ -224,10 +323,11 @@ export default function Scheduler({ docsConnected = false }: Props) {
     try {
       await saveSchedule(user.uid, {
         title: title.trim(),
-        originalText: text,
+        originalText: plainText,
         chunks,
         chunkSize,
         interval: intervalSeconds,
+        document: docJson,
       });
       setRefreshKey((k) => k + 1);
       setSaveStatus({ kind: "success" });
@@ -267,12 +367,67 @@ export default function Scheduler({ docsConnected = false }: Props) {
     });
   }
 
+  type RetryResult =
+    | { ok: true }
+    | { ok: false; aborted?: boolean; error?: string };
+
+  async function postWithRetry(
+    url: string,
+    body: object,
+  ): Promise<RetryResult> {
+    const MAX_ATTEMPTS = 5;
+    const BASE_DELAY_MS = 500;
+    let lastError = "Request failed";
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+      if (exportStoppedRef.current) return { ok: false, aborted: true };
+      try {
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        if (res.ok) return { ok: true };
+        const data = (await res.json().catch(() => null)) as
+          | { error?: string }
+          | null;
+        const message = data?.error ?? `Request failed (HTTP ${res.status})`;
+        lastError = message;
+        if (res.status >= 400 && res.status < 500) {
+          return { ok: false, error: message };
+        }
+      } catch (err) {
+        lastError = err instanceof Error ? err.message : "Network error";
+      }
+      if (attempt < MAX_ATTEMPTS) {
+        const delay = BASE_DELAY_MS * Math.pow(2, attempt - 1);
+        await cancellableSleep(delay);
+        if (exportStoppedRef.current) return { ok: false, aborted: true };
+      }
+    }
+    return { ok: false, error: lastError };
+  }
+
+  function insertAtEnd(documentId: string, text: string): Promise<RetryResult> {
+    return postWithRetry("/api/google-docs/append", { documentId, text });
+  }
+  function batchUpdate(
+    documentId: string,
+    requests: GDocsRequest[],
+  ): Promise<RetryResult> {
+    return postWithRetry("/api/google-docs/batch", { documentId, requests });
+  }
+
   async function handleExport() {
     if (!docsConnected || chunks.length === 0) return;
 
-    const snapshot = buildExportSegments(text);
-    if (snapshot.length === 0) return;
-    const total = snapshot.length;
+    // Build drip blocks from the rich editor's JSON. Falls back to the plain
+    // text projection if no document is set yet (shouldn't happen, but safe).
+    const sourceJson = docJson ?? plainTextToDocument(plainText);
+    const blocks = documentToBlocks(sourceJson).filter(
+      (b) => b.text.length > 0 || b.type !== "paragraph",
+    );
+    if (blocks.length === 0) return;
+    const total = blocks.length;
     const intervalMs = Math.max(0, intervalSeconds) * 1000;
     const exportTitle = title.trim();
 
@@ -307,75 +462,163 @@ export default function Scheduler({ docsConnected = false }: Props) {
       return;
     }
 
+    const stoppedSnapshot = (
+      written: number,
+      failed: number,
+    ): ExportStatus => ({
+      kind: "stopped",
+      documentUrl,
+      written,
+      total,
+      failed,
+    });
+
     if (exportStoppedRef.current) {
-      setExportStatus({ kind: "stopped", documentUrl, written: 0, total });
+      setExportStatus(stoppedSnapshot(0, 0));
       return;
     }
 
+    let written = 0;
+    let failed = 0;
     setExportStatus({
       kind: "writing",
       documentUrl,
       documentId,
-      written: 0,
+      written,
       total,
+      failed,
     });
+
+    // Track the live cursor (the index where the next end-of-segment insert
+    // will land). Google Docs body content starts at index 1.
+    let bodyEnd = GOOGLE_DOC_BODY_START;
+    // Pending list run state: when consecutive blocks are list-items of the
+    // same ordering, we accumulate their range; once the run ends we flush a
+    // single createParagraphBullets request.
+    let pendingList: {
+      ordering: "bullet" | "ordered";
+      startIndex: number;
+      endIndex: number;
+    } | null = null;
+
+    async function flushPendingBullets() {
+      if (!pendingList) return;
+      const { ordering, startIndex, endIndex } = pendingList;
+      pendingList = null;
+      if (endIndex <= startIndex) return;
+      const r = await batchUpdate(documentId, [
+        buildBulletsRequest(ordering, startIndex, endIndex),
+      ]);
+      if (!r.ok && !r.aborted) {
+        failed += 1;
+        console.error("[drip-export] bullets request failed:", r.error);
+      }
+    }
 
     for (let i = 0; i < total; i++) {
       if (exportStoppedRef.current) {
-        setExportStatus({
-          kind: "stopped",
-          documentUrl,
-          written: i,
-          total,
-        });
+        await flushPendingBullets();
+        setExportStatus(stoppedSnapshot(written, failed));
         return;
       }
-
       if (i > 0 && intervalMs > 0) {
         await cancellableSleep(intervalMs);
         if (exportStoppedRef.current) {
-          setExportStatus({
-            kind: "stopped",
-            documentUrl,
-            written: i,
-            total,
-          });
+          await flushPendingBullets();
+          setExportStatus(stoppedSnapshot(written, failed));
           return;
         }
       }
 
-      try {
-        const res = await fetch("/api/google-docs/append", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ documentId, text: snapshot[i] }),
-        });
-        if (!res.ok) {
-          const data = (await res.json().catch(() => null)) as
-            | { error?: string }
-            | null;
-          throw new Error(
-            data?.error ?? `Append failed (HTTP ${res.status})`,
-          );
-        }
+      const block = blocks[i];
+      const prepared = prepareBlockExport(block);
+      const insertStart = bodyEnd;
+
+      // 1) Insert the block's text at end-of-segment.
+      const insertRes = await insertAtEnd(documentId, prepared.insertText);
+      if (insertRes.ok) {
+        bodyEnd += prepared.insertText.length;
+      } else if (insertRes.aborted) {
+        await flushPendingBullets();
+        setExportStatus(stoppedSnapshot(written, failed));
+        return;
+      } else {
+        failed += 1;
+        console.error(
+          `[drip-export] block ${i + 1}/${total} insert failed:`,
+          insertRes.error,
+        );
+        // No styling possible without an insert; skip this block.
         setExportStatus({
           kind: "writing",
           documentUrl,
           documentId,
-          written: i + 1,
+          written,
           total,
+          failed,
         });
-      } catch (err) {
-        setExportStatus({
-          kind: "error",
-          documentUrl,
-          message: err instanceof Error ? err.message : "Append failed",
-        });
-        return;
+        continue;
       }
+
+      // 2) Apply inline marks + block-level styles (headings).
+      const styleReqs = prepared.buildStyleRequests(insertStart);
+      if (styleReqs.length > 0) {
+        const styleRes = await batchUpdate(documentId, styleReqs);
+        if (styleRes.ok) {
+          // styling succeeded
+        } else if (styleRes.aborted) {
+          await flushPendingBullets();
+          setExportStatus(stoppedSnapshot(written, failed));
+          return;
+        } else {
+          failed += 1;
+          console.error(
+            `[drip-export] block ${i + 1}/${total} style failed:`,
+            styleRes.error,
+          );
+        }
+      }
+
+      // 3) Track bullet runs: extend pendingList if this block is a list-item
+      // of the same ordering as the last; otherwise flush + start a new one
+      // (or none for non-list blocks).
+      if (block.type === "list-item") {
+        const blockEnd = insertStart + prepared.insertText.length;
+        if (pendingList && pendingList.ordering === block.ordering) {
+          pendingList.endIndex = blockEnd;
+        } else {
+          await flushPendingBullets();
+          pendingList = {
+            ordering: block.ordering,
+            startIndex: insertStart,
+            endIndex: blockEnd,
+          };
+        }
+      } else {
+        await flushPendingBullets();
+      }
+
+      written += 1;
+      setExportStatus({
+        kind: "writing",
+        documentUrl,
+        documentId,
+        written,
+        total,
+        failed,
+      });
     }
 
-    setExportStatus({ kind: "done", documentUrl, written: total, total });
+    // Flush any remaining bullet run after the last block.
+    await flushPendingBullets();
+
+    setExportStatus({
+      kind: "done",
+      documentUrl,
+      written,
+      total,
+      failed,
+    });
   }
 
   function handleLoad(schedule: Schedule) {
@@ -383,10 +626,21 @@ export default function Scheduler({ docsConnected = false }: Props) {
     setIsRunning(false);
     setCurrentIndex(0);
     setTitle(schedule.title);
-    setText(schedule.originalText);
     setChunkSize(schedule.chunkSize);
 
-    // Back-compute the duration from the saved interval × chunks.
+    if (schedule.document && typeof schedule.document === "object") {
+      // Rich-content schedule: load the JSON into the editor.
+      editorRef.current?.setJson(schedule.document);
+      setDocJson(schedule.document);
+      setPlainText(documentToPlainText(schedule.document));
+    } else {
+      // Legacy plain-text schedule: hydrate the editor with paragraphs.
+      editorRef.current?.setText(schedule.originalText);
+      const doc = plainTextToDocument(schedule.originalText);
+      setDocJson(doc);
+      setPlainText(schedule.originalText);
+    }
+
     const totalSeconds = schedule.interval * schedule.chunks.length;
     const matchedPreset = findPresetForDuration(totalSeconds);
     if (matchedPreset) {
@@ -396,6 +650,70 @@ export default function Scheduler({ docsConnected = false }: Props) {
       setCustomInterval(schedule.interval);
     }
   }
+
+  // ────────────── Upload / import ──────────────
+
+  async function ingestFile(file: File) {
+    if (uploadSuccessTimerRef.current)
+      clearTimeout(uploadSuccessTimerRef.current);
+    setUploadStatus({ kind: "parsing", filename: file.name });
+    try {
+      const parsed = await parseFile(file);
+      if (parsed.kind === "html") {
+        // .docx via mammoth: feed HTML to the editor so formatting is preserved.
+        editorRef.current?.setHtml(parsed.html);
+        // Plain text projection follows the editor onUpdate; but seed it now
+        // so the chunk count line updates immediately for fast first paint.
+        setPlainText(
+          parsed.plainText.replace(/\r\n/g, "\n").replace(/\r/g, "\n"),
+        );
+      } else {
+        const normalized = parsed.text
+          .replace(/\r\n/g, "\n")
+          .replace(/\r/g, "\n");
+        editorRef.current?.setText(normalized);
+        setPlainText(normalized);
+      }
+      setUploadStatus({ kind: "success", filename: file.name });
+      uploadSuccessTimerRef.current = setTimeout(() => {
+        setUploadStatus({ kind: "idle" });
+      }, 4000);
+    } catch (err) {
+      setUploadStatus({
+        kind: "error",
+        message: err instanceof Error ? err.message : "Failed to import file",
+      });
+    }
+  }
+
+  function handleFileInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) ingestFile(file);
+    e.target.value = "";
+  }
+
+  function handleDrop(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setIsDraggingFile(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) ingestFile(file);
+  }
+
+  function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setIsDraggingFile(true);
+  }
+
+  function handleDragLeave(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setIsDraggingFile(false);
+  }
+
+  function openFilePicker() {
+    fileInputRef.current?.click();
+  }
+
+  // ────────────── Derived flags ──────────────
 
   const sentCount = Math.min(currentIndex, chunks.length);
   const isSaving = saveStatus.kind === "saving";
@@ -413,7 +731,7 @@ export default function Scheduler({ docsConnected = false }: Props) {
             New schedule
           </h2>
           <p className="mt-1 text-sm text-gray-500">
-            Paste your text, pick a total duration, and let it drip.
+            Write or import a document, pick a total duration, and let it drip.
           </p>
         </div>
 
@@ -491,14 +809,96 @@ export default function Scheduler({ docsConnected = false }: Props) {
             )}
           </div>
 
+          {/* Upload zone */}
           <div>
-            <label className={labelClass}>Insert text</label>
-            <textarea
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              rows={10}
-              placeholder="Paste your text here..."
-              className={`${inputClass} resize-y leading-relaxed`}
+            <label className={labelClass}>Import a document (optional)</label>
+            <div
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onClick={openFilePicker}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  openFilePicker();
+                }
+              }}
+              className={
+                "flex cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed px-6 py-6 text-center transition-all " +
+                (isDraggingFile
+                  ? "border-purple-400 bg-purple-50/60"
+                  : "border-gray-200 bg-gray-50/40 hover:border-purple-300 hover:bg-purple-50/40")
+              }
+            >
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-purple-50 text-purple-600">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  className="h-5 w-5"
+                >
+                  <path d="M12 3v12" />
+                  <path d="M7 8l5-5 5 5" />
+                  <path d="M5 21h14" />
+                </svg>
+              </div>
+              <p className="text-sm font-medium text-gray-800">
+                Drop a file here, or click to browse
+              </p>
+              <p className="text-xs text-gray-500">
+                .txt, .md, .docx, .pdf · up to {MAX_FILE_SIZE_LABEL}
+              </p>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".txt,.md,.docx,.pdf,text/plain,text/markdown,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf"
+                className="hidden"
+                onChange={handleFileInputChange}
+              />
+            </div>
+
+            {uploadStatus.kind === "parsing" && (
+              <div className="mt-2 inline-flex items-center gap-2 rounded-full border border-purple-200 bg-purple-50 px-3 py-1 text-xs font-medium text-purple-700">
+                <span className="h-3 w-3 rounded-full border-2 border-purple-300 border-t-purple-600 animate-spin" />
+                Parsing {uploadStatus.filename}…
+              </div>
+            )}
+            {uploadStatus.kind === "success" && (
+              <div className="mt-2 animate-fade-in-up inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  className="h-3 w-3"
+                >
+                  <path d="M20 6L9 17l-5-5" />
+                </svg>
+                Imported {uploadStatus.filename}
+              </div>
+            )}
+            {uploadStatus.kind === "error" && (
+              <div className="mt-2 animate-fade-in-up inline-flex max-w-full items-start rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-700 break-words whitespace-normal">
+                {uploadStatus.message}
+              </div>
+            )}
+          </div>
+
+          <div>
+            <label className={labelClass}>Document</label>
+            <RichEditor
+              ref={editorRef}
+              onChange={handleEditorChange}
+              placeholder="Write here, or import a document above…"
             />
           </div>
 
@@ -617,25 +1017,46 @@ export default function Scheduler({ docsConnected = false }: Props) {
                       <span className="font-semibold tabular-nums text-gray-900">
                         {exportStatus.written} / {exportStatus.total}
                       </span>{" "}
-                      sentences
+                      blocks
+                      {exportStatus.failed > 0 && (
+                        <span className="ml-2 text-amber-700">
+                          · {exportStatus.failed} failed
+                        </span>
+                      )}
                     </span>
                   )}
                   {exportStatus.kind === "stopping" && (
                     <span>
                       Stopping… ({exportStatus.written} /{" "}
-                      {exportStatus.total} written)
+                      {exportStatus.total} written
+                      {exportStatus.failed > 0
+                        ? `, ${exportStatus.failed} failed`
+                        : ""}
+                      )
                     </span>
                   )}
-                  {exportStatus.kind === "done" && (
-                    <span className="font-medium text-emerald-700">
-                      Exported successfully — {exportStatus.total} sentences
-                      written.
-                    </span>
-                  )}
+                  {exportStatus.kind === "done" &&
+                    (exportStatus.failed === 0 ? (
+                      <span className="font-medium text-emerald-700">
+                        Exported successfully — {exportStatus.total} blocks
+                        written.
+                      </span>
+                    ) : (
+                      <span className="font-medium text-amber-700">
+                        Exported with {exportStatus.failed} error
+                        {exportStatus.failed === 1 ? "" : "s"} —{" "}
+                        {exportStatus.written} of {exportStatus.total}{" "}
+                        blocks written.
+                      </span>
+                    ))}
                   {exportStatus.kind === "stopped" && (
                     <span className="font-medium text-amber-700">
                       Stopped at {exportStatus.written} /{" "}
-                      {exportStatus.total} sentences. Document was kept.
+                      {exportStatus.total} blocks
+                      {exportStatus.failed > 0
+                        ? ` (${exportStatus.failed} failed)`
+                        : ""}
+                      . Document was kept.
                     </span>
                   )}
                   {exportStatus.kind === "error" &&

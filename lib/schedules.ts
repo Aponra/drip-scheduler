@@ -17,6 +17,9 @@ export type ScheduleDraft = {
   chunks: string[];
   chunkSize: number;
   interval: number;
+  // TipTap JSON document. Optional for backward compatibility with schedules
+  // saved before the rich editor was added.
+  document?: object | null;
 };
 
 export type Schedule = ScheduleDraft & {
@@ -31,11 +34,20 @@ export async function saveSchedule(
   userId: string,
   draft: ScheduleDraft,
 ): Promise<string> {
-  const ref = await addDoc(collection(db, COLLECTION), {
-    ...draft,
+  const payload: Record<string, unknown> = {
+    title: draft.title,
+    originalText: draft.originalText,
+    chunks: draft.chunks,
+    chunkSize: draft.chunkSize,
+    interval: draft.interval,
     userId,
     createdAt: serverTimestamp(),
-  });
+  };
+  // Only include `document` when present so older schedules don't add a null field.
+  if (draft.document !== undefined && draft.document !== null) {
+    payload.document = draft.document;
+  }
+  const ref = await addDoc(collection(db, COLLECTION), payload);
   return ref.id;
 }
 
@@ -53,6 +65,10 @@ export async function listSchedules(userId: string): Promise<Schedule[]> {
       interval: data.interval,
       userId: data.userId,
       createdAt: (data.createdAt as Timestamp | null) ?? null,
+      document:
+        typeof data.document === "object" && data.document !== null
+          ? (data.document as object)
+          : null,
     } satisfies Schedule;
   });
 

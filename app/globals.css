@@ -48,3 +48,67 @@ body {
     animation: fadeIn 180ms ease-out both;
   }
 }
+
+/* ─── TipTap rich editor prose styles ───────────────────────────────── */
+.prose-editor p {
+  margin: 0 0 0.75rem;
+}
+.prose-editor p:last-child {
+  margin-bottom: 0;
+}
+.prose-editor h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 1.25rem 0 0.5rem;
+  color: #111827;
+}
+.prose-editor h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 1rem 0 0.4rem;
+  color: #111827;
+}
+.prose-editor h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0.85rem 0 0.35rem;
+  color: #111827;
+}
+.prose-editor ul,
+.prose-editor ol {
+  margin: 0 0 0.75rem;
+  padding-left: 1.4rem;
+}
+.prose-editor ul {
+  list-style: disc;
+}
+.prose-editor ol {
+  list-style: decimal;
+}
+.prose-editor li > p {
+  margin: 0;
+}
+.prose-editor a {
+  color: #7c3aed;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.prose-editor strong {
+  font-weight: 600;
+}
+.prose-editor em {
+  font-style: italic;
+}
+.prose-editor u {
+  text-decoration: underline;
+}
+/* Empty-doc placeholder via data-placeholder on the ProseMirror element */
+.prose-editor.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: #9ca3af;
+  pointer-events: none;
+  float: left;
+  height: 0;
+}

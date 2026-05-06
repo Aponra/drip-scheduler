@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { google, type Auth } from "googleapis";
+import { google, type Auth, type docs_v1 } from "googleapis";
 import {
   ACCESS_COOKIE,
   EXPIRY_COOKIE,
@@ -7,16 +7,17 @@ import {
   setTokenCookies,
 } from "@/lib/google-docs-cookies";
 
-type AppendBody = {
+type BatchBody = {
   documentId?: unknown;
-  text?: unknown;
-  index?: unknown;
+  requests?: unknown;
 };
 
+const MAX_REQUESTS_PER_BATCH = 200;
+
 export async function POST(request: NextRequest) {
-  let body: AppendBody;
+  let body: BatchBody;
   try {
-    body = (await request.json()) as AppendBody;
+    body = (await request.json()) as BatchBody;
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
@@ -30,18 +31,20 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const text = typeof body.text === "string" ? body.text : "";
-  if (text.length === 0) {
+  if (!Array.isArray(body.requests) || body.requests.length === 0) {
     return NextResponse.json(
-      { error: "text must be a non-empty string" },
+      { error: "requests must be a non-empty array" },
       { status: 400 },
     );
   }
-
-  const index =
-    typeof body.index === "number" && Number.isFinite(body.index)
-      ? Math.max(1, Math.floor(body.index))
-      : null;
+  if (body.requests.length > MAX_REQUESTS_PER_BATCH) {
+    return NextResponse.json(
+      {
+        error: `Too many requests (max ${MAX_REQUESTS_PER_BATCH} per batch)`,
+      },
+      { status: 400 },
+    );
+  }
 
   const accessToken = request.cookies.get(ACCESS_COOKIE)?.value;
   const refreshToken = request.cookies.get(REFRESH_COOKIE)?.value;
@@ -85,14 +88,7 @@ export async function POST(request: NextRequest) {
     await docs.documents.batchUpdate({
       documentId,
       requestBody: {
-        requests: [
-          {
-            insertText:
-              index !== null
-                ? { location: { index }, text }
-                : { endOfSegmentLocation: {}, text },
-          },
-        ],
+        requests: body.requests as docs_v1.Schema$Request[],
       },
     });
   } catch (err) {
@@ -102,7 +98,7 @@ export async function POST(request: NextRequest) {
       response?: { data?: { error?: { message?: string } } };
     };
     const upstream = e.response?.data?.error?.message;
-    const message = upstream ?? e.message ?? "Failed to append to Google Doc";
+    const message = upstream ?? e.message ?? "Failed to update Google Doc";
     const status = typeof e.code === "number" ? e.code : 500;
     return NextResponse.json({ error: message }, { status });
   }
