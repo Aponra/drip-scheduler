@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import Scheduler from "./scheduler";
 
@@ -47,15 +48,15 @@ function LogoIcon({ className }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
       className={className}
     >
-      <path d="M12 3c3 4.5 5.5 7.5 5.5 11a5.5 5.5 0 1 1-11 0c0-3.5 2.5-6.5 5.5-11z" />
+      <rect width="24" height="24" rx="5" fill="#2563EB" />
+      <path
+        d="M12 5C9.4 8 7.5 11 7.5 14a4.5 4.5 0 0 0 9 0c0-3-1.9-6-4.5-9z"
+        fill="#fff"
+      />
     </svg>
   );
 }
@@ -234,9 +235,7 @@ export default function Home() {
       <div className="relative isolate min-h-screen flex items-center justify-center px-6 py-12 bg-gradient-to-b from-indigo-50/70 via-white to-violet-50/60">
         <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 sm:p-10 shadow-xl shadow-indigo-100/40 ring-1 ring-black/[0.02] animate-fade-in-up">
           <div className="flex flex-col items-center text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 ring-1 ring-indigo-100">
-              <LogoIcon className="h-6 w-6" />
-            </div>
+            <LogoIcon className="h-14 w-14 shadow-sm" />
             <h1 className="mt-5 text-3xl font-semibold tracking-tight text-gray-900">
               Drip Scheduler
             </h1>
@@ -288,6 +287,18 @@ export default function Home() {
               ))}
             </ul>
           </div>
+
+          <p className="mt-6 text-center text-xs text-gray-500">
+            By continuing, you agree to our{" "}
+            <Link href="/terms" className="text-gray-700 hover:underline">
+              Terms
+            </Link>{" "}
+            and{" "}
+            <Link href="/privacy" className="text-gray-700 hover:underline">
+              Privacy Policy
+            </Link>
+            .
+          </p>
         </div>
       </div>
     );
@@ -369,7 +380,7 @@ export default function Home() {
       <header className="lg:hidden sticky top-0 z-10 border-b border-gray-200 bg-white/95 backdrop-blur">
         <div className="flex h-14 items-center justify-between gap-3 px-4">
           <div className="flex items-center gap-2">
-            <div className="h-2.5 w-2.5 rounded-full bg-purple-600" />
+            <div className="h-2.5 w-2.5 rounded-full bg-blue-600" />
             <span className="text-sm font-semibold tracking-tight text-gray-900">
               Drip Scheduler
             </span>
@@ -413,7 +424,7 @@ export default function Home() {
         {/* Sidebar (lg+) */}
         <aside className="hidden lg:flex lg:flex-col w-64 shrink-0 border-r border-gray-200 bg-white">
           <div className="flex h-16 items-center gap-2.5 px-6 border-b border-gray-100">
-            <div className="h-2.5 w-2.5 rounded-full bg-purple-600" />
+            <div className="h-2.5 w-2.5 rounded-full bg-blue-600" />
             <span className="text-base font-semibold tracking-tight text-gray-900">
               Drip Scheduler
             </span>
