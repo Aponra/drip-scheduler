@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import Scheduler from "./scheduler";
+import Landing from "./landing";
 
 const DOCS_CONNECTED_KEY = "googleDocsConnected";
 
@@ -232,75 +233,11 @@ export default function Home() {
 
   if (!user) {
     return (
-      <div className="relative isolate min-h-screen flex items-center justify-center px-6 py-12 bg-gradient-to-b from-indigo-50/70 via-white to-violet-50/60">
-        <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 sm:p-10 shadow-xl shadow-indigo-100/40 ring-1 ring-black/[0.02] animate-fade-in-up">
-          <div className="flex flex-col items-center text-center">
-            <LogoIcon className="h-14 w-14 shadow-sm" />
-            <h1 className="mt-5 text-3xl font-semibold tracking-tight text-gray-900">
-              Docs Version History
-            </h1>
-            <p className="mt-2 text-sm leading-relaxed text-gray-500">
-              Schedule prose, drip it on an interval, save it for later, and
-              export to Google Docs.
-            </p>
-          </div>
-
-          <button
-            onClick={() => {
-              signInWithGoogle().catch((err) => console.error(err));
-            }}
-            className="group mt-7 inline-flex w-full items-center justify-center gap-3 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-800 shadow-sm transition-all hover:-translate-y-px hover:bg-gray-50 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
-          >
-            <GoogleGIcon className="h-5 w-5" />
-            Continue with Google
-          </button>
-
-          <div className="mt-6 border-t border-gray-100 pt-6">
-            <ul className="space-y-3">
-              {[
-                {
-                  label: "Drip text slowly",
-                  Icon: ClockIcon,
-                  delay: "100ms",
-                },
-                {
-                  label: "Save schedules",
-                  Icon: BookmarkIcon,
-                  delay: "180ms",
-                },
-                {
-                  label: "Export to Google Docs",
-                  Icon: DocsIcon,
-                  delay: "260ms",
-                },
-              ].map(({ label, Icon, delay }) => (
-                <li
-                  key={label}
-                  className="flex items-center gap-3 animate-fade-in-up"
-                  style={{ animationDelay: delay }}
-                >
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
-                    <Icon className="h-4 w-4" />
-                  </span>
-                  <span className="text-sm text-gray-700">{label}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <p className="mt-6 text-center text-xs text-gray-500">
-            By continuing, you agree to our{" "}
-            <Link href="/terms" className="text-gray-700 hover:underline">
-              Terms
-            </Link>{" "}
-            and{" "}
-            <Link href="/privacy" className="text-gray-700 hover:underline">
-              Privacy Policy
-            </Link>
-            .
-          </p>
-        </div>
-      </div>
+      <Landing
+        onContinueWithGoogle={() => {
+          signInWithGoogle().catch((err) => console.error(err));
+        }}
+      />
     );
   }
 
