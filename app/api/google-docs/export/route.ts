@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
   }
 
   const rawTitle = typeof body.title === "string" ? body.title.trim() : "";
-  const title = rawTitle.length > 0 ? rawTitle : "Drip Scheduler Export";
+  const title = rawTitle.length > 0 ? rawTitle : "Docs Version History Export";
 
   const accessToken = request.cookies.get(ACCESS_COOKIE)?.value;
   const refreshToken = request.cookies.get(REFRESH_COOKIE)?.value;

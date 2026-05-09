@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Drip Scheduler",
+  title: "Docs Version History",
   description: "Schedule and drip-feed text in measured chunks.",
 };
 

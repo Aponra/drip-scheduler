@@ -237,7 +237,7 @@ export default function Home() {
           <div className="flex flex-col items-center text-center">
             <LogoIcon className="h-14 w-14 shadow-sm" />
             <h1 className="mt-5 text-3xl font-semibold tracking-tight text-gray-900">
-              Drip Scheduler
+              Docs Version History
             </h1>
             <p className="mt-2 text-sm leading-relaxed text-gray-500">
               Schedule prose, drip it on an interval, save it for later, and
@@ -382,7 +382,7 @@ export default function Home() {
           <div className="flex items-center gap-2">
             <div className="h-2.5 w-2.5 rounded-full bg-blue-600" />
             <span className="text-sm font-semibold tracking-tight text-gray-900">
-              Drip Scheduler
+              Docs Version History
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -426,7 +426,7 @@ export default function Home() {
           <div className="flex h-16 items-center gap-2.5 px-6 border-b border-gray-100">
             <div className="h-2.5 w-2.5 rounded-full bg-blue-600" />
             <span className="text-base font-semibold tracking-tight text-gray-900">
-              Drip Scheduler
+              Docs Version History
             </span>
           </div>
 

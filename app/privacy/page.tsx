@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Privacy Policy · Drip Scheduler",
+  title: "Privacy Policy · Docs Version History",
   description:
-    "How Drip Scheduler handles your account, content, and Google account data.",
+    "How Docs Version History handles your account, content, and Google account data.",
 };
 
 const operator = "Apon";
@@ -27,7 +27,7 @@ export default function PrivacyPage() {
           href="/"
           className="inline-flex items-center gap-1 text-sm text-blue-700 hover:underline"
         >
-          ← Back to Drip Scheduler
+          ← Back to Docs Version History
         </Link>
 
         <h1 className="mt-6 text-3xl font-semibold tracking-tight text-gray-900">
@@ -38,7 +38,7 @@ export default function PrivacyPage() {
         </p>
 
         <p className={p}>
-          This page explains what Drip Scheduler (&quot;the service&quot;,
+          This page explains what Docs Version History (&quot;the service&quot;,
           &quot;we&quot;) collects, how we use it, and the choices you have. The
           service is operated by {operator}.
         </p>
@@ -114,7 +114,7 @@ export default function PrivacyPage() {
 
         <h2 className={h2}>Google account data and the limited-use disclosure</h2>
         <p className={p}>
-          Drip Scheduler&rsquo;s use of information received from Google APIs
+          Docs Version History&rsquo;s use of information received from Google APIs
           adheres to Google&rsquo;s{" "}
           <a
             className="text-blue-700 hover:underline"

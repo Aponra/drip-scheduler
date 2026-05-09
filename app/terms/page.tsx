@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Terms of Service · Drip Scheduler",
-  description: "The rules for using Drip Scheduler.",
+  title: "Terms of Service · Docs Version History",
+  description: "The rules for using Docs Version History.",
 };
 
 const operator = "Apon";
@@ -25,7 +25,7 @@ export default function TermsPage() {
           href="/"
           className="inline-flex items-center gap-1 text-sm text-blue-700 hover:underline"
         >
-          ← Back to Drip Scheduler
+          ← Back to Docs Version History
         </Link>
 
         <h1 className="mt-6 text-3xl font-semibold tracking-tight text-gray-900">
@@ -34,14 +34,14 @@ export default function TermsPage() {
         <p className="mt-2 text-sm text-gray-500">Last updated: {lastUpdated}</p>
 
         <p className={p}>
-          By using Drip Scheduler (&quot;the service&quot;), you agree to these
+          By using Docs Version History (&quot;the service&quot;), you agree to these
           terms. The service is operated by {operator}. If you do not agree,
           please do not use the service.
         </p>
 
         <h2 className={h2}>The service</h2>
         <p className={p}>
-          Drip Scheduler lets you write or import a document, save schedules,
+          Docs Version History lets you write or import a document, save schedules,
           and gradually export the content into a Google Doc you authorize the
           service to create. Features may change or be removed.
         </p>
