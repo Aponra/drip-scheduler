@@ -128,16 +128,13 @@ export default function PrivacyPage() {
         </p>
         <ul className={ul}>
           <li>
-            We only request the scopes we need:{" "}
-            <span className="font-mono text-xs">
-              https://www.googleapis.com/auth/documents
-            </span>{" "}
-            and{" "}
+            We only request the single scope we need:{" "}
             <span className="font-mono text-xs">
               https://www.googleapis.com/auth/drive.file
             </span>
-            . The latter restricts our access to documents the app has
-            created &mdash; we cannot read or modify your other Drive content.
+            . This restricts our access to documents the app itself creates
+            &mdash; we cannot read, list, or modify any of your other Drive
+            content.
           </li>
           <li>
             Google account data is used solely to provide the user-facing

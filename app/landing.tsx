@@ -476,7 +476,7 @@ function Faq() {
     },
     {
       q: "What does the app access in my Google account?",
-      a: "Only the documents and drive.file scopes. The drive.file scope means the app can read or modify only the documents it itself created. It cannot see the rest of your Drive.",
+      a: "Only the drive.file scope. That means the app can read or modify only the documents it itself created. It cannot list, see, or touch the rest of your Drive.",
     },
     {
       q: "Can I disconnect?",

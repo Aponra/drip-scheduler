@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { google } from "googleapis";
 
-const SCOPES = [
-  "https://www.googleapis.com/auth/documents",
-  "https://www.googleapis.com/auth/drive.file",
-];
+// Minimum scope: `drive.file` lets the app create and edit ONLY the documents
+// it creates (or that the user opens to it through a Google Picker, which we
+// don't use). It does not grant access to the rest of the user's Drive.
+const SCOPES = ["https://www.googleapis.com/auth/drive.file"];
 
 export async function GET() {
   const clientId = process.env.GOOGLE_CLIENT_ID;
