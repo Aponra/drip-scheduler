@@ -172,6 +172,12 @@ function Nav({ onContinueWithGoogle }: Props) {
           >
             FAQ
           </a>
+          <Link
+            href="/ai-detector"
+            className="hidden rounded-md px-3 py-1.5 text-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 sm:inline-block"
+          >
+            AI Detector
+          </Link>
           <button
             onClick={onContinueWithGoogle}
             className="ml-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-800 shadow-sm transition-all hover:-translate-y-px hover:bg-gray-50 hover:shadow"
@@ -594,6 +600,9 @@ function Footer() {
           </span>
         </div>
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-gray-500">
+          <Link href="/ai-detector" className="hover:text-gray-900">
+            AI Detector
+          </Link>
           <Link href="/privacy" className="hover:text-gray-900">
             Privacy
           </Link>
