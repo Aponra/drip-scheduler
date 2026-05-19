@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { trackEvent } from "@/lib/analytics";
 
 type Props = {
   onContinueWithGoogle: () => void;
@@ -207,7 +208,13 @@ function Hero({ onContinueWithGoogle }: Props) {
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <button
-                onClick={onContinueWithGoogle}
+                onClick={() => {
+                  trackEvent("cta_click", {
+                    button_name: "start_for_free",
+                    location: "hero_section",
+                  });
+                  onContinueWithGoogle();
+                }}
                 className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white shadow-sm transition-all hover:-translate-y-px hover:bg-blue-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
               >
                 Start for free
