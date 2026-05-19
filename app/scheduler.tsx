@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from "react";
+import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { saveSchedule, type Schedule } from "@/lib/schedules";
 import {
@@ -990,6 +991,26 @@ export default function Scheduler({ docsConnected = false }: Props) {
                 Stop Google Docs Writing
               </button>
             )}
+
+            <Link
+              href="/ai-detector"
+              className="inline-flex items-center gap-2 rounded-lg border border-purple-200 bg-gradient-to-r from-purple-50 to-fuchsia-50 px-4 py-2.5 text-sm font-medium text-purple-700 shadow-sm transition-all hover:-translate-y-px hover:from-purple-100 hover:to-fuchsia-100 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+                className="h-4 w-4"
+              >
+                <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z" />
+                <path d="M5 19l1 3 1-3 3-1-3-1-1-3-1 3-3 1 3 1z" />
+              </svg>
+              AI Detector & Rewriter
+            </Link>
 
             {saveStatus.kind === "success" && (
               <span className="animate-fade-in-up inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
