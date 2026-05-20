@@ -7,224 +7,68 @@ import { trackEvent } from "@/lib/analytics";
 // ─── Types ────────────────────────────────────────────────────────────
 
 type DetectionResult = {
-  aiScore: number; // 0-100
-  humanScore: number; // 0-100
+  aiScore: number;
+  humanScore: number;
   explanation: string;
-  confidence: "low" | "medium" | "high";
+  sentences: Array<{
+    text: string;
+    aiProbability: number;
+  }>;
 };
 
 type RewriteResult = {
   rewrittenText: string;
 };
 
-// ─── Icons ────────────────────────────────────────────────────────────
-
-function SparklesIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      className={className}
-    >
-      <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z" />
-      <path d="M5 19l1 3 1-3 3-1-3-1-1-3-1 3-3 1 3 1z" />
-      <path d="M19 13l1 2 1-2 2-1-2-1-1-2-1 2-2 1 2 1z" />
-    </svg>
-  );
-}
-
-function ScanIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      className={className}
-    >
-      <path d="M3 7V5a2 2 0 0 1 2-2h2" />
-      <path d="M17 3h2a2 2 0 0 1 2 2v2" />
-      <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
-      <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
-      <path d="M7 12h10" />
-      <path d="M7 8h6" />
-      <path d="M7 16h8" />
-    </svg>
-  );
-}
-
-function CopyIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      className={className}
-    >
-      <rect x="9" y="9" width="13" height="13" rx="2" />
-      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-    </svg>
-  );
-}
-
-function CheckIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      className={className}
-    >
-      <path d="M20 6L9 17l-5-5" />
-    </svg>
-  );
-}
-
-function RefreshIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      className={className}
-    >
-      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-      <path d="M3 3v5h5" />
-    </svg>
-  );
-}
-
-function RobotIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      className={className}
-    >
-      <rect x="3" y="11" width="18" height="10" rx="2" />
-      <circle cx="12" cy="5" r="2" />
-      <path d="M12 7v4" />
-      <path d="M8 16h0" />
-      <path d="M16 16h0" />
-      <path d="M9 20v1" />
-      <path d="M15 20v1" />
-    </svg>
-  );
-}
-
-function UserIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      className={className}
-    >
-      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
-    </svg>
-  );
-}
-
-function ArrowLeftIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      className={className}
-    >
-      <path d="M19 12H5" />
-      <path d="M12 19l-7-7 7-7" />
-    </svg>
-  );
-}
-
-function LoadingSpinner({ className }: { className?: string }) {
-  return (
-    <div className={`relative ${className ?? ""}`}>
-      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-pink-500 animate-spin" />
-      <div className="absolute inset-[3px] rounded-full bg-white" />
-    </div>
-  );
-}
-
 // ─── Placeholder API functions ────────────────────────────────────────
 
 async function detectAI(text: string): Promise<DetectionResult> {
-  await new Promise((resolve) => setTimeout(resolve, 1800));
+  await new Promise((resolve) => setTimeout(resolve, 1500));
 
+  const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
   const wordCount = text.split(/\s+/).filter(Boolean).length;
-  const hasComplexSentences = text.includes(",") && text.includes(".");
   const avgWordLength =
     text.replace(/\s+/g, "").length / Math.max(wordCount, 1);
 
-  let aiScore = 50;
-  if (avgWordLength > 5) aiScore += 15;
-  if (hasComplexSentences) aiScore += 10;
-  if (wordCount > 100) aiScore += 10;
-  if (text.toLowerCase().includes("therefore")) aiScore += 5;
-  if (text.toLowerCase().includes("however")) aiScore += 5;
-  if (text.toLowerCase().includes("furthermore")) aiScore += 5;
-  aiScore = Math.min(Math.max(aiScore, 0), 100);
+  let baseAiScore = 45;
+  if (avgWordLength > 5) baseAiScore += 15;
+  if (text.includes(",") && text.includes(".")) baseAiScore += 10;
+  if (wordCount > 100) baseAiScore += 10;
+  if (text.toLowerCase().includes("therefore")) baseAiScore += 5;
+  if (text.toLowerCase().includes("however")) baseAiScore += 5;
+  if (text.toLowerCase().includes("furthermore")) baseAiScore += 5;
+  baseAiScore = Math.min(Math.max(baseAiScore, 0), 100);
 
-  const humanScore = 100 - aiScore;
+  const analyzedSentences = sentences.map((s) => {
+    const variation = Math.random() * 30 - 15;
+    return {
+      text: s.trim(),
+      aiProbability: Math.min(Math.max(baseAiScore + variation, 0), 100),
+    };
+  });
 
   let explanation: string;
-  let confidence: "low" | "medium" | "high";
-
-  if (aiScore >= 70) {
+  if (baseAiScore >= 70) {
     explanation =
-      "High probability of AI-generated content detected. The text exhibits consistent sentence structure, formal vocabulary, and patterns typical of large language models.";
-    confidence = "high";
-  } else if (aiScore >= 40) {
+      "Your text is likely to be written entirely by AI. We detected consistent patterns typical of AI-generated content.";
+  } else if (baseAiScore >= 40) {
     explanation =
-      "Mixed signals detected. This text shows characteristics of both human and AI writing. It may be AI-assisted or lightly edited AI content.";
-    confidence = "medium";
+      "Your text may include parts written by AI. Some sections show AI-like patterns while others appear human-written.";
   } else {
     explanation =
-      "This text appears predominantly human-written. Natural variations in style, informal elements, and personal voice are present.";
-    confidence = "low";
+      "Your text is likely to be written entirely by a human. Natural variations and personal voice detected throughout.";
   }
 
-  return { aiScore, humanScore, explanation, confidence };
+  return {
+    aiScore: baseAiScore,
+    humanScore: 100 - baseAiScore,
+    explanation,
+    sentences: analyzedSentences,
+  };
 }
 
 async function rewriteText(text: string): Promise<RewriteResult> {
-  await new Promise((resolve) => setTimeout(resolve, 2200));
+  await new Promise((resolve) => setTimeout(resolve, 2000));
 
   const sentences = text.split(/(?<=[.!?])\s+/);
   const rewritten = sentences
@@ -233,9 +77,6 @@ async function rewriteText(text: string): Promise<RewriteResult> {
       if (sentence.toLowerCase().startsWith("the ")) {
         return sentence.replace(/^the /i, "This ");
       }
-      if (sentence.toLowerCase().startsWith("it ")) {
-        return sentence.replace(/^it /i, "This ");
-      }
       return sentence;
     })
     .join(" ");
@@ -243,160 +84,113 @@ async function rewriteText(text: string): Promise<RewriteResult> {
   return {
     rewrittenText:
       rewritten +
-      "\n\n[Note: This is placeholder output. Connect a real AI rewriting API for actual results.]",
+      "\n\n[Placeholder output - connect a real API for actual humanization]",
   };
 }
 
-// ─── Animated Score Ring ──────────────────────────────────────────────
+// ─── Components ───────────────────────────────────────────────────────
 
-function ScoreRing({
-  score,
+function Logo() {
+  return (
+    <Link href="/" className="flex items-center gap-2">
+      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          className="h-5 w-5 text-white"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z" />
+        </svg>
+      </div>
+      <span className="text-lg font-semibold text-gray-900">AI Detector</span>
+    </Link>
+  );
+}
+
+function StatCard({
+  value,
   label,
-  icon: Icon,
-  colorScheme,
-  delay = 0,
+  color,
 }: {
-  score: number;
+  value: string;
   label: string;
-  icon: React.ComponentType<{ className?: string }>;
-  colorScheme: "ai" | "human";
-  delay?: number;
+  color: "blue" | "green" | "purple";
 }) {
-  const [animatedScore, setAnimatedScore] = useState(0);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      const duration = 1000;
-      const steps = 60;
-      const increment = score / steps;
-      let current = 0;
-
-      const interval = setInterval(() => {
-        current += increment;
-        if (current >= score) {
-          setAnimatedScore(score);
-          clearInterval(interval);
-        } else {
-          setAnimatedScore(Math.floor(current));
-        }
-      }, duration / steps);
-
-      return () => clearInterval(interval);
-    }, delay);
-
-    return () => clearTimeout(timeout);
-  }, [score, delay]);
-
-  const circumference = 2 * Math.PI * 54;
-  const strokeDashoffset =
-    circumference - (animatedScore / 100) * circumference;
-
-  const colors =
-    colorScheme === "ai"
-      ? {
-          gradient: "from-red-500 via-orange-500 to-amber-500",
-          ring: "stroke-red-500",
-          bg: "bg-gradient-to-br from-red-500/10 to-orange-500/10",
-          text: "text-red-600",
-          glow: "shadow-red-500/25",
-        }
-      : {
-          gradient: "from-emerald-500 via-teal-500 to-cyan-500",
-          ring: "stroke-emerald-500",
-          bg: "bg-gradient-to-br from-emerald-500/10 to-teal-500/10",
-          text: "text-emerald-600",
-          glow: "shadow-emerald-500/25",
-        };
+  const colors = {
+    blue: "bg-blue-50 text-blue-700",
+    green: "bg-emerald-50 text-emerald-700",
+    purple: "bg-purple-50 text-purple-700",
+  };
 
   return (
-    <div className="flex flex-col items-center">
-      <div className={`relative h-36 w-36 ${colors.bg} rounded-full p-2`}>
-        {/* Glow effect */}
-        <div
-          className={`absolute inset-0 rounded-full blur-xl opacity-40 ${colors.bg}`}
-        />
-
-        <div className="relative h-full w-full">
-          <svg className="h-full w-full -rotate-90" viewBox="0 0 120 120">
-            {/* Background ring */}
-            <circle
-              cx="60"
-              cy="60"
-              r="54"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="8"
-              className="text-gray-200"
-            />
-            {/* Animated progress ring */}
-            <circle
-              cx="60"
-              cy="60"
-              r="54"
-              fill="none"
-              strokeWidth="8"
-              strokeLinecap="round"
-              className={colors.ring}
-              style={{
-                strokeDasharray: circumference,
-                strokeDashoffset,
-                transition: "stroke-dashoffset 0.1s ease-out",
-              }}
-            />
-          </svg>
-
-          {/* Center content */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <Icon className={`h-6 w-6 ${colors.text} mb-1`} />
-            <span className={`text-3xl font-bold ${colors.text} tabular-nums`}>
-              {animatedScore}%
-            </span>
-          </div>
-        </div>
-      </div>
-      <span className="mt-3 text-sm font-semibold text-gray-700">{label}</span>
+    <div
+      className={`rounded-xl px-4 py-3 text-center ${colors[color]}`}
+    >
+      <div className="text-2xl font-bold">{value}</div>
+      <div className="text-xs font-medium opacity-80">{label}</div>
     </div>
   );
 }
 
-// ─── Confidence Badge ─────────────────────────────────────────────────
-
-function ConfidenceBadge({
-  confidence,
+function FeatureCard({
+  icon,
+  title,
+  description,
 }: {
-  confidence: "low" | "medium" | "high";
+  icon: React.ReactNode;
+  title: string;
+  description: string;
 }) {
-  const styles = {
-    low: "bg-emerald-100 text-emerald-700 border-emerald-200",
-    medium: "bg-amber-100 text-amber-700 border-amber-200",
-    high: "bg-red-100 text-red-700 border-red-200",
-  };
-
-  const labels = {
-    low: "Low AI Probability",
-    medium: "Medium AI Probability",
-    high: "High AI Probability",
-  };
-
   return (
-    <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${styles[confidence]}`}
-    >
-      <span
-        className={`h-1.5 w-1.5 rounded-full ${
-          confidence === "low"
-            ? "bg-emerald-500"
-            : confidence === "medium"
-              ? "bg-amber-500"
-              : "bg-red-500"
-        }`}
-      />
-      {labels[confidence]}
-    </span>
+    <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-all hover:border-blue-100 hover:shadow-md">
+      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+        {icon}
+      </div>
+      <h3 className="mt-3 font-semibold text-gray-900">{title}</h3>
+      <p className="mt-1 text-sm text-gray-600">{description}</p>
+    </div>
   );
 }
 
-// ─── Main Page Component ──────────────────────────────────────────────
+function SentenceHighlight({
+  sentence,
+  probability,
+}: {
+  sentence: string;
+  probability: number;
+}) {
+  const getBgColor = (prob: number) => {
+    if (prob >= 70) return "bg-red-100 border-red-200";
+    if (prob >= 40) return "bg-yellow-50 border-yellow-200";
+    return "bg-emerald-50 border-emerald-200";
+  };
+
+  const getLabel = (prob: number) => {
+    if (prob >= 70) return { text: "AI", color: "text-red-600 bg-red-50" };
+    if (prob >= 40)
+      return { text: "Mixed", color: "text-yellow-700 bg-yellow-50" };
+    return { text: "Human", color: "text-emerald-600 bg-emerald-50" };
+  };
+
+  const label = getLabel(probability);
+
+  return (
+    <div
+      className={`flex items-start gap-3 rounded-lg border p-3 ${getBgColor(probability)}`}
+    >
+      <span
+        className={`shrink-0 rounded px-2 py-0.5 text-xs font-semibold ${label.color}`}
+      >
+        {label.text}
+      </span>
+      <p className="text-sm text-gray-700">{sentence}</p>
+    </div>
+  );
+}
+
+// ─── Main Page ────────────────────────────────────────────────────────
 
 export default function AIDetectorPage() {
   const [inputText, setInputText] = useState("");
@@ -409,21 +203,23 @@ export default function AIDetectorPage() {
   );
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState<"detect" | "rewrite">("detect");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const MAX_CHARS = 10000;
 
   useEffect(() => {
     trackEvent("ai_detector_page_view");
   }, []);
 
-  const wordCount = inputText.trim().split(/\s+/).filter(Boolean).length;
   const charCount = inputText.length;
+  const wordCount = inputText.trim().split(/\s+/).filter(Boolean).length;
 
   function handleClear() {
     setInputText("");
     setDetectionResult(null);
     setRewriteResult(null);
     setError(null);
-    setCopied(false);
     textareaRef.current?.focus();
   }
 
@@ -432,15 +228,16 @@ export default function AIDetectorPage() {
       setError("Please enter some text to analyze.");
       return;
     }
+    if (inputText.length > MAX_CHARS) {
+      setError(`Text exceeds ${MAX_CHARS.toLocaleString()} character limit.`);
+      return;
+    }
 
     setError(null);
     setIsDetecting(true);
     setDetectionResult(null);
 
-    trackEvent("ai_detect_clicked", {
-      word_count: wordCount,
-      char_count: charCount,
-    });
+    trackEvent("ai_detect_clicked", { word_count: wordCount, char_count: charCount });
 
     try {
       const result = await detectAI(inputText);
@@ -454,7 +251,7 @@ export default function AIDetectorPage() {
 
   async function handleRewrite() {
     if (!inputText.trim()) {
-      setError("Please enter some text to rewrite.");
+      setError("Please enter some text to humanize.");
       return;
     }
 
@@ -462,16 +259,13 @@ export default function AIDetectorPage() {
     setIsRewriting(true);
     setRewriteResult(null);
 
-    trackEvent("rewrite_clicked", {
-      word_count: wordCount,
-      char_count: charCount,
-    });
+    trackEvent("rewrite_clicked", { word_count: wordCount, char_count: charCount });
 
     try {
       const result = await rewriteText(inputText);
       setRewriteResult(result);
     } catch {
-      setError("Rewriting failed. Please try again.");
+      setError("Humanization failed. Please try again.");
     } finally {
       setIsRewriting(false);
     }
@@ -479,7 +273,6 @@ export default function AIDetectorPage() {
 
   async function handleCopy() {
     if (!rewriteResult?.rewrittenText) return;
-
     try {
       await navigator.clipboard.writeText(rewriteResult.rewrittenText);
       setCopied(true);
@@ -495,309 +288,448 @@ export default function AIDetectorPage() {
   const isLoading = isDetecting || isRewriting;
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-slate-50 via-white to-slate-50">
-      {/* Animated background elements */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full bg-gradient-to-br from-purple-200/40 via-fuchsia-200/30 to-pink-200/40 blur-3xl animate-pulse" />
-        <div className="absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full bg-gradient-to-tr from-blue-200/40 via-cyan-200/30 to-teal-200/40 blur-3xl animate-pulse [animation-delay:1s]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-gradient-to-r from-violet-200/20 to-fuchsia-200/20 blur-3xl" />
-      </div>
-
-      <div className="relative mx-auto max-w-4xl px-6 py-12 lg:py-16">
-        {/* Back link */}
-        <Link
-          href="/"
-          className="group inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
-        >
-          <ArrowLeftIcon className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-          Back to Docs Version History
-        </Link>
-
-        {/* Header */}
-        <div className="mt-8 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-purple-200 bg-gradient-to-r from-purple-50 to-fuchsia-50 px-4 py-1.5 text-sm font-medium text-purple-700">
-            <SparklesIcon className="h-4 w-4" />
-            AI-Powered Analysis
-          </div>
-          <h1 className="mt-4 bg-gradient-to-r from-gray-900 via-purple-900 to-gray-900 bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl">
-            AI Text Detector & Rewriter
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-base text-gray-600">
-            Analyze your text to detect AI-generated content with advanced
-            pattern recognition, or transform it to sound more natural and
-            human.
-          </p>
+    <div className="min-h-screen bg-gradient-to-b from-blue-50/50 via-white to-white">
+      {/* Header */}
+      <header className="border-b border-gray-100 bg-white/80 backdrop-blur-sm">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+          <Logo />
+          <nav className="flex items-center gap-6">
+            <Link
+              href="/"
+              className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
+            >
+              Home
+            </Link>
+            <Link
+              href="/privacy"
+              className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
+            >
+              Privacy
+            </Link>
+          </nav>
         </div>
+      </header>
 
-        {/* Main card */}
-        <div className="mt-10 rounded-3xl border border-gray-200/60 bg-white/70 p-6 shadow-xl shadow-gray-200/50 backdrop-blur-xl sm:p-8">
-          {/* Input section */}
-          <div>
-            <div className="flex items-center justify-between">
-              <label
-                htmlFor="input-text"
-                className="flex items-center gap-2 text-sm font-semibold text-gray-800"
+      {/* Hero Section */}
+      <section className="border-b border-gray-100 bg-gradient-to-b from-blue-50/80 to-white py-12 lg:py-16">
+        <div className="mx-auto max-w-4xl px-6 text-center">
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">
+            The most accurate AI detector
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-base text-gray-600 lg:text-lg">
+            Detect AI-generated text with sentence-level highlighting. Trusted
+            by educators, publishers, and content creators worldwide.
+          </p>
+
+          {/* Stats */}
+          <div className="mx-auto mt-8 flex max-w-md justify-center gap-4">
+            <StatCard value="99%" label="Accuracy" color="blue" />
+            <StatCard value="10M+" label="Scans" color="green" />
+            <StatCard value="Free" label="To Use" color="purple" />
+          </div>
+        </div>
+      </section>
+
+      {/* Main Tool Section */}
+      <section className="py-10 lg:py-14">
+        <div className="mx-auto max-w-4xl px-6">
+          {/* Tab Selector */}
+          <div className="mb-6 flex justify-center">
+            <div className="inline-flex rounded-xl bg-gray-100 p-1">
+              <button
+                onClick={() => setActiveTab("detect")}
+                className={`rounded-lg px-6 py-2.5 text-sm font-semibold transition-all ${
+                  activeTab === "detect"
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
               >
-                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-fuchsia-500 text-white">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    className="h-3.5 w-3.5"
-                  >
-                    <path d="M12 20h9" />
-                    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
-                  </svg>
-                </span>
-                Enter Your Text
-              </label>
-              {inputText && (
-                <button
-                  onClick={handleClear}
-                  disabled={isLoading}
-                  className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-gray-500 transition-all hover:bg-gray-100 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  <RefreshIcon className="h-3.5 w-3.5" />
-                  Clear
-                </button>
-              )}
+                AI Detection
+              </button>
+              <button
+                onClick={() => setActiveTab("rewrite")}
+                className={`rounded-lg px-6 py-2.5 text-sm font-semibold transition-all ${
+                  activeTab === "rewrite"
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                Humanize Text
+              </button>
             </div>
-            <div className="relative mt-3">
+          </div>
+
+          {/* Input Card */}
+          <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-lg shadow-gray-100/50">
+            {/* Textarea */}
+            <div className="relative">
               <textarea
                 ref={textareaRef}
-                id="input-text"
                 value={inputText}
                 onChange={(e) => {
                   setInputText(e.target.value);
                   setError(null);
                 }}
-                placeholder="Paste or type your text here to analyze..."
-                rows={8}
+                placeholder={
+                  activeTab === "detect"
+                    ? "Paste your text here to check for AI-generated content..."
+                    : "Paste AI-generated text here to humanize it..."
+                }
+                rows={10}
                 disabled={isLoading}
-                className="block w-full resize-none rounded-2xl border border-gray-200 bg-white px-5 py-4 text-sm text-gray-900 shadow-sm transition-all placeholder:text-gray-400 focus:border-purple-400 focus:outline-none focus:ring-4 focus:ring-purple-500/10 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500"
+                className="block w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-4 text-sm text-gray-900 transition-all placeholder:text-gray-400 focus:border-blue-300 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 disabled:cursor-not-allowed disabled:opacity-60"
               />
-              {/* Character count badge */}
-              <div className="absolute bottom-3 right-3 flex items-center gap-3 text-xs text-gray-400">
-                <span className="rounded-md bg-gray-100 px-2 py-1 font-medium tabular-nums">
-                  {wordCount} words
-                </span>
-                <span className="rounded-md bg-gray-100 px-2 py-1 font-medium tabular-nums">
-                  {charCount} chars
-                </span>
+
+              {/* Character counter */}
+              <div className="absolute bottom-3 right-3 rounded-md bg-white px-2 py-1 text-xs font-medium text-gray-400 shadow-sm">
+                {charCount.toLocaleString()}/{MAX_CHARS.toLocaleString()}
               </div>
             </div>
-          </div>
 
-          {/* Error message */}
-          {error && (
-            <div className="mt-4 flex items-center gap-3 rounded-xl border border-red-200 bg-gradient-to-r from-red-50 to-rose-50 px-4 py-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-red-100">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  className="h-4 w-4 text-red-600"
+            {/* Error */}
+            {error && (
+              <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                {error}
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+              <div className="flex items-center gap-2 text-xs text-gray-500">
+                <span>{wordCount} words</span>
+                <span className="text-gray-300">|</span>
+                <button
+                  onClick={handleClear}
+                  disabled={isLoading || !inputText}
+                  className="text-gray-500 transition-colors hover:text-gray-700 disabled:opacity-50"
                 >
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M12 8v4" />
-                  <path d="M12 16h.01" />
-                </svg>
+                  Clear
+                </button>
               </div>
-              <p className="text-sm font-medium text-red-700">{error}</p>
-            </div>
-          )}
 
-          {/* Action buttons */}
-          <div className="mt-6 flex flex-wrap gap-3">
-            <button
-              onClick={handleDetect}
-              disabled={isLoading}
-              className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-purple-600 bg-[length:200%_100%] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-purple-500/25 transition-all hover:bg-[100%_0] hover:shadow-xl hover:shadow-purple-500/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {isDetecting ? (
-                <LoadingSpinner className="h-5 w-5" />
-              ) : (
-                <ScanIcon className="h-5 w-5" />
-              )}
-              {isDetecting ? "Analyzing..." : "Detect AI Content"}
-            </button>
-            <button
-              onClick={handleRewrite}
-              disabled={isLoading}
-              className="group inline-flex items-center gap-2.5 rounded-xl border-2 border-gray-200 bg-white px-6 py-3 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:border-purple-300 hover:bg-purple-50 hover:text-purple-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {isRewriting ? (
-                <LoadingSpinner className="h-5 w-5" />
-              ) : (
-                <SparklesIcon className="h-5 w-5" />
-              )}
-              {isRewriting ? "Rewriting..." : "Humanize Text"}
-            </button>
-          </div>
-        </div>
-
-        {/* Detection results */}
-        {detectionResult && (
-          <div className="mt-8 animate-fade-in-up rounded-3xl border border-gray-200/60 bg-white/70 p-6 shadow-xl shadow-gray-200/50 backdrop-blur-xl sm:p-8">
-            <div className="flex items-center justify-between">
-              <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900">
-                <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-fuchsia-500 text-white">
-                  <ScanIcon className="h-4 w-4" />
-                </span>
-                Analysis Results
-              </h2>
-              <ConfidenceBadge confidence={detectionResult.confidence} />
-            </div>
-
-            {/* Score rings */}
-            <div className="mt-8 flex flex-wrap justify-center gap-12">
-              <ScoreRing
-                score={detectionResult.aiScore}
-                label="AI-Generated"
-                icon={RobotIcon}
-                colorScheme="ai"
-                delay={100}
-              />
-              <ScoreRing
-                score={detectionResult.humanScore}
-                label="Human-Written"
-                icon={UserIcon}
-                colorScheme="human"
-                delay={300}
-              />
-            </div>
-
-            {/* Analysis explanation */}
-            <div className="mt-8 rounded-2xl border border-gray-100 bg-gradient-to-br from-gray-50 to-slate-50 p-5">
-              <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-purple-100 to-fuchsia-100 text-purple-600">
+              <button
+                onClick={activeTab === "detect" ? handleDetect : handleRewrite}
+                disabled={isLoading || !inputText.trim()}
+                className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-8 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/25 transition-all hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-600/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none"
+              >
+                {isLoading && (
                   <svg
+                    className="h-4 w-4 animate-spin"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.75"
-                    className="h-5 w-5"
                   >
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M12 16v-4" />
-                    <path d="M12 8h.01" />
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeOpacity="0.25"
+                    />
+                    <path
+                      d="M12 2a10 10 0 0 1 10 10"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                    />
                   </svg>
+                )}
+                {activeTab === "detect"
+                  ? isDetecting
+                    ? "Scanning..."
+                    : "Scan for AI"
+                  : isRewriting
+                    ? "Humanizing..."
+                    : "Humanize"}
+              </button>
+            </div>
+
+            {/* Privacy note */}
+            <p className="mt-4 text-center text-xs text-gray-400">
+              Your text is processed securely and never stored.
+            </p>
+          </div>
+
+          {/* Detection Results */}
+          {detectionResult && activeTab === "detect" && (
+            <div className="mt-8 animate-fade-in-up space-y-6">
+              {/* Score Card */}
+              <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-lg shadow-gray-100/50">
+                <h2 className="text-lg font-semibold text-gray-900">
+                  Detection Results
+                </h2>
+
+                {/* Score Bar */}
+                <div className="mt-6">
+                  <div className="flex items-center justify-between text-sm font-medium">
+                    <span className="text-emerald-600">Human</span>
+                    <span className="text-red-600">AI</span>
+                  </div>
+                  <div className="mt-2 h-4 overflow-hidden rounded-full bg-gray-100">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-emerald-500 via-yellow-400 to-red-500 transition-all duration-1000"
+                      style={{ width: "100%" }}
+                    />
+                    <div
+                      className="relative -mt-4 h-4"
+                      style={{ marginLeft: `${detectionResult.aiScore}%` }}
+                    >
+                      <div className="absolute -ml-2 h-6 w-1 -translate-y-1 rounded-full bg-gray-800 shadow-lg" />
+                    </div>
+                  </div>
+                  <div className="mt-3 flex items-center justify-center gap-2">
+                    <span
+                      className={`text-3xl font-bold ${
+                        detectionResult.aiScore >= 50
+                          ? "text-red-600"
+                          : "text-emerald-600"
+                      }`}
+                    >
+                      {detectionResult.aiScore}%
+                    </span>
+                    <span className="text-gray-500">
+                      probability AI-generated
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">
-                    Detailed Analysis
-                  </h3>
-                  <p className="mt-1 text-sm leading-relaxed text-gray-600">
+
+                {/* Explanation */}
+                <div className="mt-6 rounded-xl bg-gray-50 p-4">
+                  <p className="text-sm text-gray-700">
                     {detectionResult.explanation}
                   </p>
                 </div>
               </div>
-            </div>
-          </div>
-        )}
 
-        {/* Rewrite results */}
-        {rewriteResult && (
-          <div className="mt-8 animate-fade-in-up rounded-3xl border border-gray-200/60 bg-white/70 p-6 shadow-xl shadow-gray-200/50 backdrop-blur-xl sm:p-8">
-            <div className="flex items-center justify-between">
-              <h2 className="flex items-center gap-2 text-xl font-bold text-gray-900">
-                <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white">
-                  <SparklesIcon className="h-4 w-4" />
-                </span>
-                Humanized Text
-              </h2>
-              <button
-                onClick={handleCopy}
-                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all ${
-                  copied
-                    ? "bg-emerald-100 text-emerald-700"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                {copied ? (
-                  <>
-                    <CheckIcon className="h-4 w-4" />
-                    Copied!
-                  </>
-                ) : (
-                  <>
-                    <CopyIcon className="h-4 w-4" />
-                    Copy Text
-                  </>
-                )}
-              </button>
-            </div>
-
-            <div className="mt-5 rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50/50 to-teal-50/50 p-5">
-              <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-700">
-                {rewriteResult.rewrittenText}
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Features section */}
-        {!detectionResult && !rewriteResult && (
-          <div className="mt-12 grid gap-4 sm:grid-cols-3">
-            {[
-              {
-                icon: ScanIcon,
-                title: "AI Detection",
-                description: "Identify AI-generated content with high accuracy",
-                gradient: "from-purple-500 to-fuchsia-500",
-              },
-              {
-                icon: SparklesIcon,
-                title: "Text Humanization",
-                description:
-                  "Transform AI text to sound natural and authentic",
-                gradient: "from-blue-500 to-cyan-500",
-              },
-              {
-                icon: CheckIcon,
-                title: "Instant Results",
-                description: "Get detailed analysis in seconds, not minutes",
-                gradient: "from-emerald-500 to-teal-500",
-              },
-            ].map((feature, i) => (
-              <div
-                key={feature.title}
-                className="group rounded-2xl border border-gray-200/60 bg-white/50 p-5 backdrop-blur-sm transition-all hover:border-purple-200 hover:bg-white/80 hover:shadow-lg"
-                style={{ animationDelay: `${i * 100}ms` }}
-              >
-                <div
-                  className={`inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${feature.gradient} text-white shadow-lg`}
-                >
-                  <feature.icon className="h-5 w-5" />
-                </div>
-                <h3 className="mt-3 font-semibold text-gray-900">
-                  {feature.title}
-                </h3>
-                <p className="mt-1 text-sm text-gray-600">
-                  {feature.description}
+              {/* Sentence Analysis */}
+              <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-lg shadow-gray-100/50">
+                <h2 className="text-lg font-semibold text-gray-900">
+                  Sentence-Level Analysis
+                </h2>
+                <p className="mt-1 text-sm text-gray-500">
+                  Each sentence is highlighted based on AI probability
                 </p>
-              </div>
-            ))}
-          </div>
-        )}
 
-        {/* Footer */}
-        <div className="mt-12 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-gray-500">
-          <Link href="/privacy" className="hover:text-gray-900 hover:underline">
-            Privacy Policy
-          </Link>
-          <span className="text-gray-300">|</span>
-          <Link href="/terms" className="hover:text-gray-900 hover:underline">
-            Terms of Service
-          </Link>
-          <span className="text-gray-300">|</span>
-          <Link href="/" className="hover:text-gray-900 hover:underline">
-            Home
-          </Link>
+                <div className="mt-4 space-y-2">
+                  {detectionResult.sentences.map((s, i) => (
+                    <SentenceHighlight
+                      key={i}
+                      sentence={s.text}
+                      probability={s.aiProbability}
+                    />
+                  ))}
+                </div>
+
+                {/* Legend */}
+                <div className="mt-6 flex flex-wrap items-center justify-center gap-4 border-t border-gray-100 pt-4">
+                  <div className="flex items-center gap-2 text-xs">
+                    <span className="h-3 w-3 rounded bg-emerald-100 border border-emerald-200" />
+                    <span className="text-gray-600">Likely Human</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs">
+                    <span className="h-3 w-3 rounded bg-yellow-50 border border-yellow-200" />
+                    <span className="text-gray-600">Mixed/Uncertain</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs">
+                    <span className="h-3 w-3 rounded bg-red-100 border border-red-200" />
+                    <span className="text-gray-600">Likely AI</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Rewrite Results */}
+          {rewriteResult && activeTab === "rewrite" && (
+            <div className="mt-8 animate-fade-in-up">
+              <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-lg shadow-gray-100/50">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    Humanized Text
+                  </h2>
+                  <button
+                    onClick={handleCopy}
+                    className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                      copied
+                        ? "bg-emerald-100 text-emerald-700"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
+                  >
+                    {copied ? (
+                      <>
+                        <svg
+                          className="h-4 w-4"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                        >
+                          <path d="M20 6L9 17l-5-5" />
+                        </svg>
+                        Copied!
+                      </>
+                    ) : (
+                      <>
+                        <svg
+                          className="h-4 w-4"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.75"
+                        >
+                          <rect x="9" y="9" width="13" height="13" rx="2" />
+                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                        </svg>
+                        Copy
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
+                  <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-700">
+                    {rewriteResult.rewrittenText}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      </div>
+      </section>
+
+      {/* Features Section */}
+      {!detectionResult && !rewriteResult && (
+        <section className="border-t border-gray-100 bg-gray-50/50 py-14">
+          <div className="mx-auto max-w-5xl px-6">
+            <h2 className="text-center text-2xl font-bold text-gray-900">
+              Why use our AI Detector?
+            </h2>
+            <p className="mx-auto mt-2 max-w-xl text-center text-gray-600">
+              Industry-leading accuracy with detailed analysis to help you
+              understand AI-generated content.
+            </p>
+
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <FeatureCard
+                icon={
+                  <svg
+                    className="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                  >
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                    <path d="M22 4L12 14.01l-3-3" />
+                  </svg>
+                }
+                title="99% Accuracy"
+                description="Our model is trained on millions of samples to deliver best-in-class detection accuracy."
+              />
+              <FeatureCard
+                icon={
+                  <svg
+                    className="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                  >
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <path d="M14 2v6h6" />
+                    <path d="M16 13H8" />
+                    <path d="M16 17H8" />
+                    <path d="M10 9H8" />
+                  </svg>
+                }
+                title="Sentence Highlighting"
+                description="See exactly which sentences are likely AI-generated with color-coded highlighting."
+              />
+              <FeatureCard
+                icon={
+                  <svg
+                    className="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                  >
+                    <rect x="3" y="11" width="18" height="11" rx="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                }
+                title="Privacy First"
+                description="Your text is never stored or used for training. Analysis happens securely in real-time."
+              />
+              <FeatureCard
+                icon={
+                  <svg
+                    className="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                  >
+                    <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z" />
+                    <path d="M5 19l1 3 1-3 3-1-3-1-1-3-1 3-3 1 3 1z" />
+                  </svg>
+                }
+                title="AI Humanizer"
+                description="Transform AI-generated text to sound more natural and bypass detection."
+              />
+              <FeatureCard
+                icon={
+                  <svg
+                    className="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 6v6l4 2" />
+                  </svg>
+                }
+                title="Instant Results"
+                description="Get comprehensive analysis in seconds, not minutes. No waiting required."
+              />
+              <FeatureCard
+                icon={
+                  <svg
+                    className="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                  >
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                  </svg>
+                }
+                title="100% Free"
+                description="No subscription required. Use our AI detector and humanizer completely free."
+              />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Footer */}
+      <footer className="border-t border-gray-100 bg-white py-8">
+        <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 px-6 sm:flex-row">
+          <Logo />
+          <div className="flex items-center gap-6 text-sm text-gray-500">
+            <Link href="/privacy" className="hover:text-gray-900">
+              Privacy
+            </Link>
+            <Link href="/terms" className="hover:text-gray-900">
+              Terms
+            </Link>
+            <Link href="/" className="hover:text-gray-900">
+              Home
+            </Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
