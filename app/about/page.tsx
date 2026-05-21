@@ -5,25 +5,20 @@ export const metadata = {
   description: "Learn about Drip and our mission to help writers.",
 };
 
-// ─── Icons & Components ──────────────────────────────────────────────
-
-function Logo() {
+function LogoIcon({ className }: { className?: string }) {
   return (
-    <Link href="/" className="flex items-center gap-2.5">
-      <svg
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-        className="h-8 w-8"
-      >
-        <rect width="24" height="24" rx="5" fill="#10B981" />
-        <path
-          d="M12 5C9.4 8 7.5 11 7.5 14a4.5 4.5 0 0 0 9 0c0-3-1.9-6-4.5-9z"
-          fill="#fff"
-        />
-      </svg>
-      <span className="text-lg font-bold tracking-tight text-white">Drip</span>
-    </Link>
+    <svg
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      className={className}
+    >
+      <rect width="24" height="24" rx="5" fill="#2563EB" />
+      <path
+        d="M12 5C9.4 8 7.5 11 7.5 14a4.5 4.5 0 0 0 9 0c0-3-1.9-6-4.5-9z"
+        fill="#fff"
+      />
+    </svg>
   );
 }
 
@@ -130,46 +125,45 @@ function ZapIcon({ className }: { className?: string }) {
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="border-b border-gray-800 bg-gray-900">
+      <header className="border-b border-gray-100 bg-white">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-          <Logo />
+          <Link href="/" className="flex items-center gap-2.5">
+            <LogoIcon className="h-8 w-8" />
+            <span className="text-lg font-bold tracking-tight text-gray-900">
+              Drip
+            </span>
+          </Link>
           <nav className="hidden items-center gap-1 md:flex">
             <Link
               href="/"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
+              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
             >
               Home
             </Link>
             <Link
               href="/#features"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
+              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
             >
               Features
             </Link>
             <Link
               href="/pricing"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
+              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
             >
               Pricing
             </Link>
             <Link
               href="/about"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-white bg-gray-800 transition-colors"
+              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-100"
             >
               About
-            </Link>
-            <Link
-              href="/ai-detector"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
-            >
-              AI Detector
             </Link>
           </nav>
           <Link
             href="/"
-            className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-500"
+            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-blue-700"
           >
             Get Started
           </Link>
@@ -177,74 +171,73 @@ export default function AboutPage() {
       </header>
 
       {/* Hero */}
-      <section className="py-16 lg:py-24">
+      <section className="bg-gradient-to-b from-blue-50 to-white py-16 lg:py-24">
         <div className="mx-auto max-w-4xl px-6 text-center">
-          <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
             About Drip
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-gray-400">
-            Drip is a powerful writing tool that helps you schedule content
-            delivery, detect AI-generated text, and humanize your writing. Built
-            for writers, educators, and content creators who want more control
-            over their work.
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-gray-600">
+            Drip is a powerful writing tool that helps you schedule content delivery,
+            detect AI-generated text, and humanize your writing. Built for writers,
+            educators, and content creators who want more control over their work.
           </p>
         </div>
       </section>
 
       {/* Mission */}
-      <section className="bg-gray-950 py-16">
+      <section className="py-16">
         <div className="mx-auto max-w-6xl px-6">
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <div>
-              <span className="text-sm font-semibold uppercase tracking-wide text-emerald-500">
+              <span className="text-sm font-semibold uppercase tracking-wide text-blue-600">
                 Our Mission
               </span>
-              <h2 className="mt-2 text-3xl font-bold tracking-tight text-white">
+              <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-900">
                 Empowering writers with smart tools
               </h2>
-              <p className="mt-4 leading-relaxed text-gray-400">
-                We believe that great writing tools should be accessible to
-                everyone. Drip was created to solve real problems writers face
-                every day: scheduling content delivery, understanding AI
-                detection, and maintaining authentic voice in their work.
+              <p className="mt-4 text-gray-600 leading-relaxed">
+                We believe that great writing tools should be accessible to everyone.
+                Drip was created to solve real problems writers face every day:
+                scheduling content delivery, understanding AI detection, and
+                maintaining authentic voice in their work.
               </p>
-              <p className="mt-4 leading-relaxed text-gray-400">
-                Whether you&apos;re a student working on essays, a content
-                creator managing deliverables, or an educator reviewing student
-                work, Drip provides the tools you need to succeed.
+              <p className="mt-4 text-gray-600 leading-relaxed">
+                Whether you&apos;re a student working on essays, a content creator
+                managing deliverables, or an educator reviewing student work,
+                Drip provides the tools you need to succeed.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4">
               {[
-                { icon: DropletIcon, label: "Drip Writing", color: "emerald" },
-                { icon: ScanIcon, label: "AI Detection", color: "blue" },
-                { icon: SparklesIcon, label: "Humanization", color: "purple" },
+                { icon: DropletIcon, label: "Drip Writing", color: "blue" },
+                { icon: ScanIcon, label: "AI Detection", color: "purple" },
+                { icon: SparklesIcon, label: "Humanization", color: "emerald" },
                 { icon: ShieldIcon, label: "Privacy First", color: "orange" },
               ].map((item) => (
                 <div
                   key={item.label}
                   className={`rounded-2xl border p-6 text-center ${
-                    item.color === "emerald"
-                      ? "border-emerald-500/30 bg-emerald-500/10"
-                      : item.color === "blue"
-                        ? "border-blue-500/30 bg-blue-500/10"
-                        : item.color === "purple"
-                          ? "border-purple-500/30 bg-purple-500/10"
-                          : "border-orange-500/30 bg-orange-500/10"
+                    item.color === "blue"
+                      ? "border-blue-100 bg-blue-50"
+                      : item.color === "purple"
+                        ? "border-purple-100 bg-purple-50"
+                        : item.color === "emerald"
+                          ? "border-emerald-100 bg-emerald-50"
+                          : "border-orange-100 bg-orange-50"
                   }`}
                 >
                   <item.icon
                     className={`mx-auto h-8 w-8 ${
-                      item.color === "emerald"
-                        ? "text-emerald-400"
-                        : item.color === "blue"
-                          ? "text-blue-400"
-                          : item.color === "purple"
-                            ? "text-purple-400"
-                            : "text-orange-400"
+                      item.color === "blue"
+                        ? "text-blue-600"
+                        : item.color === "purple"
+                          ? "text-purple-600"
+                          : item.color === "emerald"
+                            ? "text-emerald-600"
+                            : "text-orange-600"
                     }`}
                   />
-                  <p className="mt-2 font-semibold text-white">{item.label}</p>
+                  <p className="mt-2 font-semibold text-gray-900">{item.label}</p>
                 </div>
               ))}
             </div>
@@ -253,13 +246,13 @@ export default function AboutPage() {
       </section>
 
       {/* Values */}
-      <section className="bg-gray-900 py-16">
+      <section className="border-t border-gray-100 bg-gray-50/50 py-16">
         <div className="mx-auto max-w-6xl px-6">
           <div className="text-center">
-            <span className="text-sm font-semibold uppercase tracking-wide text-emerald-500">
+            <span className="text-sm font-semibold uppercase tracking-wide text-blue-600">
               Our Values
             </span>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-white">
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-900">
               What we believe in
             </h2>
           </div>
@@ -287,17 +280,15 @@ export default function AboutPage() {
             ].map((value) => (
               <div
                 key={value.title}
-                className="rounded-2xl border border-gray-800 bg-gray-800/50 p-6 text-center"
+                className="rounded-2xl border border-gray-200 bg-white p-6 text-center"
               >
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
                   <value.icon className="h-6 w-6" />
                 </div>
-                <h3 className="mt-4 text-lg font-semibold text-white">
+                <h3 className="mt-4 text-lg font-semibold text-gray-900">
                   {value.title}
                 </h3>
-                <p className="mt-2 text-sm text-gray-400">
-                  {value.description}
-                </p>
+                <p className="mt-2 text-sm text-gray-600">{value.description}</p>
               </div>
             ))}
           </div>
@@ -305,13 +296,13 @@ export default function AboutPage() {
       </section>
 
       {/* Features Overview */}
-      <section className="bg-gray-950 py-16">
+      <section className="py-16">
         <div className="mx-auto max-w-6xl px-6">
           <div className="text-center">
-            <span className="text-sm font-semibold uppercase tracking-wide text-emerald-500">
+            <span className="text-sm font-semibold uppercase tracking-wide text-blue-600">
               What We Offer
             </span>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-white">
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-900">
               Three tools, one platform
             </h2>
           </div>
@@ -323,21 +314,21 @@ export default function AboutPage() {
                 title: "Drip Writing",
                 description:
                   "Schedule your content to appear in Google Docs over time. Set custom durations from 30 minutes to a full week. Perfect for simulating real-time writing, pacing content delivery, or creating realistic version history.",
-                color: "emerald",
+                color: "blue",
               },
               {
                 icon: ScanIcon,
                 title: "AI Detection",
                 description:
                   "Detect AI-generated content with 99% accuracy. Our sentence-level highlighting shows you exactly which parts might be flagged. Understand how AI detectors see your text before you submit.",
-                color: "blue",
+                color: "purple",
               },
               {
                 icon: SparklesIcon,
                 title: "Text Humanization",
                 description:
                   "Transform AI-generated text to sound more natural and authentic. Preserve your original meaning while adjusting the style to match human writing patterns.",
-                color: "purple",
+                color: "emerald",
               },
             ].map((feature, i) => (
               <div
@@ -345,29 +336,29 @@ export default function AboutPage() {
                 className={`flex flex-col gap-6 rounded-2xl border p-8 md:flex-row md:items-center ${
                   i % 2 === 1 ? "md:flex-row-reverse" : ""
                 } ${
-                  feature.color === "emerald"
-                    ? "border-emerald-500/20 bg-emerald-500/5"
-                    : feature.color === "blue"
-                      ? "border-blue-500/20 bg-blue-500/5"
-                      : "border-purple-500/20 bg-purple-500/5"
+                  feature.color === "blue"
+                    ? "border-blue-100 bg-blue-50/50"
+                    : feature.color === "purple"
+                      ? "border-purple-100 bg-purple-50/50"
+                      : "border-emerald-100 bg-emerald-50/50"
                 }`}
               >
                 <div
                   className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl ${
-                    feature.color === "emerald"
-                      ? "bg-emerald-500/20 text-emerald-400"
-                      : feature.color === "blue"
-                        ? "bg-blue-500/20 text-blue-400"
-                        : "bg-purple-500/20 text-purple-400"
+                    feature.color === "blue"
+                      ? "bg-blue-100 text-blue-600"
+                      : feature.color === "purple"
+                        ? "bg-purple-100 text-purple-600"
+                        : "bg-emerald-100 text-emerald-600"
                   }`}
                 >
                   <feature.icon className="h-8 w-8" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white">
+                  <h3 className="text-xl font-bold text-gray-900">
                     {feature.title}
                   </h3>
-                  <p className="mt-2 text-gray-400">{feature.description}</p>
+                  <p className="mt-2 text-gray-600">{feature.description}</p>
                 </div>
               </div>
             ))}
@@ -376,18 +367,17 @@ export default function AboutPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-gray-900 py-16">
+      <section className="border-t border-gray-100 bg-gradient-to-b from-white to-blue-50 py-16">
         <div className="mx-auto max-w-3xl px-6 text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-white">
+          <h2 className="text-3xl font-bold tracking-tight text-gray-900">
             Ready to get started?
           </h2>
-          <p className="mt-4 text-lg text-gray-400">
-            Join thousands of writers using Drip. Free forever, no credit card
-            required.
+          <p className="mt-4 text-lg text-gray-600">
+            Join thousands of writers using Drip. Free forever, no credit card required.
           </p>
           <Link
             href="/"
-            className="mt-8 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-emerald-600/25 transition-all hover:bg-emerald-500"
+            className="mt-8 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-blue-600/25 transition-all hover:bg-blue-700"
           >
             Get Started Free
           </Link>
@@ -395,30 +385,32 @@ export default function AboutPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-800 bg-gray-900 py-10">
+      <footer className="border-t border-gray-200 bg-white py-10">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-6 sm:flex-row">
-          <Logo />
-          <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-gray-400">
-            <Link href="/" className="hover:text-white">
+          <div className="flex items-center gap-2.5">
+            <LogoIcon className="h-7 w-7" />
+            <span className="text-base font-bold tracking-tight text-gray-900">
+              Drip
+            </span>
+          </div>
+          <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-gray-500">
+            <Link href="/" className="hover:text-gray-900">
               Home
             </Link>
-            <Link href="/pricing" className="hover:text-white">
+            <Link href="/pricing" className="hover:text-gray-900">
               Pricing
             </Link>
-            <Link href="/about" className="hover:text-white">
+            <Link href="/about" className="hover:text-gray-900">
               About
             </Link>
-            <Link href="/ai-detector" className="hover:text-white">
-              AI Detector
-            </Link>
-            <Link href="/privacy" className="hover:text-white">
+            <Link href="/privacy" className="hover:text-gray-900">
               Privacy
             </Link>
-            <Link href="/terms" className="hover:text-white">
+            <Link href="/terms" className="hover:text-gray-900">
               Terms
             </Link>
           </nav>
-          <p className="text-sm text-gray-500">&copy; 2026 Drip</p>
+          <p className="text-sm text-gray-400">&copy; 2026 Apon</p>
         </div>
       </footer>
     </div>
