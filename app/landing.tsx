@@ -3,6 +3,16 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { trackEvent } from "@/lib/analytics";
+import {
+  Logo,
+  Footer,
+  GoogleIcon,
+  CheckIcon,
+  DropletIcon,
+  ScanIcon,
+  SparklesIcon,
+  ArrowRightIcon,
+} from "@/lib/shared-components";
 
 type Props = {
   onContinueWithGoogle: () => void;
@@ -10,127 +20,10 @@ type Props = {
 
 // ─── Icons ───────────────────────────────────────────────────────────
 
-function LogoIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-      className={className}
-    >
-      <rect width="24" height="24" rx="5" fill="#2563EB" />
-      <path
-        d="M12 5C9.4 8 7.5 11 7.5 14a4.5 4.5 0 0 0 9 0c0-3-1.9-6-4.5-9z"
-        fill="#fff"
-      />
-    </svg>
-  );
-}
-
-function GoogleGIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className={className}>
-      <path
-        fill="#4285F4"
-        d="M21.6 12.2c0-.7-.06-1.36-.18-2H12v3.79h5.39a4.6 4.6 0 0 1-2 3.02v2.51h3.23c1.89-1.74 2.98-4.3 2.98-7.32z"
-      />
-      <path
-        fill="#34A853"
-        d="M12 22c2.7 0 4.96-.9 6.62-2.43l-3.23-2.51c-.9.6-2.05.96-3.39.96-2.6 0-4.8-1.76-5.59-4.13H3.07v2.6A10 10 0 0 0 12 22z"
-      />
-      <path
-        fill="#FBBC05"
-        d="M6.41 13.89A6 6 0 0 1 6.09 12c0-.66.11-1.3.32-1.89V7.51H3.07a10 10 0 0 0 0 8.98l3.34-2.6z"
-      />
-      <path
-        fill="#EA4335"
-        d="M12 5.98c1.47 0 2.79.51 3.83 1.5l2.87-2.87C16.96 3.04 14.7 2.16 12 2.16A10 10 0 0 0 3.07 7.51l3.34 2.6C7.2 7.74 9.4 5.98 12 5.98z"
-      />
-    </svg>
-  );
-}
-
-function DropletIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
-    </svg>
-  );
-}
-
-function ScanIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M3 7V5a2 2 0 0 1 2-2h2" />
-      <path d="M17 3h2a2 2 0 0 1 2 2v2" />
-      <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
-      <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
-      <path d="M7 12h10" />
-      <path d="M7 8h6" />
-      <path d="M7 16h8" />
-    </svg>
-  );
-}
-
-function SparklesIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z" />
-      <path d="M5 19l1 3 1-3 3-1-3-1-1-3-1 3-3 1 3 1z" />
-      <path d="M19 13l1 2 1-2 2-1-2-1-1-2-1 2-2 1 2 1z" />
-    </svg>
-  );
-}
-
 function PlayIcon({ className }: { className?: string }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      className={className}
-    >
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
       <path d="M8 5v14l11-7z" />
-    </svg>
-  );
-}
-
-function ArrowRightIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M5 12h14" />
-      <path d="M13 6l6 6-6 6" />
     </svg>
   );
 }
@@ -167,58 +60,50 @@ function Nav({ onContinueWithGoogle }: Props) {
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "border-b border-gray-200 bg-white/95 backdrop-blur-md shadow-sm"
-          : "bg-transparent"
+          ? "border-b border-gray-800 bg-gray-900/95 backdrop-blur-md"
+          : "bg-gray-900"
       }`}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5">
-          <LogoIcon className="h-8 w-8" />
-          <span className="text-lg font-bold tracking-tight text-gray-900">
-            Drip
-          </span>
-        </Link>
+        <Logo dark />
 
-        {/* Center Nav */}
         <nav className="hidden items-center gap-1 md:flex">
           <Link
             href="/"
-            className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
+            className="rounded-lg px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800"
           >
             Home
           </Link>
           <a
             href="#features"
-            className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
+            className="rounded-lg px-4 py-2 text-sm font-medium text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
           >
             Features
           </a>
           <Link
             href="/pricing"
-            className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
+            className="rounded-lg px-4 py-2 text-sm font-medium text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
           >
             Pricing
           </Link>
           <Link
             href="/about"
-            className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
+            className="rounded-lg px-4 py-2 text-sm font-medium text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
           >
             About
           </Link>
           <Link
             href="/ai-detector"
-            className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
+            className="rounded-lg px-4 py-2 text-sm font-medium text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
           >
             AI Detector
           </Link>
         </nav>
 
-        {/* Right Actions */}
         <div className="flex items-center gap-3">
           <button
             onClick={onContinueWithGoogle}
-            className="hidden text-sm font-medium text-gray-600 transition-colors hover:text-gray-900 sm:block"
+            className="hidden text-sm font-medium text-gray-400 transition-colors hover:text-white sm:block"
           >
             Log in
           </button>
@@ -230,7 +115,7 @@ function Nav({ onContinueWithGoogle }: Props) {
               });
               onContinueWithGoogle();
             }}
-            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md"
+            className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-500"
           >
             Get Started
           </button>
@@ -244,35 +129,34 @@ function Nav({ onContinueWithGoogle }: Props) {
 
 function Hero({ onContinueWithGoogle }: Props) {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-blue-50 via-white to-white">
+    <section className="relative overflow-hidden bg-gray-900 pb-20 pt-16 lg:pb-28 lg:pt-20">
       {/* Background decoration */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 left-1/2 h-[600px] w-[800px] -translate-x-1/2 rounded-full bg-gradient-to-br from-blue-100/60 via-purple-100/40 to-transparent blur-3xl" />
+        <div className="absolute -top-40 left-1/2 h-[600px] w-[800px] -translate-x-1/2 rounded-full bg-emerald-500/10 blur-3xl" />
+        <div className="absolute -bottom-40 -right-40 h-[400px] w-[400px] rounded-full bg-emerald-500/5 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto max-w-6xl px-6 pb-20 pt-16 lg:pb-28 lg:pt-20">
+      <div className="relative mx-auto max-w-6xl px-6">
         <div className="text-center">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-700">
+          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1.5 text-sm font-medium text-emerald-400">
             <span className="flex h-2 w-2">
-              <span className="absolute inline-flex h-2 w-2 animate-ping rounded-full bg-blue-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-500" />
+              <span className="absolute inline-flex h-2 w-2 animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
             </span>
             Free to use — No credit card required
           </div>
 
           {/* Headline */}
-          <h1 className="mx-auto mt-6 max-w-4xl text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
+          <h1 className="mx-auto mt-6 max-w-4xl text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
             Stream your writing into
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              {" "}Google Docs{" "}
-            </span>
+            <span className="text-emerald-400"> Google Docs </span>
             on your schedule
           </h1>
 
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600">
-            Drip your content over minutes, hours, or days. Detect AI-generated text.
-            Humanize your writing. All in one powerful tool.
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-400">
+            Drip your content over minutes, hours, or days. Detect AI-generated
+            text. Humanize your writing. All in one powerful tool.
           </p>
 
           {/* CTA Buttons */}
@@ -285,14 +169,14 @@ function Hero({ onContinueWithGoogle }: Props) {
                 });
                 onContinueWithGoogle();
               }}
-              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-blue-600/25 transition-all hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-600/30"
+              className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-emerald-600/25 transition-all hover:-translate-y-0.5 hover:bg-emerald-500 hover:shadow-xl hover:shadow-emerald-500/30"
             >
-              <GoogleGIcon className="h-5 w-5" />
+              <GoogleIcon className="h-5 w-5" />
               Start Free with Google
             </button>
             <a
               href="#demo"
-              className="inline-flex items-center gap-2 rounded-xl border-2 border-gray-200 bg-white px-6 py-3.5 text-base font-semibold text-gray-700 transition-all hover:border-gray-300 hover:bg-gray-50"
+              className="inline-flex items-center gap-2 rounded-xl border border-gray-700 bg-gray-800 px-6 py-3.5 text-base font-semibold text-white transition-all hover:border-gray-600 hover:bg-gray-700"
             >
               <PlayIcon className="h-5 w-5" />
               See Demo
@@ -319,18 +203,18 @@ function Hero({ onContinueWithGoogle }: Props) {
         {/* Feature Pills */}
         <div className="mx-auto mt-16 flex max-w-3xl flex-wrap justify-center gap-3">
           {[
-            { icon: DropletIcon, label: "Drip Writing", color: "blue" },
-            { icon: ScanIcon, label: "AI Detection", color: "purple" },
-            { icon: SparklesIcon, label: "Humanize Text", color: "emerald" },
+            { icon: DropletIcon, label: "Drip Writing", color: "emerald" },
+            { icon: ScanIcon, label: "AI Detection", color: "blue" },
+            { icon: SparklesIcon, label: "Humanize Text", color: "purple" },
           ].map((item) => (
             <div
               key={item.label}
-              className={`flex items-center gap-2.5 rounded-full border bg-white px-5 py-2.5 shadow-sm transition-all hover:shadow-md ${
-                item.color === "blue"
-                  ? "border-blue-200 text-blue-700"
-                  : item.color === "purple"
-                    ? "border-purple-200 text-purple-700"
-                    : "border-emerald-200 text-emerald-700"
+              className={`flex items-center gap-2.5 rounded-full border px-5 py-2.5 transition-all hover:scale-105 ${
+                item.color === "emerald"
+                  ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+                  : item.color === "blue"
+                    ? "border-blue-500/30 bg-blue-500/10 text-blue-400"
+                    : "border-purple-500/30 bg-purple-500/10 text-purple-400"
               }`}
             >
               <item.icon className="h-5 w-5" />
@@ -363,7 +247,8 @@ function InteractiveDemo({ onContinueWithGoogle }: Props) {
     { key: "5m", label: "5 min", seconds: 300 },
   ];
 
-  const selectedSeconds = durations.find((d) => d.key === selectedDuration)?.seconds || 30;
+  const selectedSeconds =
+    durations.find((d) => d.key === selectedDuration)?.seconds || 30;
   const intervalMs = (selectedSeconds / Math.max(sentences.length, 1)) * 1000;
 
   useEffect(() => {
@@ -375,14 +260,12 @@ function InteractiveDemo({ onContinueWithGoogle }: Props) {
   function startDemo() {
     if (sentences.length === 0) return;
 
-    // Show signup prompt after 2 sentences
     setIsRunning(true);
     setCurrentIndex(1);
 
     intervalRef.current = setInterval(() => {
       setCurrentIndex((prev) => {
         if (prev >= 2) {
-          // Stop after 2 sentences and show signup
           if (intervalRef.current) clearInterval(intervalRef.current);
           setIsRunning(false);
           setShowSignupPrompt(true);
@@ -390,7 +273,7 @@ function InteractiveDemo({ onContinueWithGoogle }: Props) {
         }
         return prev + 1;
       });
-    }, Math.min(intervalMs, 2000)); // Cap at 2 seconds for demo
+    }, Math.min(intervalMs, 2000));
   }
 
   function resetDemo() {
@@ -401,32 +284,32 @@ function InteractiveDemo({ onContinueWithGoogle }: Props) {
   }
 
   return (
-    <section id="demo" className="border-t border-gray-100 bg-gray-50/50 py-20">
+    <section id="demo" className="bg-gray-950 py-20">
       <div className="mx-auto max-w-5xl px-6">
         <div className="text-center">
-          <span className="text-sm font-semibold uppercase tracking-wide text-blue-600">
+          <span className="text-sm font-semibold uppercase tracking-wide text-emerald-500">
             Live Demo
           </span>
-          <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          <h2 className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
             See dripping in action
           </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-gray-600">
-            Try the demo below to see how your text gets streamed into Google Docs.
-            Sign up to unlock the full experience.
+          <p className="mx-auto mt-3 max-w-2xl text-gray-400">
+            Try the demo below to see how your text gets streamed into Google
+            Docs. Sign up to unlock the full experience.
           </p>
         </div>
 
         <div className="relative mt-10">
           {/* Demo Card */}
-          <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-xl shadow-gray-200/50 lg:p-8">
+          <div className="rounded-2xl border border-gray-800 bg-gray-900 p-6 shadow-2xl lg:p-8">
             {/* Browser chrome */}
-            <div className="flex items-center gap-2 border-b border-gray-100 pb-4">
+            <div className="flex items-center gap-2 border-b border-gray-800 pb-4">
               <div className="flex gap-1.5">
-                <div className="h-3 w-3 rounded-full bg-red-400" />
-                <div className="h-3 w-3 rounded-full bg-amber-400" />
-                <div className="h-3 w-3 rounded-full bg-emerald-400" />
+                <div className="h-3 w-3 rounded-full bg-red-500" />
+                <div className="h-3 w-3 rounded-full bg-yellow-500" />
+                <div className="h-3 w-3 rounded-full bg-green-500" />
               </div>
-              <div className="ml-4 flex-1 rounded-md bg-gray-100 px-3 py-1.5 text-xs text-gray-500">
+              <div className="ml-4 flex-1 rounded-md bg-gray-800 px-3 py-1.5 text-xs text-gray-500">
                 docs.google.com/document/d/demo
               </div>
             </div>
@@ -445,7 +328,7 @@ function InteractiveDemo({ onContinueWithGoogle }: Props) {
                   }}
                   disabled={isRunning}
                   rows={6}
-                  className="mt-2 block w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 transition-all focus:border-blue-300 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="mt-2 block w-full rounded-xl border border-gray-700 bg-gray-800 px-4 py-3 text-sm text-white transition-all placeholder:text-gray-500 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-60"
                 />
 
                 {/* Duration selector */}
@@ -461,8 +344,8 @@ function InteractiveDemo({ onContinueWithGoogle }: Props) {
                         disabled={isRunning}
                         className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
                           selectedDuration === d.key
-                            ? "bg-blue-600 text-white"
-                            : "border border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
+                            ? "bg-emerald-600 text-white"
+                            : "border border-gray-700 bg-gray-800 text-gray-300 hover:bg-gray-700"
                         } disabled:cursor-not-allowed disabled:opacity-60`}
                       >
                         {d.label}
@@ -476,8 +359,8 @@ function InteractiveDemo({ onContinueWithGoogle }: Props) {
                   onClick={isRunning ? resetDemo : startDemo}
                   className={`mt-4 w-full rounded-xl px-6 py-3 text-sm font-semibold transition-all ${
                     isRunning
-                      ? "bg-red-600 text-white hover:bg-red-700"
-                      : "bg-blue-600 text-white shadow-lg shadow-blue-600/25 hover:bg-blue-700"
+                      ? "bg-red-600 text-white hover:bg-red-500"
+                      : "bg-emerald-600 text-white shadow-lg shadow-emerald-600/25 hover:bg-emerald-500"
                   }`}
                 >
                   {isRunning ? "Stop Demo" : "Start Dripping"}
@@ -489,17 +372,18 @@ function InteractiveDemo({ onContinueWithGoogle }: Props) {
                 <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">
                   Google Doc Output
                 </label>
-                <div className="mt-2 min-h-[200px] rounded-xl border border-gray-200 bg-white p-4">
+                <div className="mt-2 min-h-[200px] rounded-xl border border-gray-700 bg-gray-800 p-4">
                   {currentIndex === 0 ? (
-                    <p className="text-sm italic text-gray-400">
-                      Click &quot;Start Dripping&quot; to see your text appear here...
+                    <p className="text-sm italic text-gray-500">
+                      Click &quot;Start Dripping&quot; to see your text appear
+                      here...
                     </p>
                   ) : (
                     <div className="space-y-2">
                       {sentences.slice(0, currentIndex).map((sentence, i) => (
                         <p
                           key={i}
-                          className="animate-fade-in-up text-sm text-gray-700"
+                          className="animate-fade-in-up text-sm text-gray-300"
                           style={{ animationDelay: `${i * 100}ms` }}
                         >
                           {sentence.trim()}
@@ -516,7 +400,7 @@ function InteractiveDemo({ onContinueWithGoogle }: Props) {
                       Progress: {currentIndex} / {sentences.length} sentences
                     </span>
                     <span className="flex items-center gap-1.5">
-                      <span className="h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
+                      <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                       {isRunning ? "Dripping..." : "Paused"}
                     </span>
                   </div>
@@ -524,16 +408,17 @@ function InteractiveDemo({ onContinueWithGoogle }: Props) {
 
                 {/* Signup Prompt Overlay */}
                 {showSignupPrompt && (
-                  <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-white/95 backdrop-blur-sm">
-                    <div className="text-center p-6">
-                      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-blue-100">
-                        <DropletIcon className="h-7 w-7 text-blue-600" />
+                  <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-gray-900/95 backdrop-blur-sm">
+                    <div className="p-6 text-center">
+                      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/20">
+                        <DropletIcon className="h-7 w-7 text-emerald-500" />
                       </div>
-                      <h3 className="mt-4 text-lg font-semibold text-gray-900">
+                      <h3 className="mt-4 text-lg font-semibold text-white">
                         Sign up to continue
                       </h3>
-                      <p className="mt-2 text-sm text-gray-600">
-                        Create a free account to drip your full text into Google Docs.
+                      <p className="mt-2 text-sm text-gray-400">
+                        Create a free account to drip your full text into Google
+                        Docs.
                       </p>
                       <button
                         onClick={() => {
@@ -543,14 +428,14 @@ function InteractiveDemo({ onContinueWithGoogle }: Props) {
                           });
                           onContinueWithGoogle();
                         }}
-                        className="mt-4 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/25 transition-all hover:bg-blue-700"
+                        className="mt-4 inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-600/25 transition-all hover:bg-emerald-500"
                       >
-                        <GoogleGIcon className="h-4 w-4" />
+                        <GoogleIcon className="h-4 w-4" />
                         Continue with Google
                       </button>
                       <button
                         onClick={resetDemo}
-                        className="mt-3 block w-full text-sm text-gray-500 hover:text-gray-700"
+                        className="mt-3 block w-full text-sm text-gray-500 hover:text-gray-300"
                       >
                         Try again
                       </button>
@@ -573,7 +458,7 @@ function Features({ onContinueWithGoogle }: Props) {
     {
       icon: DropletIcon,
       title: "Drip Writing",
-      color: "blue",
+      color: "emerald",
       description:
         "Schedule your content to appear in Google Docs over time. Perfect for simulating real-time writing, pacing deliveries, or creating version history.",
       benefits: [
@@ -587,7 +472,7 @@ function Features({ onContinueWithGoogle }: Props) {
     {
       icon: ScanIcon,
       title: "AI Detection",
-      color: "purple",
+      color: "blue",
       description:
         "Detect AI-generated content with sentence-level highlighting. Know exactly which parts of your text might be flagged as AI-written.",
       benefits: [
@@ -601,7 +486,7 @@ function Features({ onContinueWithGoogle }: Props) {
     {
       icon: SparklesIcon,
       title: "Text Humanization",
-      color: "emerald",
+      color: "purple",
       description:
         "Transform AI-generated text to sound more natural and human. Bypass AI detectors while maintaining your original meaning.",
       benefits: [
@@ -615,66 +500,70 @@ function Features({ onContinueWithGoogle }: Props) {
   ];
 
   const colorStyles = {
+    emerald: {
+      bg: "bg-emerald-500/10",
+      icon: "bg-emerald-500/20 text-emerald-400",
+      border: "border-emerald-500/20",
+      check: "text-emerald-500",
+    },
     blue: {
-      bg: "bg-blue-50",
-      icon: "bg-blue-100 text-blue-600",
-      border: "border-blue-100",
+      bg: "bg-blue-500/10",
+      icon: "bg-blue-500/20 text-blue-400",
+      border: "border-blue-500/20",
       check: "text-blue-500",
     },
     purple: {
-      bg: "bg-purple-50",
-      icon: "bg-purple-100 text-purple-600",
-      border: "border-purple-100",
+      bg: "bg-purple-500/10",
+      icon: "bg-purple-500/20 text-purple-400",
+      border: "border-purple-500/20",
       check: "text-purple-500",
-    },
-    emerald: {
-      bg: "bg-emerald-50",
-      icon: "bg-emerald-100 text-emerald-600",
-      border: "border-emerald-100",
-      check: "text-emerald-500",
     },
   };
 
   return (
-    <section id="features" className="border-t border-gray-100 bg-white py-20">
+    <section id="features" className="bg-gray-900 py-20">
       <div className="mx-auto max-w-6xl px-6">
         <div className="text-center">
-          <span className="text-sm font-semibold uppercase tracking-wide text-blue-600">
+          <span className="text-sm font-semibold uppercase tracking-wide text-emerald-500">
             Features
           </span>
-          <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          <h2 className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Everything you need in one place
           </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-gray-600">
-            Three powerful tools to help you manage, detect, and improve your writing.
+          <p className="mx-auto mt-3 max-w-2xl text-gray-400">
+            Three powerful tools to help you manage, detect, and improve your
+            writing.
           </p>
         </div>
 
         <div className="mt-14 grid gap-8 lg:grid-cols-3">
           {features.map((feature) => {
-            const styles = colorStyles[feature.color as keyof typeof colorStyles];
+            const styles =
+              colorStyles[feature.color as keyof typeof colorStyles];
             return (
               <div
                 key={feature.title}
-                className={`rounded-2xl border ${styles.border} ${styles.bg} p-6 transition-all hover:shadow-lg`}
+                className={`rounded-2xl border ${styles.border} ${styles.bg} p-6 transition-all hover:scale-[1.02]`}
               >
                 <div
                   className={`inline-flex h-12 w-12 items-center justify-center rounded-xl ${styles.icon}`}
                 >
                   <feature.icon className="h-6 w-6" />
                 </div>
-                <h3 className="mt-4 text-xl font-bold text-gray-900">
+                <h3 className="mt-4 text-xl font-bold text-white">
                   {feature.title}
                 </h3>
-                <p className="mt-2 text-sm text-gray-600">{feature.description}</p>
+                <p className="mt-2 text-sm text-gray-400">
+                  {feature.description}
+                </p>
 
                 <ul className="mt-5 space-y-2.5">
                   {feature.benefits.map((benefit) => (
                     <li key={benefit} className="flex items-start gap-2">
-                      <CheckCircleIcon
+                      <CheckIcon
                         className={`mt-0.5 h-4 w-4 shrink-0 ${styles.check}`}
                       />
-                      <span className="text-sm text-gray-700">{benefit}</span>
+                      <span className="text-sm text-gray-300">{benefit}</span>
                     </li>
                   ))}
                 </ul>
@@ -691,7 +580,7 @@ function Features({ onContinueWithGoogle }: Props) {
                       onContinueWithGoogle();
                     }
                   }}
-                  className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition-all hover:bg-gray-50 hover:shadow-sm"
+                  className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-gray-700 bg-gray-800 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-gray-700"
                 >
                   Try {feature.title}
                   <ArrowRightIcon className="h-4 w-4" />
@@ -736,13 +625,13 @@ function Faq() {
   ];
 
   return (
-    <section id="faq" className="border-t border-gray-100 bg-gray-50/50 py-20">
+    <section id="faq" className="bg-gray-950 py-20">
       <div className="mx-auto max-w-3xl px-6">
         <div className="text-center">
-          <span className="text-sm font-semibold uppercase tracking-wide text-blue-600">
+          <span className="text-sm font-semibold uppercase tracking-wide text-emerald-500">
             FAQ
           </span>
-          <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          <h2 className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Frequently asked questions
           </h2>
         </div>
@@ -751,11 +640,11 @@ function Faq() {
           {items.map((item) => (
             <details
               key={item.q}
-              className="group rounded-xl border border-gray-200 bg-white px-6 py-4 shadow-sm transition-all open:shadow-md"
+              className="group rounded-xl border border-gray-800 bg-gray-900 px-6 py-4 transition-all open:bg-gray-800"
             >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-gray-900">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-white">
                 {item.q}
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition-transform group-open:rotate-45">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gray-800 text-gray-400 transition-transform group-open:rotate-45 group-open:bg-gray-700">
                   <svg
                     viewBox="0 0 24 24"
                     fill="none"
@@ -768,7 +657,7 @@ function Faq() {
                   </svg>
                 </span>
               </summary>
-              <p className="mt-3 text-gray-600">{item.a}</p>
+              <p className="mt-3 text-gray-400">{item.a}</p>
             </details>
           ))}
         </div>
@@ -781,14 +670,14 @@ function Faq() {
 
 function CtaBanner({ onContinueWithGoogle }: Props) {
   return (
-    <section className="border-t border-gray-100 bg-gradient-to-b from-white to-blue-50 py-20">
+    <section className="bg-gray-900 py-20">
       <div className="mx-auto max-w-3xl px-6 text-center">
-        <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+        <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
           Ready to get started?
         </h2>
-        <p className="mt-3 text-lg text-gray-600">
-          Join thousands of writers using Drip to manage their content.
-          Free forever, no credit card required.
+        <p className="mt-3 text-lg text-gray-400">
+          Join thousands of writers using Drip to manage their content. Free
+          forever, no credit card required.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
           <button
@@ -799,19 +688,19 @@ function CtaBanner({ onContinueWithGoogle }: Props) {
               });
               onContinueWithGoogle();
             }}
-            className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-blue-600/25 transition-all hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-xl"
+            className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-emerald-600/25 transition-all hover:-translate-y-0.5 hover:bg-emerald-500 hover:shadow-xl"
           >
-            <GoogleGIcon className="h-5 w-5" />
+            <GoogleIcon className="h-5 w-5" />
             Start Free with Google
           </button>
         </div>
         <p className="mt-4 text-sm text-gray-500">
           By signing up, you agree to our{" "}
-          <Link href="/terms" className="text-blue-600 hover:underline">
+          <Link href="/terms" className="text-emerald-500 hover:underline">
             Terms
           </Link>{" "}
           and{" "}
-          <Link href="/privacy" className="text-blue-600 hover:underline">
+          <Link href="/privacy" className="text-emerald-500 hover:underline">
             Privacy Policy
           </Link>
           .
@@ -821,59 +710,18 @@ function CtaBanner({ onContinueWithGoogle }: Props) {
   );
 }
 
-// ─── Footer ──────────────────────────────────────────────────────────
-
-function Footer() {
-  return (
-    <footer className="border-t border-gray-200 bg-white py-10">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-6 sm:flex-row">
-        <div className="flex items-center gap-2.5">
-          <LogoIcon className="h-7 w-7" />
-          <span className="text-base font-bold tracking-tight text-gray-900">
-            Drip
-          </span>
-        </div>
-        <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-gray-500">
-          <Link href="/" className="hover:text-gray-900">
-            Home
-          </Link>
-          <a href="#features" className="hover:text-gray-900">
-            Features
-          </a>
-          <Link href="/pricing" className="hover:text-gray-900">
-            Pricing
-          </Link>
-          <Link href="/about" className="hover:text-gray-900">
-            About
-          </Link>
-          <Link href="/ai-detector" className="hover:text-gray-900">
-            AI Detector
-          </Link>
-          <Link href="/privacy" className="hover:text-gray-900">
-            Privacy
-          </Link>
-          <Link href="/terms" className="hover:text-gray-900">
-            Terms
-          </Link>
-        </nav>
-        <p className="text-sm text-gray-400">© 2026 Apon</p>
-      </div>
-    </footer>
-  );
-}
-
 // ─── Main Landing Page ───────────────────────────────────────────────
 
 export default function Landing({ onContinueWithGoogle }: Props) {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-900">
       <Nav onContinueWithGoogle={onContinueWithGoogle} />
       <Hero onContinueWithGoogle={onContinueWithGoogle} />
       <InteractiveDemo onContinueWithGoogle={onContinueWithGoogle} />
       <Features onContinueWithGoogle={onContinueWithGoogle} />
       <Faq />
       <CtaBanner onContinueWithGoogle={onContinueWithGoogle} />
-      <Footer />
+      <Footer dark />
     </div>
   );
 }
