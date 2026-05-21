@@ -46,7 +46,7 @@ const staggerContainer = {
 
 function AnnouncementBar() {
   return (
-    <div className="bg-[#2D3B2D] text-white py-2.5 px-4">
+    <div className="bg-emerald-600 text-white py-2.5 px-4">
       <div className="max-w-6xl mx-auto flex items-center justify-center gap-3 text-sm">
         <span className="bg-white/20 text-white text-xs font-semibold px-2 py-0.5 rounded">
           NEW
@@ -72,13 +72,13 @@ function Navbar({ onGetStarted }: { onGetStarted: () => void }) {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-[#F6F4EE]/80 backdrop-blur-xl border-b border-[#E8E4DC]">
+    <header className="sticky top-0 z-50 bg-gray-950/80 backdrop-blur-xl border-b border-gray-800">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-9 h-9 bg-[#2D3B2D] rounded-xl flex items-center justify-center">
+          <div className="w-9 h-9 bg-emerald-600 rounded-xl flex items-center justify-center">
             <Droplets className="w-5 h-5 text-white" />
           </div>
-          <span className="text-xl font-semibold text-[#1a1a1a] tracking-tight">
+          <span className="text-xl font-semibold text-white tracking-tight">
             Drip
           </span>
         </Link>
@@ -88,10 +88,10 @@ function Navbar({ onGetStarted }: { onGetStarted: () => void }) {
             <Link
               key={item.label}
               href={item.href}
-              className="relative px-4 py-2 text-sm font-medium text-[#4a4a4a] hover:text-[#1a1a1a] transition-colors group"
+              className="relative px-4 py-2 text-sm font-medium text-gray-400 hover:text-white transition-colors group"
             >
               {item.label}
-              <span className="absolute bottom-1 left-4 right-4 h-0.5 bg-[#2D3B2D] scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
+              <span className="absolute bottom-1 left-4 right-4 h-0.5 bg-emerald-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
             </Link>
           ))}
         </nav>
@@ -99,13 +99,13 @@ function Navbar({ onGetStarted }: { onGetStarted: () => void }) {
         <div className="flex items-center gap-3">
           <button
             onClick={onGetStarted}
-            className="hidden sm:block text-sm font-medium text-[#4a4a4a] hover:text-[#1a1a1a] transition-colors"
+            className="hidden sm:block text-sm font-medium text-gray-400 hover:text-white transition-colors"
           >
             Log in
           </button>
           <button
             onClick={onGetStarted}
-            className="bg-[#2D3B2D] text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-[#3d4d3d] transition-all hover:shadow-lg"
+            className="bg-emerald-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-all hover:shadow-lg hover:shadow-emerald-600/25"
           >
             Get Started
           </button>
@@ -135,18 +135,18 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-5xl md:text-6xl lg:text-7xl font-serif font-medium text-[#1a1a1a] leading-[1.1] tracking-tight"
+          className="text-5xl md:text-6xl lg:text-7xl font-serif font-medium text-white leading-[1.1] tracking-tight"
         >
           Write smarter with tools
           <br />
-          <span className="text-[#4a6741]">that understand your flow</span>
+          <span className="text-emerald-400">that understand your flow</span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="mt-6 text-lg md:text-xl text-[#6a6a6a] max-w-2xl mx-auto leading-relaxed"
+          className="mt-6 text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed"
         >
           Schedule content to Google Docs, detect AI-generated text, and
           humanize your writing. Three powerful tools, one seamless platform.
@@ -159,9 +159,9 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mt-12 max-w-3xl mx-auto"
         >
-          <div className="bg-white rounded-3xl border border-[#E8E4DC] shadow-xl shadow-black/5 p-3">
+          <div className="bg-gray-900 rounded-3xl border border-gray-800 shadow-xl shadow-black/20 p-3">
             <div className="flex items-end gap-3">
-              <button className="shrink-0 w-10 h-10 rounded-xl bg-[#F6F4EE] hover:bg-[#EBE9E3] transition-colors flex items-center justify-center text-[#6a6a6a]">
+              <button className="shrink-0 w-10 h-10 rounded-xl bg-gray-800 hover:bg-gray-700 transition-colors flex items-center justify-center text-gray-400">
                 <Plus className="w-5 h-5" />
               </button>
               <div className="flex-1 min-h-[80px] flex items-center">
@@ -170,7 +170,7 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   placeholder="Paste your text here to drip, detect, or humanize..."
-                  className="w-full text-[#1a1a1a] placeholder:text-[#9a9a9a] bg-transparent outline-none text-base"
+                  className="w-full text-white placeholder:text-gray-500 bg-transparent outline-none text-base"
                 />
               </div>
               <button
@@ -178,7 +178,7 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
                   trackEvent("hero_cta_click");
                   onGetStarted();
                 }}
-                className="shrink-0 w-10 h-10 rounded-xl bg-[#2D3B2D] hover:bg-[#3d4d3d] transition-colors flex items-center justify-center text-white"
+                className="shrink-0 w-10 h-10 rounded-xl bg-emerald-600 hover:bg-emerald-500 transition-colors flex items-center justify-center text-white"
               >
                 <Send className="w-5 h-5" />
               </button>
@@ -190,7 +190,7 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
             {categories.map((cat) => (
               <button
                 key={cat}
-                className="px-4 py-2 rounded-full bg-white border border-[#E8E4DC] text-sm font-medium text-[#4a4a4a] hover:border-[#2D3B2D] hover:text-[#2D3B2D] transition-all"
+                className="px-4 py-2 rounded-full bg-gray-900 border border-gray-800 text-sm font-medium text-gray-400 hover:border-emerald-500 hover:text-emerald-400 transition-all"
               >
                 {cat}
               </button>
@@ -203,14 +203,14 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-16 flex flex-wrap items-center justify-center gap-8 text-[#9a9a9a]"
+          className="mt-16 flex flex-wrap items-center justify-center gap-8 text-gray-500"
         >
           <span className="text-sm">Works with</span>
           <div className="flex items-center gap-6">
             {["Google Docs", "Word", "PDF", "Markdown", "Text"].map((platform) => (
               <span
                 key={platform}
-                className="text-sm font-medium text-[#6a6a6a] hover:text-[#1a1a1a] transition-colors cursor-default"
+                className="text-sm font-medium text-gray-500 hover:text-white transition-colors cursor-default"
               >
                 {platform}
               </span>
@@ -233,28 +233,28 @@ function VideoFeature() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={fadeInUp}
-          className="bg-white rounded-[2rem] border border-[#E8E4DC] shadow-xl shadow-black/5 overflow-hidden"
+          className="bg-gray-900 rounded-[2rem] border border-gray-800 shadow-xl shadow-black/20 overflow-hidden"
         >
           <div className="grid md:grid-cols-2">
             <div className="p-10 md:p-14 flex flex-col justify-center">
-              <span className="text-sm font-semibold text-[#4a6741] uppercase tracking-wide">
+              <span className="text-sm font-semibold text-emerald-400 uppercase tracking-wide">
                 See it in action
               </span>
-              <h2 className="mt-4 text-3xl md:text-4xl font-serif font-medium text-[#1a1a1a] leading-tight">
+              <h2 className="mt-4 text-3xl md:text-4xl font-serif font-medium text-white leading-tight">
                 The first writing toolkit
                 <br />
                 built for modern creators
               </h2>
-              <p className="mt-4 text-[#6a6a6a] leading-relaxed">
+              <p className="mt-4 text-gray-400 leading-relaxed">
                 Watch how Drip transforms your writing workflow with intelligent
                 scheduling, detection, and humanization tools.
               </p>
-              <button className="mt-8 inline-flex items-center gap-2 text-[#2D3B2D] font-semibold hover:gap-3 transition-all">
+              <button className="mt-8 inline-flex items-center gap-2 text-emerald-400 font-semibold hover:gap-3 transition-all">
                 Watch the demo
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
-            <div className="relative bg-gradient-to-br from-[#2D3B2D] to-[#4a6741] min-h-[300px] md:min-h-[400px] flex items-center justify-center">
+            <div className="relative bg-gradient-to-br from-emerald-600 to-emerald-800 min-h-[300px] md:min-h-[400px] flex items-center justify-center">
               <button className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors group">
                 <Play className="w-8 h-8 text-white ml-1 group-hover:scale-110 transition-transform" />
               </button>
@@ -317,7 +317,7 @@ function Features() {
   ];
 
   return (
-    <section id="features" className="py-24 px-6 bg-white">
+    <section id="features" className="py-24 px-6 bg-gray-900">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial="hidden"
@@ -326,10 +326,10 @@ function Features() {
           variants={fadeInUp}
           className="text-center mb-16"
         >
-          <span className="text-sm font-semibold text-[#4a6741] uppercase tracking-wide">
+          <span className="text-sm font-semibold text-emerald-400 uppercase tracking-wide">
             Features
           </span>
-          <h2 className="mt-4 text-4xl md:text-5xl font-serif font-medium text-[#1a1a1a]">
+          <h2 className="mt-4 text-4xl md:text-5xl font-serif font-medium text-white">
             What Drip can do for you
           </h2>
         </motion.div>
@@ -350,14 +350,14 @@ function Features() {
                 onClick={() => setActiveTab(i)}
                 className={`w-full text-left p-5 rounded-2xl border transition-all ${
                   activeTab === i
-                    ? "bg-[#2D3B2D] border-[#2D3B2D] text-white"
-                    : "bg-white border-[#E8E4DC] text-[#4a4a4a] hover:border-[#2D3B2D]"
+                    ? "bg-emerald-600 border-emerald-600 text-white"
+                    : "bg-gray-800 border-gray-700 text-gray-400 hover:border-emerald-500"
                 }`}
               >
                 <div className="flex items-center gap-4">
                   <span
                     className={`text-xs font-semibold ${
-                      activeTab === i ? "text-white/60" : "text-[#9a9a9a]"
+                      activeTab === i ? "text-white/60" : "text-gray-500"
                     }`}
                   >
                     {feature.number}
@@ -374,20 +374,20 @@ function Features() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4 }}
-            className="bg-[#F6F4EE] rounded-3xl p-8 md:p-10"
+            className="bg-gray-800 rounded-3xl p-8 md:p-10"
           >
             <div className="flex items-start gap-4 mb-6">
-              <div className="w-12 h-12 rounded-2xl bg-[#2D3B2D] flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-600 flex items-center justify-center">
                 {(() => {
                   const IconComponent = features[activeTab].icon;
                   return <IconComponent className="w-6 h-6 text-white" />;
                 })()}
               </div>
               <div>
-                <h3 className="text-2xl font-serif font-medium text-[#1a1a1a]">
+                <h3 className="text-2xl font-serif font-medium text-white">
                   {features[activeTab].title}
                 </h3>
-                <p className="mt-2 text-[#6a6a6a]">
+                <p className="mt-2 text-gray-400">
                   {features[activeTab].description}
                 </p>
               </div>
@@ -397,12 +397,12 @@ function Features() {
               {features[activeTab].benefits.map((benefit) => (
                 <div
                   key={benefit}
-                  className="flex items-center gap-3 bg-white rounded-xl p-4 border border-[#E8E4DC]"
+                  className="flex items-center gap-3 bg-gray-900 rounded-xl p-4 border border-gray-700"
                 >
-                  <div className="w-6 h-6 rounded-full bg-[#4a6741]/10 flex items-center justify-center">
-                    <Check className="w-4 h-4 text-[#4a6741]" />
+                  <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                    <Check className="w-4 h-4 text-emerald-400" />
                   </div>
-                  <span className="text-sm font-medium text-[#1a1a1a]">
+                  <span className="text-sm font-medium text-white">
                     {benefit}
                   </span>
                 </div>
@@ -446,10 +446,10 @@ function HowItWorks() {
           variants={fadeInUp}
           className="text-center mb-16"
         >
-          <span className="text-sm font-semibold text-[#4a6741] uppercase tracking-wide">
+          <span className="text-sm font-semibold text-emerald-400 uppercase tracking-wide">
             How it works
           </span>
-          <h2 className="mt-4 text-4xl md:text-5xl font-serif font-medium text-[#1a1a1a]">
+          <h2 className="mt-4 text-4xl md:text-5xl font-serif font-medium text-white">
             Three steps. Endless possibilities.
           </h2>
         </motion.div>
@@ -465,18 +465,18 @@ function HowItWorks() {
             <motion.div
               key={step.title}
               variants={fadeInUp}
-              className="bg-white rounded-3xl border border-[#E8E4DC] p-8 text-center hover:shadow-xl hover:shadow-black/5 transition-all"
+              className="bg-gray-900 rounded-3xl border border-gray-800 p-8 text-center hover:border-gray-700 transition-all"
             >
-              <div className="w-14 h-14 rounded-2xl bg-[#F6F4EE] flex items-center justify-center mx-auto mb-6">
-                <step.icon className="w-7 h-7 text-[#2D3B2D]" />
+              <div className="w-14 h-14 rounded-2xl bg-gray-800 flex items-center justify-center mx-auto mb-6">
+                <step.icon className="w-7 h-7 text-emerald-400" />
               </div>
-              <span className="text-xs font-semibold text-[#9a9a9a] uppercase tracking-wide">
+              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
                 Step {i + 1}
               </span>
-              <h3 className="mt-2 text-xl font-semibold text-[#1a1a1a]">
+              <h3 className="mt-2 text-xl font-semibold text-white">
                 {step.title}
               </h3>
-              <p className="mt-3 text-[#6a6a6a] leading-relaxed">
+              <p className="mt-3 text-gray-400 leading-relaxed">
                 {step.description}
               </p>
             </motion.div>
@@ -515,7 +515,7 @@ function Personas() {
   ];
 
   return (
-    <section className="py-24 px-6 bg-white">
+    <section className="py-24 px-6 bg-gray-900">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial="hidden"
@@ -524,10 +524,10 @@ function Personas() {
           variants={fadeInUp}
           className="text-center mb-16"
         >
-          <span className="text-sm font-semibold text-[#4a6741] uppercase tracking-wide">
+          <span className="text-sm font-semibold text-emerald-400 uppercase tracking-wide">
             Who uses Drip
           </span>
-          <h2 className="mt-4 text-4xl md:text-5xl font-serif font-medium text-[#1a1a1a]">
+          <h2 className="mt-4 text-4xl md:text-5xl font-serif font-medium text-white">
             Built for creators of all kinds
           </h2>
         </motion.div>
@@ -543,33 +543,33 @@ function Personas() {
             <motion.div
               key={persona.title}
               variants={fadeInUp}
-              className={`rounded-3xl border p-8 transition-all hover:shadow-xl hover:shadow-black/5 ${
+              className={`rounded-3xl border p-8 transition-all ${
                 persona.featured
-                  ? "bg-[#2D3B2D] border-[#2D3B2D] text-white md:scale-105"
-                  : "bg-white border-[#E8E4DC]"
+                  ? "bg-emerald-600 border-emerald-600 text-white md:scale-105"
+                  : "bg-gray-800 border-gray-700 hover:border-gray-600"
               }`}
             >
               <div
                 className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 ${
-                  persona.featured ? "bg-white/10" : "bg-[#F6F4EE]"
+                  persona.featured ? "bg-white/20" : "bg-gray-700"
                 }`}
               >
                 <persona.icon
                   className={`w-7 h-7 ${
-                    persona.featured ? "text-white" : "text-[#2D3B2D]"
+                    persona.featured ? "text-white" : "text-emerald-400"
                   }`}
                 />
               </div>
               <h3
                 className={`text-xl font-semibold ${
-                  persona.featured ? "text-white" : "text-[#1a1a1a]"
+                  persona.featured ? "text-white" : "text-white"
                 }`}
               >
                 {persona.title}
               </h3>
               <p
                 className={`mt-3 leading-relaxed ${
-                  persona.featured ? "text-white/80" : "text-[#6a6a6a]"
+                  persona.featured ? "text-white/80" : "text-gray-400"
                 }`}
               >
                 {persona.description}
@@ -594,24 +594,24 @@ function CTA({ onGetStarted }: { onGetStarted: () => void }) {
         variants={fadeInUp}
         className="max-w-4xl mx-auto text-center"
       >
-        <h2 className="text-4xl md:text-5xl font-serif font-medium text-[#1a1a1a] leading-tight">
+        <h2 className="text-4xl md:text-5xl font-serif font-medium text-white leading-tight">
           Your smartest writing companion
           <br />
           is ready to start
         </h2>
-        <p className="mt-6 text-lg text-[#6a6a6a] max-w-xl mx-auto">
+        <p className="mt-6 text-lg text-gray-400 max-w-xl mx-auto">
           Join thousands of writers using Drip. Free forever, no credit card required.
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
           <button
             onClick={onGetStarted}
-            className="bg-[#2D3B2D] text-white px-8 py-4 rounded-full text-base font-semibold hover:bg-[#3d4d3d] transition-all hover:shadow-xl hover:shadow-[#2D3B2D]/20"
+            className="bg-emerald-600 text-white px-8 py-4 rounded-full text-base font-semibold hover:bg-emerald-500 transition-all hover:shadow-xl hover:shadow-emerald-600/25"
           >
             Start Free
           </button>
           <Link
             href="/pricing"
-            className="px-8 py-4 rounded-full text-base font-semibold text-[#2D3B2D] border border-[#E8E4DC] hover:border-[#2D3B2D] transition-all"
+            className="px-8 py-4 rounded-full text-base font-semibold text-white border border-gray-700 hover:border-emerald-500 transition-all"
           >
             View Pricing
           </Link>
@@ -685,7 +685,7 @@ function Footer() {
 
 export default function Landing({ onContinueWithGoogle }: Props) {
   return (
-    <div className="min-h-screen bg-[#F6F4EE]">
+    <div className="min-h-screen bg-gray-950">
       <AnnouncementBar />
       <Navbar onGetStarted={onContinueWithGoogle} />
       <Hero onGetStarted={onContinueWithGoogle} />
