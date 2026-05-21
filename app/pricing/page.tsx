@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 
+// ─── Icons ───────────────────────────────────────────────────────────
+
 function LogoIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -36,7 +38,7 @@ function CheckIcon({ className }: { className?: string }) {
   );
 }
 
-function GoogleGIcon({ className }: { className?: string }) {
+function GoogleIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" className={className}>
       <path
@@ -58,6 +60,109 @@ function GoogleGIcon({ className }: { className?: string }) {
     </svg>
   );
 }
+
+// ─── Navigation ──────────────────────────────────────────────────────
+
+function Nav({ onGetStarted }: { onGetStarted: () => void }) {
+  return (
+    <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/90 backdrop-blur-sm">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+        <Link href="/" className="flex items-center gap-2.5">
+          <LogoIcon className="h-8 w-8" />
+          <span className="text-lg font-bold tracking-tight text-gray-900">
+            Drip
+          </span>
+        </Link>
+
+        <nav className="hidden items-center gap-1 md:flex">
+          <Link
+            href="/"
+            className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+          >
+            Home
+          </Link>
+          <Link
+            href="/#features"
+            className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+          >
+            Features
+          </Link>
+          <Link
+            href="/pricing"
+            className="rounded-lg px-4 py-2 text-sm font-medium text-gray-900 bg-gray-100"
+          >
+            Pricing
+          </Link>
+          <Link
+            href="/about"
+            className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+          >
+            About
+          </Link>
+          <Link
+            href="/ai-detector"
+            className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+          >
+            AI Detector
+          </Link>
+        </nav>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onGetStarted}
+            className="hidden text-sm font-medium text-gray-600 hover:text-gray-900 sm:block"
+          >
+            Log in
+          </button>
+          <button
+            onClick={onGetStarted}
+            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
+          >
+            Get Started
+          </button>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+// ─── Footer ──────────────────────────────────────────────────────────
+
+function Footer() {
+  return (
+    <footer className="border-t border-gray-100 bg-white py-10">
+      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-6 sm:flex-row">
+        <Link href="/" className="flex items-center gap-2.5">
+          <LogoIcon className="h-7 w-7" />
+          <span className="text-base font-semibold text-gray-900">Drip</span>
+        </Link>
+        <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-gray-500">
+          <Link href="/" className="hover:text-gray-900">
+            Home
+          </Link>
+          <Link href="/pricing" className="hover:text-gray-900">
+            Pricing
+          </Link>
+          <Link href="/about" className="hover:text-gray-900">
+            About
+          </Link>
+          <Link href="/ai-detector" className="hover:text-gray-900">
+            AI Detector
+          </Link>
+          <Link href="/privacy" className="hover:text-gray-900">
+            Privacy
+          </Link>
+          <Link href="/terms" className="hover:text-gray-900">
+            Terms
+          </Link>
+        </nav>
+        <p className="text-sm text-gray-400">&copy; 2026 Drip</p>
+      </div>
+    </footer>
+  );
+}
+
+// ─── Main Page ───────────────────────────────────────────────────────
 
 export default function PricingPage() {
   const { signInWithGoogle } = useAuth();
@@ -101,64 +206,22 @@ export default function PricingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-white">
-      {/* Header */}
-      <header className="border-b border-gray-100 bg-white/80 backdrop-blur-sm">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-          <Link href="/" className="flex items-center gap-2.5">
-            <LogoIcon className="h-8 w-8" />
-            <span className="text-lg font-bold tracking-tight text-gray-900">
-              Drip
-            </span>
-          </Link>
-          <nav className="hidden items-center gap-1 md:flex">
-            <Link
-              href="/"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
-            >
-              Home
-            </Link>
-            <Link
-              href="/#features"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
-            >
-              Features
-            </Link>
-            <Link
-              href="/pricing"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-100"
-            >
-              Pricing
-            </Link>
-            <Link
-              href="/about"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
-            >
-              About
-            </Link>
-          </nav>
-          <button
-            onClick={() => signInWithGoogle()}
-            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-blue-700"
-          >
-            Get Started
-          </button>
-        </div>
-      </header>
+    <div className="min-h-screen bg-white">
+      <Nav onGetStarted={signInWithGoogle} />
 
       {/* Hero */}
-      <section className="py-16 lg:py-20">
+      <section className="bg-gradient-to-b from-blue-50/50 to-white py-16 lg:py-20">
         <div className="mx-auto max-w-4xl px-6 text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-medium text-emerald-700">
-            <span className="flex h-2 w-2 rounded-full bg-emerald-500" />
+          <span className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-700">
+            <span className="h-2 w-2 rounded-full bg-blue-500" />
             100% Free
           </span>
           <h1 className="mt-6 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
             Simple, transparent pricing
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-600">
-            Drip is completely free to use. No hidden fees, no credit card required.
-            Just sign in with Google and start dripping.
+            Drip is completely free to use. No hidden fees, no credit card
+            required. Just sign in with Google and start dripping.
           </p>
         </div>
       </section>
@@ -183,20 +246,24 @@ export default function PricingPage() {
                 )}
 
                 <div className="text-center">
-                  <h3 className="text-xl font-bold text-gray-900">{plan.name}</h3>
+                  <h3 className="text-xl font-bold text-gray-900">
+                    {plan.name}
+                  </h3>
                   <div className="mt-4 flex items-baseline justify-center gap-1">
                     <span className="text-5xl font-bold text-gray-900">
                       {plan.price}
                     </span>
                     <span className="text-gray-500">/{plan.period}</span>
                   </div>
-                  <p className="mt-2 text-sm text-gray-600">{plan.description}</p>
+                  <p className="mt-2 text-sm text-gray-600">
+                    {plan.description}
+                  </p>
                 </div>
 
                 <ul className="mt-8 space-y-3">
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-3">
-                      <CheckIcon className="mt-0.5 h-5 w-5 shrink-0 text-emerald-500" />
+                      <CheckIcon className="mt-0.5 h-5 w-5 shrink-0 text-blue-600" />
                       <span className="text-sm text-gray-700">{feature}</span>
                     </li>
                   ))}
@@ -213,7 +280,9 @@ export default function PricingPage() {
                         : "border-2 border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
                   }`}
                 >
-                  {plan.popular && <GoogleGIcon className="mr-2 inline h-4 w-4" />}
+                  {plan.popular && (
+                    <GoogleIcon className="mr-2 inline h-4 w-4" />
+                  )}
                   {plan.cta}
                 </button>
               </div>
@@ -223,7 +292,7 @@ export default function PricingPage() {
       </section>
 
       {/* FAQ */}
-      <section className="border-t border-gray-100 bg-gray-50/50 py-16">
+      <section className="border-t border-gray-100 bg-gray-50 py-16">
         <div className="mx-auto max-w-3xl px-6">
           <h2 className="text-center text-2xl font-bold text-gray-900">
             Frequently asked questions
@@ -274,35 +343,7 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-gray-200 bg-white py-10">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-6 sm:flex-row">
-          <div className="flex items-center gap-2.5">
-            <LogoIcon className="h-7 w-7" />
-            <span className="text-base font-bold tracking-tight text-gray-900">
-              Drip
-            </span>
-          </div>
-          <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-gray-500">
-            <Link href="/" className="hover:text-gray-900">
-              Home
-            </Link>
-            <Link href="/pricing" className="hover:text-gray-900">
-              Pricing
-            </Link>
-            <Link href="/about" className="hover:text-gray-900">
-              About
-            </Link>
-            <Link href="/privacy" className="hover:text-gray-900">
-              Privacy
-            </Link>
-            <Link href="/terms" className="hover:text-gray-900">
-              Terms
-            </Link>
-          </nav>
-          <p className="text-sm text-gray-400">&copy; 2026 Apon</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
