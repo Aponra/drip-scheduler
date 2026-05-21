@@ -118,84 +118,117 @@ function Navbar({ onGetStarted }: { onGetStarted: () => void }) {
 // ─── Hero Section ────────────────────────────────────────────────────
 
 function Hero({ onGetStarted }: { onGetStarted: () => void }) {
-  const [inputText, setInputText] = useState("");
+  const [duration, setDuration] = useState("1 hour");
 
-  const categories = [
-    "Drip Writing",
-    "AI Detection",
-    "Humanize Text",
-    "Import Docs",
-    "Google Docs",
-  ];
+  const durations = ["30 min", "1 hour", "2 hours", "6 hours", "1 day", "1 week"];
 
   return (
-    <section className="pt-20 pb-24 px-6">
+    <section className="pt-16 pb-24 px-6">
       <div className="max-w-5xl mx-auto text-center">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-5xl md:text-6xl lg:text-7xl font-serif font-medium text-white leading-[1.1] tracking-tight"
+          className="text-4xl md:text-5xl lg:text-6xl font-serif font-medium text-white leading-[1.1] tracking-tight"
         >
-          Write smarter with tools
+          Drip your writing into
           <br />
-          <span className="text-emerald-400">that understand your flow</span>
+          <span className="text-emerald-400">Google Docs</span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="mt-6 text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed"
+          className="mt-6 text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed"
         >
-          Schedule content to Google Docs, detect AI-generated text, and
-          humanize your writing. Three powerful tools, one seamless platform.
+          Paste your text, choose a duration, and watch it appear in Google Docs
+          gradually — creating realistic version history over time.
         </motion.p>
 
-        {/* Chat Input UI */}
+        {/* Drip Input Box */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-12 max-w-3xl mx-auto"
+          className="mt-10 max-w-3xl mx-auto"
         >
-          <div className="bg-gray-900 rounded-3xl border border-gray-800 shadow-xl shadow-black/20 p-3">
-            <div className="flex items-end gap-3">
-              <button className="shrink-0 w-10 h-10 rounded-xl bg-gray-800 hover:bg-gray-700 transition-colors flex items-center justify-center text-gray-400">
-                <Plus className="w-5 h-5" />
-              </button>
-              <div className="flex-1 min-h-[80px] flex items-center">
-                <input
-                  type="text"
-                  value={inputText}
-                  onChange={(e) => setInputText(e.target.value)}
-                  placeholder="Paste your text here to drip, detect, or humanize..."
-                  className="w-full text-white placeholder:text-gray-500 bg-transparent outline-none text-base"
-                />
+          <div className="bg-gray-900 rounded-2xl border border-gray-800 shadow-2xl shadow-black/30 overflow-hidden">
+            {/* Header */}
+            <div className="bg-gray-800/50 px-5 py-3 border-b border-gray-800 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center">
+                  <Droplets className="w-4 h-4 text-white" />
+                </div>
+                <div className="text-left">
+                  <p className="text-sm font-semibold text-white">Drip to Google Docs</p>
+                  <p className="text-xs text-gray-500">Your text will appear gradually over time</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                <div className="w-3 h-3 rounded-full bg-green-500/80" />
+              </div>
+            </div>
+
+            {/* Text Area */}
+            <div className="p-5">
+              <textarea
+                placeholder="Paste your essay, assignment, or any text here..."
+                rows={5}
+                className="w-full bg-transparent text-white placeholder:text-gray-600 outline-none resize-none text-base leading-relaxed"
+              />
+            </div>
+
+            {/* Duration Selection */}
+            <div className="px-5 py-3 border-t border-gray-800 bg-gray-800/30">
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-gray-400">Drip over:</span>
+                <div className="flex flex-wrap gap-2">
+                  {durations.map((d) => (
+                    <button
+                      key={d}
+                      onClick={() => setDuration(d)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                        duration === d
+                          ? "bg-emerald-600 text-white"
+                          : "bg-gray-800 text-gray-400 hover:text-white"
+                      }`}
+                    >
+                      {d}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="px-5 py-4 border-t border-gray-800 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <button className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors text-gray-400 text-sm">
+                  <Plus className="w-4 h-4" />
+                  Upload file
+                </button>
+                <span className="text-xs text-gray-600">.txt, .docx, .pdf</span>
               </div>
               <button
                 onClick={() => {
-                  trackEvent("hero_cta_click");
+                  trackEvent("hero_cta_click", { duration });
                   onGetStarted();
                 }}
-                className="shrink-0 w-10 h-10 rounded-xl bg-emerald-600 hover:bg-emerald-500 transition-colors flex items-center justify-center text-white"
+                className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 transition-all text-white font-semibold text-sm"
               >
-                <Send className="w-5 h-5" />
+                Start Dripping
+                <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          {/* Category Pills */}
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                className="px-4 py-2 rounded-full bg-gray-900 border border-gray-800 text-sm font-medium text-gray-400 hover:border-emerald-500 hover:text-emerald-400 transition-all"
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+          {/* Helper Text */}
+          <p className="mt-4 text-sm text-gray-500">
+            Text will be written to a new Google Doc sentence by sentence over your chosen duration
+          </p>
         </motion.div>
 
         {/* Trust Badges */}
@@ -203,18 +236,19 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-16 flex flex-wrap items-center justify-center gap-8 text-gray-500"
+          className="mt-12 flex flex-wrap items-center justify-center gap-6 text-gray-500"
         >
-          <span className="text-sm">Works with</span>
-          <div className="flex items-center gap-6">
-            {["Google Docs", "Word", "PDF", "Markdown", "Text"].map((platform) => (
-              <span
-                key={platform}
-                className="text-sm font-medium text-gray-500 hover:text-white transition-colors cursor-default"
-              >
-                {platform}
-              </span>
-            ))}
+          <div className="flex items-center gap-2">
+            <Check className="w-4 h-4 text-emerald-500" />
+            <span className="text-sm">100% Free</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Check className="w-4 h-4 text-emerald-500" />
+            <span className="text-sm">No credit card</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Check className="w-4 h-4 text-emerald-500" />
+            <span className="text-sm">Creates real version history</span>
           </div>
         </motion.div>
       </div>
