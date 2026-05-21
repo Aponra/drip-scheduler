@@ -182,30 +182,36 @@ function Nav({ onContinueWithGoogle }: Props) {
 
         {/* Center Nav */}
         <nav className="hidden items-center gap-1 md:flex">
+          <Link
+            href="/"
+            className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
+          >
+            Home
+          </Link>
           <a
             href="#features"
             className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
           >
             Features
           </a>
-          <a
-            href="#demo"
+          <Link
+            href="/pricing"
             className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
           >
-            Demo
-          </a>
+            Pricing
+          </Link>
+          <Link
+            href="/about"
+            className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
+          >
+            About
+          </Link>
           <Link
             href="/ai-detector"
             className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
           >
             AI Detector
           </Link>
-          <a
-            href="#faq"
-            className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
-          >
-            FAQ
-          </a>
         </nav>
 
         {/* Right Actions */}
@@ -828,9 +834,18 @@ function Footer() {
           </span>
         </div>
         <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-gray-500">
+          <Link href="/" className="hover:text-gray-900">
+            Home
+          </Link>
           <a href="#features" className="hover:text-gray-900">
             Features
           </a>
+          <Link href="/pricing" className="hover:text-gray-900">
+            Pricing
+          </Link>
+          <Link href="/about" className="hover:text-gray-900">
+            About
+          </Link>
           <Link href="/ai-detector" className="hover:text-gray-900">
             AI Detector
           </Link>
@@ -840,9 +855,6 @@ function Footer() {
           <Link href="/terms" className="hover:text-gray-900">
             Terms
           </Link>
-          <a href="mailto:abuisaapon962974@gmail.com" className="hover:text-gray-900">
-            Contact
-          </a>
         </nav>
         <p className="text-sm text-gray-400">© 2026 Apon</p>
       </div>
