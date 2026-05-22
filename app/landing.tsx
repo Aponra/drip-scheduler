@@ -75,7 +75,7 @@ function Navbar({ onGetStarted }: { onGetStarted: () => void }) {
     <header className="sticky top-0 z-50 bg-gray-950/80 backdrop-blur-xl border-b border-gray-800">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-9 h-9 bg-emerald-600 rounded-xl flex items-center justify-center">
+          <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center">
             <Droplets className="w-5 h-5 text-white" />
           </div>
           <span className="text-xl font-semibold text-white tracking-tight">
@@ -129,11 +129,11 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-4xl md:text-5xl lg:text-6xl font-serif font-medium text-white leading-[1.1] tracking-tight"
+          className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-[1.1]"
         >
-          Drip your writing into
+          Add Version History to
           <br />
-          <span className="text-emerald-400">Google Docs</span>
+          <span className="text-emerald-400">Your Doc File</span>
         </motion.h1>
 
         <motion.p
@@ -157,7 +157,7 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
             {/* Header */}
             <div className="bg-gray-800/50 px-5 py-3 border-b border-gray-800 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
                   <Droplets className="w-4 h-4 text-white" />
                 </div>
                 <div className="text-left">
@@ -670,7 +670,7 @@ function Footer() {
         <div className="grid md:grid-cols-4 gap-10">
           <div>
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-9 h-9 bg-white/10 rounded-xl flex items-center justify-center">
+              <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center">
                 <Droplets className="w-5 h-5 text-white" />
               </div>
               <span className="text-xl font-semibold">Drip</span>

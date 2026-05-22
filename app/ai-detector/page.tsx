@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { trackEvent } from "@/lib/analytics";
+import { Droplets } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────
 
@@ -92,19 +93,11 @@ async function rewriteText(text: string): Promise<RewriteResult> {
 
 function Logo() {
   return (
-    <Link href="/" className="flex items-center gap-2">
-      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          className="h-5 w-5 text-white"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
-          <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z" />
-        </svg>
+    <Link href="/" className="flex items-center gap-2.5">
+      <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center">
+        <Droplets className="w-5 h-5 text-white" />
       </div>
-      <span className="text-lg font-semibold text-gray-900">AI Detector</span>
+      <span className="text-xl font-semibold text-white tracking-tight">Drip</span>
     </Link>
   );
 }
@@ -119,9 +112,9 @@ function StatCard({
   color: "blue" | "green" | "purple";
 }) {
   const colors = {
-    blue: "bg-blue-50 text-blue-700",
-    green: "bg-emerald-50 text-emerald-700",
-    purple: "bg-purple-50 text-purple-700",
+    blue: "bg-blue-500/20 text-blue-400",
+    green: "bg-emerald-500/20 text-emerald-400",
+    purple: "bg-purple-500/20 text-purple-400",
   };
 
   return (
@@ -144,12 +137,12 @@ function FeatureCard({
   description: string;
 }) {
   return (
-    <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-all hover:border-blue-100 hover:shadow-md">
-      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+    <div className="rounded-2xl border border-gray-800 bg-gray-800/50 p-5 transition-all hover:border-emerald-500/30 hover:bg-gray-800">
+      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400">
         {icon}
       </div>
-      <h3 className="mt-3 font-semibold text-gray-900">{title}</h3>
-      <p className="mt-1 text-sm text-gray-600">{description}</p>
+      <h3 className="mt-3 font-semibold text-white">{title}</h3>
+      <p className="mt-1 text-sm text-gray-400">{description}</p>
     </div>
   );
 }
@@ -162,16 +155,16 @@ function SentenceHighlight({
   probability: number;
 }) {
   const getBgColor = (prob: number) => {
-    if (prob >= 70) return "bg-red-100 border-red-200";
-    if (prob >= 40) return "bg-yellow-50 border-yellow-200";
-    return "bg-emerald-50 border-emerald-200";
+    if (prob >= 70) return "bg-red-500/10 border-red-500/30";
+    if (prob >= 40) return "bg-yellow-500/10 border-yellow-500/30";
+    return "bg-emerald-500/10 border-emerald-500/30";
   };
 
   const getLabel = (prob: number) => {
-    if (prob >= 70) return { text: "AI", color: "text-red-600 bg-red-50" };
+    if (prob >= 70) return { text: "AI", color: "text-red-400 bg-red-500/20" };
     if (prob >= 40)
-      return { text: "Mixed", color: "text-yellow-700 bg-yellow-50" };
-    return { text: "Human", color: "text-emerald-600 bg-emerald-50" };
+      return { text: "Mixed", color: "text-yellow-400 bg-yellow-500/20" };
+    return { text: "Human", color: "text-emerald-400 bg-emerald-500/20" };
   };
 
   const label = getLabel(probability);
@@ -185,7 +178,7 @@ function SentenceHighlight({
       >
         {label.text}
       </span>
-      <p className="text-sm text-gray-700">{sentence}</p>
+      <p className="text-sm text-gray-300">{sentence}</p>
     </div>
   );
 }
@@ -288,35 +281,52 @@ export default function AIDetectorPage() {
   const isLoading = isDetecting || isRewriting;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50/50 via-white to-white">
+    <div className="min-h-screen bg-gray-950">
       {/* Header */}
-      <header className="border-b border-gray-100 bg-white/80 backdrop-blur-sm">
+      <header className="sticky top-0 z-50 bg-gray-950/80 backdrop-blur-xl border-b border-gray-800">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <Logo />
-          <nav className="flex items-center gap-6">
-            <Link
-              href="/"
-              className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
-            >
+          <nav className="hidden md:flex items-center gap-1">
+            <Link href="/" className="relative px-4 py-2 text-sm font-medium text-gray-400 hover:text-white transition-colors">
               Home
             </Link>
-            <Link
-              href="/privacy"
-              className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
-            >
-              Privacy
+            <Link href="/#features" className="relative px-4 py-2 text-sm font-medium text-gray-400 hover:text-white transition-colors">
+              Features
+            </Link>
+            <Link href="/pricing" className="relative px-4 py-2 text-sm font-medium text-gray-400 hover:text-white transition-colors">
+              Pricing
+            </Link>
+            <Link href="/about" className="relative px-4 py-2 text-sm font-medium text-gray-400 hover:text-white transition-colors">
+              About
+            </Link>
+            <Link href="/ai-detector" className="relative px-4 py-2 text-sm font-medium text-white transition-colors">
+              AI Detector
             </Link>
           </nav>
+          <div className="flex items-center gap-3">
+            <Link href="/" className="hidden sm:block text-sm font-medium text-gray-400 hover:text-white transition-colors">
+              Log in
+            </Link>
+            <Link
+              href="/"
+              className="bg-emerald-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-all"
+            >
+              Get Started
+            </Link>
+          </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="border-b border-gray-100 bg-gradient-to-b from-blue-50/80 to-white py-12 lg:py-16">
-        <div className="mx-auto max-w-4xl px-6 text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">
+      <section className="py-12 lg:py-16 px-6">
+        <div className="mx-auto max-w-4xl text-center">
+          <span className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-2 rounded-full text-sm font-medium">
+            AI Detection
+          </span>
+          <h1 className="mt-6 text-3xl font-serif font-medium text-white sm:text-4xl lg:text-5xl">
             The most accurate AI detector
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-base text-gray-600 lg:text-lg">
+          <p className="mx-auto mt-4 max-w-2xl text-base text-gray-400 lg:text-lg">
             Detect AI-generated text with sentence-level highlighting. Trusted
             by educators, publishers, and content creators worldwide.
           </p>
@@ -335,13 +345,13 @@ export default function AIDetectorPage() {
         <div className="mx-auto max-w-4xl px-6">
           {/* Tab Selector */}
           <div className="mb-6 flex justify-center">
-            <div className="inline-flex rounded-xl bg-gray-100 p-1">
+            <div className="inline-flex rounded-xl bg-gray-800 p-1">
               <button
                 onClick={() => setActiveTab("detect")}
                 className={`rounded-lg px-6 py-2.5 text-sm font-semibold transition-all ${
                   activeTab === "detect"
-                    ? "bg-white text-gray-900 shadow-sm"
-                    : "text-gray-600 hover:text-gray-900"
+                    ? "bg-gray-700 text-white shadow-sm"
+                    : "text-gray-400 hover:text-white"
                 }`}
               >
                 AI Detection
@@ -350,8 +360,8 @@ export default function AIDetectorPage() {
                 onClick={() => setActiveTab("rewrite")}
                 className={`rounded-lg px-6 py-2.5 text-sm font-semibold transition-all ${
                   activeTab === "rewrite"
-                    ? "bg-white text-gray-900 shadow-sm"
-                    : "text-gray-600 hover:text-gray-900"
+                    ? "bg-gray-700 text-white shadow-sm"
+                    : "text-gray-400 hover:text-white"
                 }`}
               >
                 Humanize Text
@@ -360,7 +370,7 @@ export default function AIDetectorPage() {
           </div>
 
           {/* Input Card */}
-          <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-lg shadow-gray-100/50">
+          <div className="rounded-2xl border border-gray-800 bg-gray-900 p-6">
             {/* Textarea */}
             <div className="relative">
               <textarea
@@ -377,18 +387,18 @@ export default function AIDetectorPage() {
                 }
                 rows={10}
                 disabled={isLoading}
-                className="block w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-4 text-sm text-gray-900 transition-all placeholder:text-gray-400 focus:border-blue-300 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 disabled:cursor-not-allowed disabled:opacity-60"
+                className="block w-full resize-none rounded-xl border border-gray-700 bg-gray-800 px-4 py-4 text-sm text-white transition-all placeholder:text-gray-500 focus:border-emerald-500 focus:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 disabled:cursor-not-allowed disabled:opacity-60"
               />
 
               {/* Character counter */}
-              <div className="absolute bottom-3 right-3 rounded-md bg-white px-2 py-1 text-xs font-medium text-gray-400 shadow-sm">
+              <div className="absolute bottom-3 right-3 rounded-md bg-gray-700 px-2 py-1 text-xs font-medium text-gray-400">
                 {charCount.toLocaleString()}/{MAX_CHARS.toLocaleString()}
               </div>
             </div>
 
             {/* Error */}
             {error && (
-              <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              <div className="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
                 {error}
               </div>
             )}
@@ -397,11 +407,11 @@ export default function AIDetectorPage() {
             <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-2 text-xs text-gray-500">
                 <span>{wordCount} words</span>
-                <span className="text-gray-300">|</span>
+                <span className="text-gray-600">|</span>
                 <button
                   onClick={handleClear}
                   disabled={isLoading || !inputText}
-                  className="text-gray-500 transition-colors hover:text-gray-700 disabled:opacity-50"
+                  className="text-gray-500 transition-colors hover:text-gray-300 disabled:opacity-50"
                 >
                   Clear
                 </button>
@@ -410,7 +420,7 @@ export default function AIDetectorPage() {
               <button
                 onClick={activeTab === "detect" ? handleDetect : handleRewrite}
                 disabled={isLoading || !inputText.trim()}
-                className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-8 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/25 transition-all hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-600/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none"
+                className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-8 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-600/25 transition-all hover:bg-emerald-500 hover:shadow-xl hover:shadow-emerald-600/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none"
               >
                 {isLoading && (
                   <svg
@@ -445,7 +455,7 @@ export default function AIDetectorPage() {
             </div>
 
             {/* Privacy note */}
-            <p className="mt-4 text-center text-xs text-gray-400">
+            <p className="mt-4 text-center text-xs text-gray-500">
               Your text is processed securely and never stored.
             </p>
           </div>
@@ -454,18 +464,18 @@ export default function AIDetectorPage() {
           {detectionResult && activeTab === "detect" && (
             <div className="mt-8 animate-fade-in-up space-y-6">
               {/* Score Card */}
-              <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-lg shadow-gray-100/50">
-                <h2 className="text-lg font-semibold text-gray-900">
+              <div className="rounded-2xl border border-gray-800 bg-gray-900 p-6">
+                <h2 className="text-lg font-semibold text-white">
                   Detection Results
                 </h2>
 
                 {/* Score Bar */}
                 <div className="mt-6">
                   <div className="flex items-center justify-between text-sm font-medium">
-                    <span className="text-emerald-600">Human</span>
-                    <span className="text-red-600">AI</span>
+                    <span className="text-emerald-400">Human</span>
+                    <span className="text-red-400">AI</span>
                   </div>
-                  <div className="mt-2 h-4 overflow-hidden rounded-full bg-gray-100">
+                  <div className="mt-2 h-4 overflow-hidden rounded-full bg-gray-800">
                     <div
                       className="h-full rounded-full bg-gradient-to-r from-emerald-500 via-yellow-400 to-red-500 transition-all duration-1000"
                       style={{ width: "100%" }}
@@ -474,39 +484,39 @@ export default function AIDetectorPage() {
                       className="relative -mt-4 h-4"
                       style={{ marginLeft: `${detectionResult.aiScore}%` }}
                     >
-                      <div className="absolute -ml-2 h-6 w-1 -translate-y-1 rounded-full bg-gray-800 shadow-lg" />
+                      <div className="absolute -ml-2 h-6 w-1 -translate-y-1 rounded-full bg-white shadow-lg" />
                     </div>
                   </div>
                   <div className="mt-3 flex items-center justify-center gap-2">
                     <span
                       className={`text-3xl font-bold ${
                         detectionResult.aiScore >= 50
-                          ? "text-red-600"
-                          : "text-emerald-600"
+                          ? "text-red-400"
+                          : "text-emerald-400"
                       }`}
                     >
                       {detectionResult.aiScore}%
                     </span>
-                    <span className="text-gray-500">
+                    <span className="text-gray-400">
                       probability AI-generated
                     </span>
                   </div>
                 </div>
 
                 {/* Explanation */}
-                <div className="mt-6 rounded-xl bg-gray-50 p-4">
-                  <p className="text-sm text-gray-700">
+                <div className="mt-6 rounded-xl bg-gray-800 p-4">
+                  <p className="text-sm text-gray-300">
                     {detectionResult.explanation}
                   </p>
                 </div>
               </div>
 
               {/* Sentence Analysis */}
-              <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-lg shadow-gray-100/50">
-                <h2 className="text-lg font-semibold text-gray-900">
+              <div className="rounded-2xl border border-gray-800 bg-gray-900 p-6">
+                <h2 className="text-lg font-semibold text-white">
                   Sentence-Level Analysis
                 </h2>
-                <p className="mt-1 text-sm text-gray-500">
+                <p className="mt-1 text-sm text-gray-400">
                   Each sentence is highlighted based on AI probability
                 </p>
 
@@ -521,18 +531,18 @@ export default function AIDetectorPage() {
                 </div>
 
                 {/* Legend */}
-                <div className="mt-6 flex flex-wrap items-center justify-center gap-4 border-t border-gray-100 pt-4">
+                <div className="mt-6 flex flex-wrap items-center justify-center gap-4 border-t border-gray-800 pt-4">
                   <div className="flex items-center gap-2 text-xs">
-                    <span className="h-3 w-3 rounded bg-emerald-100 border border-emerald-200" />
-                    <span className="text-gray-600">Likely Human</span>
+                    <span className="h-3 w-3 rounded bg-emerald-500/30 border border-emerald-500/50" />
+                    <span className="text-gray-400">Likely Human</span>
                   </div>
                   <div className="flex items-center gap-2 text-xs">
-                    <span className="h-3 w-3 rounded bg-yellow-50 border border-yellow-200" />
-                    <span className="text-gray-600">Mixed/Uncertain</span>
+                    <span className="h-3 w-3 rounded bg-yellow-500/30 border border-yellow-500/50" />
+                    <span className="text-gray-400">Mixed/Uncertain</span>
                   </div>
                   <div className="flex items-center gap-2 text-xs">
-                    <span className="h-3 w-3 rounded bg-red-100 border border-red-200" />
-                    <span className="text-gray-600">Likely AI</span>
+                    <span className="h-3 w-3 rounded bg-red-500/30 border border-red-500/50" />
+                    <span className="text-gray-400">Likely AI</span>
                   </div>
                 </div>
               </div>
@@ -542,17 +552,17 @@ export default function AIDetectorPage() {
           {/* Rewrite Results */}
           {rewriteResult && activeTab === "rewrite" && (
             <div className="mt-8 animate-fade-in-up">
-              <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-lg shadow-gray-100/50">
+              <div className="rounded-2xl border border-gray-800 bg-gray-900 p-6">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-semibold text-gray-900">
+                  <h2 className="text-lg font-semibold text-white">
                     Humanized Text
                   </h2>
                   <button
                     onClick={handleCopy}
                     className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
                       copied
-                        ? "bg-emerald-100 text-emerald-700"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        ? "bg-emerald-500/20 text-emerald-400"
+                        : "bg-gray-800 text-gray-300 hover:bg-gray-700"
                     }`}
                   >
                     {copied ? (
@@ -586,8 +596,8 @@ export default function AIDetectorPage() {
                   </button>
                 </div>
 
-                <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
-                  <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-700">
+                <div className="mt-4 rounded-xl border border-gray-700 bg-gray-800 p-4">
+                  <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-300">
                     {rewriteResult.rewrittenText}
                   </p>
                 </div>
@@ -599,12 +609,12 @@ export default function AIDetectorPage() {
 
       {/* Features Section */}
       {!detectionResult && !rewriteResult && (
-        <section className="border-t border-gray-100 bg-gray-50/50 py-14">
+        <section className="border-t border-gray-800 bg-gray-900 py-14">
           <div className="mx-auto max-w-5xl px-6">
-            <h2 className="text-center text-2xl font-bold text-gray-900">
+            <h2 className="text-center text-2xl font-bold text-white">
               Why use our AI Detector?
             </h2>
-            <p className="mx-auto mt-2 max-w-xl text-center text-gray-600">
+            <p className="mx-auto mt-2 max-w-xl text-center text-gray-400">
               Industry-leading accuracy with detailed analysis to help you
               understand AI-generated content.
             </p>
@@ -714,20 +724,23 @@ export default function AIDetectorPage() {
       )}
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 bg-white py-8">
-        <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 px-6 sm:flex-row">
-          <Logo />
-          <div className="flex items-center gap-6 text-sm text-gray-500">
-            <Link href="/privacy" className="hover:text-gray-900">
-              Privacy
-            </Link>
-            <Link href="/terms" className="hover:text-gray-900">
-              Terms
-            </Link>
-            <Link href="/" className="hover:text-gray-900">
-              Home
-            </Link>
-          </div>
+      <footer className="bg-gray-950 border-t border-gray-800 py-12 px-6">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              <Droplets className="w-4 h-4 text-white" />
+            </div>
+            <span className="text-lg font-semibold text-white">Drip</span>
+          </Link>
+          <nav className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400">
+            <Link href="/" className="hover:text-white transition-colors">Home</Link>
+            <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
+            <Link href="/about" className="hover:text-white transition-colors">About</Link>
+            <Link href="/ai-detector" className="hover:text-white transition-colors">AI Detector</Link>
+            <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+            <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
+          </nav>
+          <p className="text-sm text-gray-500">&copy; 2026 Drip</p>
         </div>
       </footer>
     </div>
