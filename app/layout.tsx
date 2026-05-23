@@ -34,7 +34,7 @@ export const viewport: Viewport = {
 const siteUrl = "https://docsversionhistory.com";
 const siteName = "Docs Version History";
 const siteDescription =
-  "Add realistic version history to your Google Docs. Schedule and drip-feed text gradually to create authentic document revision history and track writing progress over time.";
+  "Add realistic version history to your Google Docs. Schedule text to appear gradually and create authentic document revision history. Track writing progress over time.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     "track document changes",
     "writing progress tracker",
     "document history tool",
-    "drip feed text",
+    "scheduled text insertion",
     "gradual text insertion",
     "Google Docs automation",
     "document scheduling",

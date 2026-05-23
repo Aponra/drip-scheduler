@@ -15,7 +15,7 @@ function Nav({ onGetStarted }: { onGetStarted: () => void }) {
             <Droplets className="w-5 h-5 text-white" />
           </div>
           <span className="text-xl font-semibold text-white tracking-tight">
-            Drip
+            Docs Version History
           </span>
         </Link>
 
@@ -66,7 +66,7 @@ function Footer() {
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
             <Droplets className="w-4 h-4 text-white" />
           </div>
-          <span className="text-lg font-semibold text-white">Drip</span>
+          <span className="text-lg font-semibold text-white">Docs Version History</span>
         </Link>
         <nav className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400">
           <Link href="/" className="hover:text-white transition-colors">Home</Link>
@@ -76,7 +76,7 @@ function Footer() {
           <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
           <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
         </nav>
-        <p className="text-sm text-gray-500">&copy; 2026 Drip</p>
+        <p className="text-sm text-gray-500">&copy; 2026 Docs Version History</p>
       </div>
     </footer>
   );
@@ -107,7 +107,7 @@ export default function PricingPage() {
       period: "forever",
       description: "Everything you need to get started",
       features: [
-        "Unlimited drip schedules",
+        "Unlimited schedules",
         "AI text detection",
         "Text humanization",
         "Import .txt, .md, .docx, .pdf",
@@ -152,8 +152,8 @@ export default function PricingPage() {
             Simple, transparent pricing
           </h1>
           <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
-            Drip is completely free to use. No hidden fees, no credit card
-            required. Just sign in with Google and start dripping.
+            Docs Version History is completely free to use. No hidden fees, no credit card
+            required. Just sign in with Google and start creating version history.
           </p>
         </div>
       </section>
@@ -225,8 +225,8 @@ export default function PricingPage() {
           <div className="mt-10 space-y-4">
             {[
               {
-                q: "Is Drip really free?",
-                a: "Yes! Drip is 100% free to use. We believe everyone should have access to great writing tools without paying.",
+                q: "Is Docs Version History really free?",
+                a: "Yes! Docs Version History is 100% free to use. We believe everyone should have access to great writing tools without paying.",
               },
               {
                 q: "Will there be paid plans in the future?",

@@ -70,7 +70,7 @@ function AnnouncementBar() {
           NEW
         </span>
         <span className="text-white">
-          Drip now supports PDF imports with formatting
+          Now supports PDF imports with formatting
         </span>
         <ArrowRight className="w-4 h-4 text-white" aria-hidden="true" />
       </div>
@@ -97,7 +97,7 @@ function Navbar({ onGetStarted }: { onGetStarted: () => void }) {
             <Droplets className="w-5 h-5 text-white" />
           </div>
           <span className="text-xl font-semibold text-white tracking-tight">
-            Drip
+            Docs Version History
           </span>
         </Link>
 
@@ -154,7 +154,7 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
         </h1>
 
         <p className="mt-6 text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed animate-slide-in-up animation-delay-100">
-          Create realistic document revision history by drip-feeding text into Google Docs over time.
+          Create realistic document revision history by gradually adding text to Google Docs over time.
           Track writing progress and build authentic version history automatically.
         </p>
 
@@ -168,7 +168,7 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
                   <Droplets className="w-4 h-4 text-white" />
                 </div>
                 <div className="text-left">
-                  <p className="text-sm font-semibold text-white">Drip to Google Docs</p>
+                  <p className="text-sm font-semibold text-white">Add to Google Docs</p>
                   <p className="text-xs text-gray-400">Your text will appear gradually over time</p>
                 </div>
               </div>
@@ -191,7 +191,7 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
             {/* Duration Selection */}
             <div className="px-5 py-3 border-t border-gray-800 bg-gray-800/30">
               <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-400">Drip over:</span>
+                <span className="text-sm text-gray-400">Duration:</span>
                 <div className="flex flex-wrap gap-2">
                   {durations.map((d) => (
                     <button
@@ -226,7 +226,7 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
                 }}
                 className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 transition-all text-white font-semibold text-sm"
               >
-                Start Dripping
+                Start Scheduling
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -320,7 +320,7 @@ function Features() {
 
   const features = [
     {
-      id: "drip",
+      id: "version-history",
       number: "01",
       title: "Document Version History Creator",
       icon: Droplets,
@@ -491,7 +491,7 @@ function HowItWorks() {
     {
       icon: Clock,
       title: "Set your schedule",
-      description: "Choose how long to drip your content—from 30 minutes to a full week.",
+      description: "Choose how long to schedule your content—from 30 minutes to a full week.",
     },
     {
       icon: Zap,
@@ -664,7 +664,7 @@ function FAQ() {
     {
       question: "How does the document version tracking work?",
       answer:
-        "You paste or upload your text, choose a duration (from 30 minutes to 1 week), and our tool drip-feeds the content into a new Google Doc sentence by sentence. This creates a realistic revision history that shows your document being written over time.",
+        "You paste or upload your text, choose a duration (from 30 minutes to 1 week), and our tool gradually adds the content into a new Google Doc sentence by sentence. This creates a realistic revision history that shows your document being written over time.",
     },
     {
       question: "Can I track changes in my existing Google Docs?",

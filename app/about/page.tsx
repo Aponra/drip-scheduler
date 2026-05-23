@@ -39,7 +39,7 @@ function Nav() {
             <Droplets className="w-5 h-5 text-white" />
           </div>
           <span className="text-xl font-semibold text-white tracking-tight">
-            Drip
+            Docs Version History
           </span>
         </Link>
 
@@ -87,7 +87,7 @@ function Footer() {
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
             <Droplets className="w-4 h-4 text-white" />
           </div>
-          <span className="text-lg font-semibold text-white">Drip</span>
+          <span className="text-lg font-semibold text-white">Docs Version History</span>
         </Link>
         <nav className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400">
           <Link href="/" className="hover:text-white transition-colors">Home</Link>
@@ -97,7 +97,7 @@ function Footer() {
           <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
           <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
         </nav>
-        <p className="text-sm text-gray-500">&copy; 2026 Drip</p>
+        <p className="text-sm text-gray-500">&copy; 2026 Docs Version History</p>
       </div>
     </footer>
   );
@@ -109,7 +109,7 @@ export default function AboutPage() {
   const features = [
     {
       icon: Droplets,
-      title: "Drip Writing",
+      title: "Scheduled Writing",
       description: "Schedule your content to appear in Google Docs over time. Perfect for creating realistic version history.",
       color: "emerald",
     },
@@ -131,7 +131,7 @@ export default function AboutPage() {
     {
       icon: Heart,
       title: "Free for Everyone",
-      description: "We believe great tools should be accessible to all. Drip is and will remain free for core features.",
+      description: "We believe great tools should be accessible to all. Docs Version History is and will remain free for core features.",
     },
     {
       icon: Shield,
@@ -156,10 +156,10 @@ export default function AboutPage() {
             About Us
           </span>
           <h1 className="mt-6 text-4xl md:text-5xl font-serif font-medium text-white">
-            About Drip
+            About Docs Version History
           </h1>
           <p className="mt-6 text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            Drip is a powerful writing tool that helps you schedule content
+            Docs Version History is a powerful writing tool that helps you schedule content
             delivery, detect AI-generated text, and humanize your writing. Built
             for writers, educators, and content creators.
           </p>
@@ -179,19 +179,19 @@ export default function AboutPage() {
               </h2>
               <p className="mt-4 text-gray-400 leading-relaxed">
                 We believe that great writing tools should be accessible to
-                everyone. Drip was created to solve real problems writers face
+                everyone. Docs Version History was created to solve real problems writers face
                 every day: scheduling content delivery, understanding AI
                 detection, and maintaining authentic voice.
               </p>
               <p className="mt-4 text-gray-400 leading-relaxed">
                 Whether you&apos;re a student working on essays, a content
                 creator managing deliverables, or an educator reviewing work,
-                Drip provides the tools you need to succeed.
+                Docs Version History provides the tools you need to succeed.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4">
               {[
-                { icon: Droplets, label: "Drip Writing", color: "emerald" },
+                { icon: Droplets, label: "Scheduled Writing", color: "emerald" },
                 { icon: ScanSearch, label: "AI Detection", color: "blue" },
                 { icon: Sparkles, label: "Humanization", color: "purple" },
                 { icon: Shield, label: "Privacy First", color: "orange" },
@@ -278,7 +278,7 @@ export default function AboutPage() {
             Ready to get started?
           </h2>
           <p className="mt-4 text-lg text-gray-400">
-            Join thousands of writers using Drip. Free forever, no credit card required.
+            Join thousands of writers using Docs Version History. Free forever, no credit card required.
           </p>
           <Link
             href="/"

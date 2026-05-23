@@ -97,7 +97,7 @@ function Logo() {
       <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center">
         <Droplets className="w-5 h-5 text-white" />
       </div>
-      <span className="text-xl font-semibold text-white tracking-tight">Drip</span>
+      <span className="text-xl font-semibold text-white tracking-tight">Docs Version History</span>
     </Link>
   );
 }
@@ -730,7 +730,7 @@ export default function AIDetectorPage() {
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
               <Droplets className="w-4 h-4 text-white" />
             </div>
-            <span className="text-lg font-semibold text-white">Drip</span>
+            <span className="text-lg font-semibold text-white">Docs Version History</span>
           </Link>
           <nav className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400">
             <Link href="/" className="hover:text-white transition-colors">Home</Link>
@@ -740,7 +740,7 @@ export default function AIDetectorPage() {
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
           </nav>
-          <p className="text-sm text-gray-500">&copy; 2026 Drip</p>
+          <p className="text-sm text-gray-500">&copy; 2026 Docs Version History</p>
         </div>
       </footer>
     </div>

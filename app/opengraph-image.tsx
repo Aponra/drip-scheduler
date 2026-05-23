@@ -93,7 +93,7 @@ export default async function Image() {
             maxWidth: "700px",
           }}
         >
-          Schedule and drip-feed text to create realistic document revision
+          Schedule text gradually to create realistic document revision
           history
         </div>
 

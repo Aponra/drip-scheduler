@@ -459,7 +459,7 @@ export default function Home() {
                 Insert Text
               </h1>
               <p className="mt-1.5 text-sm text-gray-500">
-                Plan a drip, save it for later, or send it slowly into Google
+                Plan a schedule, save it for later, or send it slowly into Google
                 Docs.
               </p>
             </div>

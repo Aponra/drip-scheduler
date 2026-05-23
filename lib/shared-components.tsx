@@ -21,7 +21,7 @@ export function Logo({ className, dark = false }: { className?: string; dark?: b
         />
       </svg>
       <span className={`text-lg font-bold tracking-tight ${dark ? "text-white" : "text-gray-900"}`}>
-        Drip
+        Docs Version History
       </span>
     </Link>
   );
@@ -129,7 +129,7 @@ export function Footer({ dark = false }: { dark?: boolean }) {
           ))}
         </nav>
         <p className={`text-sm ${dark ? "text-gray-500" : "text-gray-400"}`}>
-          &copy; 2026 Drip
+          &copy; 2026 Docs Version History
         </p>
       </div>
     </footer>

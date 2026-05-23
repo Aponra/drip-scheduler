@@ -8,7 +8,7 @@
 const siteUrl = "https://docsversionhistory.com";
 const siteName = "Docs Version History";
 const siteDescription =
-  "Add realistic version history to your Google Docs. Schedule and drip-feed text gradually to create authentic document revision history.";
+  "Add realistic version history to your Google Docs. Schedule text to appear gradually and create authentic document revision history.";
 
 /**
  * WebSite Schema - Provides site-wide information
@@ -67,7 +67,7 @@ export function SoftwareAppJsonLd() {
     featureList: [
       "Google Docs version history creation",
       "Document revision tracking",
-      "Scheduled text drip-feeding",
+      "Scheduled text insertion",
       "Writing progress visualization",
       "AI content detection",
       "Text humanization",
@@ -178,7 +178,7 @@ export function HomepageFAQJsonLd() {
     {
       question: "How does the document version tracking work?",
       answer:
-        "You paste or upload your text, choose a duration (from 30 minutes to 1 week), and our tool drip-feeds the content into a new Google Doc sentence by sentence. This creates a realistic revision history that shows your document being written over time.",
+        "You paste or upload your text, choose a duration (from 30 minutes to 1 week), and our tool gradually adds the content into a new Google Doc sentence by sentence. This creates a realistic revision history that shows your document being written over time.",
     },
     {
       question: "Can I track changes in my existing Google Docs?",

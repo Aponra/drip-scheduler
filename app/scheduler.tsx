@@ -732,7 +732,7 @@ export default function Scheduler({ docsConnected = false }: Props) {
             New schedule
           </h2>
           <p className="mt-1 text-sm text-gray-500">
-            Write or import a document, pick a total duration, and let it drip.
+            Write or import a document, pick a total duration, and schedule it.
           </p>
         </div>
 
@@ -800,7 +800,7 @@ export default function Scheduler({ docsConnected = false }: Props) {
 
             {chunks.length > 0 && (
               <p className="mt-3 text-xs text-gray-500">
-                Estimated drip interval:{" "}
+                Estimated interval:{" "}
                 <span className="font-medium text-gray-700 tabular-nums">
                   {formatInterval(intervalSeconds)}
                 </span>{" "}
@@ -922,7 +922,7 @@ export default function Scheduler({ docsConnected = false }: Props) {
               disabled={isRunning || chunks.length === 0}
               className="inline-flex items-center rounded-lg bg-purple-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:-translate-y-px hover:bg-purple-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-purple-600 disabled:hover:shadow-sm"
             >
-              Start Dripping
+              Start Scheduling
             </button>
             {isRunning && (
               <button
