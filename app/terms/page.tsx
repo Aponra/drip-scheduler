@@ -1,8 +1,23 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "Terms of Service · Docs Version History",
-  description: "The rules for using Docs Version History.",
+export const metadata: Metadata = {
+  title: "Terms of Service",
+  description:
+    "Terms of Service for Docs Version History. Read the rules and guidelines for using our Google Docs version history and document tracking tool.",
+  openGraph: {
+    title: "Terms of Service - Docs Version History",
+    description:
+      "Terms of Service for using Docs Version History document tracking tool.",
+    url: "https://docsversionhistory.com/terms",
+  },
+  alternates: {
+    canonical: "https://docsversionhistory.com/terms",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 const operator = "Apon";

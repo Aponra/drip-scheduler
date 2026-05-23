@@ -1,0 +1,166 @@
+/**
+ * JSON-LD Structured Data Components for SEO
+ *
+ * These components add schema.org structured data to help search engines
+ * understand and display rich results for the application.
+ */
+
+const siteUrl = "https://docsversionhistory.com";
+const siteName = "Docs Version History";
+const siteDescription =
+  "Add realistic version history to your Google Docs. Schedule and drip-feed text gradually to create authentic document revision history.";
+
+/**
+ * WebSite Schema - Provides site-wide information
+ * Helps with sitelinks search box and brand recognition
+ */
+export function WebsiteJsonLd() {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: siteName,
+    url: siteUrl,
+    description: siteDescription,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${siteUrl}/?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
+/**
+ * SoftwareApplication Schema - Describes the app
+ * Helps with rich snippets showing app info, ratings, pricing
+ */
+export function SoftwareAppJsonLd() {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: siteName,
+    description: siteDescription,
+    url: siteUrl,
+    applicationCategory: "ProductivityApplication",
+    operatingSystem: "Web",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.8",
+      ratingCount: "150",
+      bestRating: "5",
+      worstRating: "1",
+    },
+    featureList: [
+      "Google Docs version history creation",
+      "Document revision tracking",
+      "Scheduled text drip-feeding",
+      "Writing progress visualization",
+      "AI content detection",
+      "Text humanization",
+    ],
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
+/**
+ * Organization Schema - Company/brand information
+ */
+export function OrganizationJsonLd() {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: siteName,
+    url: siteUrl,
+    logo: `${siteUrl}/logo.png`,
+    sameAs: [],
+    contactPoint: {
+      "@type": "ContactPoint",
+      email: "support@docsversionhistory.com",
+      contactType: "customer support",
+    },
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
+/**
+ * FAQ Schema - For FAQ pages
+ * Pass an array of {question, answer} objects
+ */
+export function FAQJsonLd({
+  faqs,
+}: {
+  faqs: Array<{ question: string; answer: string }>;
+}) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
+/**
+ * BreadcrumbList Schema - For page navigation
+ */
+export function BreadcrumbJsonLd({
+  items,
+}: {
+  items: Array<{ name: string; url: string }>;
+}) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}

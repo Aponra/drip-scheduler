@@ -1,9 +1,23 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "Privacy Policy · Docs Version History",
+export const metadata: Metadata = {
+  title: "Privacy Policy",
   description:
-    "How Docs Version History handles your account, content, and Google account data.",
+    "Learn how Docs Version History protects your privacy. We never store your documents or use your content for training. Your Google account data is handled securely.",
+  openGraph: {
+    title: "Privacy Policy - Docs Version History",
+    description:
+      "Learn how Docs Version History protects your privacy and handles your data securely.",
+    url: "https://docsversionhistory.com/privacy",
+  },
+  alternates: {
+    canonical: "https://docsversionhistory.com/privacy",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 const operator = "Apon";
