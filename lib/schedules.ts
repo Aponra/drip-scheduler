@@ -1,15 +1,5 @@
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  serverTimestamp,
-  where,
-  type Timestamp,
-} from "firebase/firestore";
-import { db } from "./firebase";
+import { type Timestamp } from "firebase/firestore";
+import { getFirebaseDb } from "./firebase-lazy";
 
 export type ScheduleDraft = {
   title: string;
@@ -34,6 +24,11 @@ export async function saveSchedule(
   userId: string,
   draft: ScheduleDraft,
 ): Promise<string> {
+  const db = await getFirebaseDb();
+  const { addDoc, collection, serverTimestamp } = await import(
+    "firebase/firestore"
+  );
+
   const payload: Record<string, unknown> = {
     title: draft.title,
     originalText: draft.originalText,
@@ -52,6 +47,11 @@ export async function saveSchedule(
 }
 
 export async function listSchedules(userId: string): Promise<Schedule[]> {
+  const db = await getFirebaseDb();
+  const { collection, getDocs, query, where } = await import(
+    "firebase/firestore"
+  );
+
   const q = query(collection(db, COLLECTION), where("userId", "==", userId));
   const snapshot = await getDocs(q);
   const schedules = snapshot.docs.map((d) => {
@@ -82,5 +82,8 @@ export async function listSchedules(userId: string): Promise<Schedule[]> {
 }
 
 export async function deleteSchedule(id: string): Promise<void> {
+  const db = await getFirebaseDb();
+  const { deleteDoc, doc } = await import("firebase/firestore");
+
   await deleteDoc(doc(db, COLLECTION, id));
 }
