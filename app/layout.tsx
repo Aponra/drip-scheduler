@@ -1,19 +1,35 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
 import { WebsiteJsonLd, SoftwareAppJsonLd, HomepageFAQJsonLd } from "@/lib/structured-data";
 
+// Optimize font loading with display swap to prevent FOIT
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
+  preload: true,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
+  preload: false, // Only preload primary font
 });
+
+// Viewport configuration for mobile optimization
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#030712" },
+  ],
+};
 
 const siteUrl = "https://docsversionhistory.com";
 const siteName = "Docs Version History";
@@ -96,7 +112,20 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        {/* Preconnect to critical third-party origins */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://apis.google.com" />
+        {/* DNS prefetch for non-critical origins */}
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+      </head>
       <body className="min-h-full flex flex-col bg-[#F9FAFB] text-gray-900">
+        {/* Skip link for keyboard accessibility */}
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
         <WebsiteJsonLd />
         <SoftwareAppJsonLd />
         <HomepageFAQJsonLd />

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, lazy, Suspense } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -11,24 +11,42 @@ import {
   Sparkles,
   Clock,
   FileText,
-  Shield,
   Zap,
   GraduationCap,
   PenTool,
   Users,
-  ChevronRight,
   Plus,
-  Send,
   Check,
 } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
+
+// Dynamically import framer-motion only for below-fold animations
+// This reduces initial bundle size significantly
+const MotionDiv = dynamic(
+  () => import("framer-motion").then((mod) => mod.motion.div),
+  { ssr: false }
+);
+
+const MotionButton = dynamic(
+  () => import("framer-motion").then((mod) => mod.motion.button),
+  { ssr: false }
+);
+
+const MotionDetails = dynamic(
+  () => import("framer-motion").then((mod) => mod.motion.details),
+  { ssr: false }
+);
+
+const MotionP = dynamic(
+  () => import("framer-motion").then((mod) => mod.motion.p),
+  { ssr: false }
+);
 
 type Props = {
   onContinueWithGoogle: () => void;
 };
 
-// ─── Animation Variants ──────────────────────────────────────────────
-
+// Animation variants for framer-motion (below-fold sections)
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
@@ -116,6 +134,7 @@ function Navbar({ onGetStarted }: { onGetStarted: () => void }) {
 }
 
 // ─── Hero Section ────────────────────────────────────────────────────
+// Uses CSS animations for above-fold content (better performance)
 
 function Hero({ onGetStarted }: { onGetStarted: () => void }) {
   const [duration, setDuration] = useState("1 hour");
@@ -125,35 +144,22 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
   return (
     <section className="pt-16 pb-24 px-6" aria-labelledby="hero-heading">
       <div className="max-w-5xl mx-auto text-center">
-        <motion.h1
+        <h1
           id="hero-heading"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-[1.1]"
+          className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-[1.1] animate-slide-in-up"
         >
           Add Version History to
           <br />
           <span className="text-emerald-400">Your Google Docs</span>
-        </motion.h1>
+        </h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="mt-6 text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed"
-        >
+        <p className="mt-6 text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed animate-slide-in-up animation-delay-100">
           Create realistic document revision history by drip-feeding text into Google Docs over time.
           Track writing progress and build authentic version history automatically.
-        </motion.p>
+        </p>
 
         {/* Drip Input Box */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-10 max-w-3xl mx-auto"
-        >
+        <div className="mt-10 max-w-3xl mx-auto animate-slide-in-up animation-delay-200">
           <div className="bg-gray-900 rounded-2xl border border-gray-800 shadow-2xl shadow-black/30 overflow-hidden">
             {/* Header */}
             <div className="bg-gray-800/50 px-5 py-3 border-b border-gray-800 flex items-center justify-between">
@@ -230,28 +236,23 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
           <p className="mt-4 text-sm text-gray-500">
             Text will be written to a new Google Doc sentence by sentence over your chosen duration
           </p>
-        </motion.div>
+        </div>
 
         {/* Trust Badges */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-12 flex flex-wrap items-center justify-center gap-6 text-gray-500"
-        >
+        <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-gray-500 animate-fade-in animation-delay-400">
           <div className="flex items-center gap-2">
-            <Check className="w-4 h-4 text-emerald-500" />
+            <Check className="w-4 h-4 text-emerald-500" aria-hidden="true" />
             <span className="text-sm">100% Free</span>
           </div>
           <div className="flex items-center gap-2">
-            <Check className="w-4 h-4 text-emerald-500" />
+            <Check className="w-4 h-4 text-emerald-500" aria-hidden="true" />
             <span className="text-sm">No credit card</span>
           </div>
           <div className="flex items-center gap-2">
-            <Check className="w-4 h-4 text-emerald-500" />
+            <Check className="w-4 h-4 text-emerald-500" aria-hidden="true" />
             <span className="text-sm">Creates real version history</span>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
@@ -263,7 +264,7 @@ function WhatIsSection() {
   return (
     <section className="py-20 px-6" aria-labelledby="what-is-heading">
       <div className="max-w-6xl mx-auto">
-        <motion.div
+        <MotionDiv
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
@@ -299,11 +300,11 @@ function WhatIsSection() {
             </div>
             <div className="relative bg-gradient-to-br from-emerald-600 to-emerald-800 min-h-[300px] md:min-h-[400px] flex items-center justify-center">
               <button className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors group">
-                <Play className="w-8 h-8 text-white ml-1 group-hover:scale-110 transition-transform" />
+                <Play className="w-8 h-8 text-white ml-1 group-hover:scale-110 transition-transform" aria-hidden="true" />
               </button>
             </div>
           </div>
-        </motion.div>
+        </MotionDiv>
       </div>
     </section>
   );
@@ -365,7 +366,7 @@ function Features() {
   return (
     <section id="features" className="py-24 px-6 bg-gray-900" aria-labelledby="features-heading">
       <div className="max-w-6xl mx-auto">
-        <motion.div
+        <MotionDiv
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
@@ -382,11 +383,11 @@ function Features() {
             Everything you need to create realistic Google Docs revision history,
             detect AI content, and humanize your writing.
           </p>
-        </motion.div>
+        </MotionDiv>
 
         <div className="grid lg:grid-cols-[280px_1fr] gap-8">
           {/* Tab Navigation */}
-          <motion.div
+          <MotionDiv
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
@@ -394,7 +395,7 @@ function Features() {
             className="space-y-2"
           >
             {features.map((feature, i) => (
-              <motion.button
+              <MotionButton
                 key={feature.id}
                 variants={fadeInUp}
                 onClick={() => setActiveTab(i)}
@@ -414,12 +415,12 @@ function Features() {
                   </span>
                   <span className="font-semibold">{feature.title}</span>
                 </div>
-              </motion.button>
+              </MotionButton>
             ))}
-          </motion.div>
+          </MotionDiv>
 
           {/* Feature Preview */}
-          <motion.div
+          <MotionDiv
             key={activeTab}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -468,7 +469,7 @@ function Features() {
                 <ArrowRight className="w-4 h-4" />
               </Link>
             )}
-          </motion.div>
+          </MotionDiv>
         </div>
       </div>
     </section>
@@ -499,7 +500,7 @@ function HowItWorks() {
   return (
     <section className="py-24 px-6" aria-labelledby="how-it-works-heading">
       <div className="max-w-6xl mx-auto">
-        <motion.div
+        <MotionDiv
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
@@ -515,9 +516,9 @@ function HowItWorks() {
           <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
             Our document history tool makes it easy to build authentic version tracking.
           </p>
-        </motion.div>
+        </MotionDiv>
 
-        <motion.div
+        <MotionDiv
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
@@ -525,7 +526,7 @@ function HowItWorks() {
           className="grid md:grid-cols-3 gap-6"
         >
           {steps.map((step, i) => (
-            <motion.div
+            <MotionDiv
               key={step.title}
               variants={fadeInUp}
               className="bg-gray-900 rounded-3xl border border-gray-800 p-8 text-center hover:border-gray-700 transition-all"
@@ -542,9 +543,9 @@ function HowItWorks() {
               <p className="mt-3 text-gray-400 leading-relaxed">
                 {step.description}
               </p>
-            </motion.div>
+            </MotionDiv>
           ))}
-        </motion.div>
+        </MotionDiv>
       </div>
     </section>
   );
@@ -580,7 +581,7 @@ function Personas() {
   return (
     <section className="py-24 px-6 bg-gray-900" aria-labelledby="personas-heading">
       <div className="max-w-6xl mx-auto">
-        <motion.div
+        <MotionDiv
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
@@ -596,9 +597,9 @@ function Personas() {
           <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
             From students to professionals—anyone who needs to track document changes.
           </p>
-        </motion.div>
+        </MotionDiv>
 
-        <motion.div
+        <MotionDiv
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
@@ -606,7 +607,7 @@ function Personas() {
           className="grid md:grid-cols-3 gap-6 items-stretch"
         >
           {personas.map((persona) => (
-            <motion.div
+            <MotionDiv
               key={persona.title}
               variants={fadeInUp}
               className={`rounded-3xl border p-8 transition-all ${
@@ -640,9 +641,9 @@ function Personas() {
               >
                 {persona.description}
               </p>
-            </motion.div>
+            </MotionDiv>
           ))}
-        </motion.div>
+        </MotionDiv>
       </div>
     </section>
   );
@@ -682,7 +683,7 @@ function FAQ() {
   return (
     <section className="py-24 px-6" aria-labelledby="faq-heading">
       <div className="max-w-3xl mx-auto">
-        <motion.div
+        <MotionDiv
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
@@ -698,9 +699,9 @@ function FAQ() {
           <p className="mt-4 text-gray-400">
             Everything you need to know about creating document version history.
           </p>
-        </motion.div>
+        </MotionDiv>
 
-        <motion.div
+        <MotionDiv
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
@@ -708,7 +709,7 @@ function FAQ() {
           className="space-y-4"
         >
           {faqs.map((faq) => (
-            <motion.details
+            <MotionDetails
               key={faq.question}
               variants={fadeInUp}
               className="group rounded-2xl border border-gray-800 bg-gray-900 px-6 py-5"
@@ -720,11 +721,11 @@ function FAQ() {
                 </span>
               </summary>
               <p className="mt-4 text-gray-400 leading-relaxed">{faq.answer}</p>
-            </motion.details>
+            </MotionDetails>
           ))}
-        </motion.div>
+        </MotionDiv>
 
-        <motion.p
+        <MotionP
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -734,7 +735,7 @@ function FAQ() {
           <Link href="/about" className="text-emerald-400 hover:underline">
             Contact us
           </Link>
-        </motion.p>
+        </MotionP>
       </div>
     </section>
   );
@@ -745,7 +746,7 @@ function FAQ() {
 function CTA({ onGetStarted }: { onGetStarted: () => void }) {
   return (
     <section className="py-24 px-6 bg-gray-900" aria-labelledby="cta-heading">
-      <motion.div
+      <MotionDiv
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
@@ -775,7 +776,7 @@ function CTA({ onGetStarted }: { onGetStarted: () => void }) {
             View Pricing
           </Link>
         </div>
-      </motion.div>
+      </MotionDiv>
     </section>
   );
 }
@@ -879,7 +880,7 @@ export default function Landing({ onContinueWithGoogle }: Props) {
     <div className="min-h-screen bg-gray-950">
       <AnnouncementBar />
       <Navbar onGetStarted={onContinueWithGoogle} />
-      <main>
+      <main id="main-content">
         <Hero onGetStarted={onContinueWithGoogle} />
         <WhatIsSection />
         <Features />
