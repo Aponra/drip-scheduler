@@ -164,3 +164,56 @@ export function BreadcrumbJsonLd({
     />
   );
 }
+
+/**
+ * Homepage FAQ Schema - Pre-built for the landing page
+ */
+export function HomepageFAQJsonLd() {
+  const faqs = [
+    {
+      question: "What is Google Docs version history?",
+      answer:
+        "Google Docs version history is a feature that automatically tracks every change made to a document. It shows who made changes, when they were made, and allows you to restore previous versions. Our tool helps you create authentic version history by gradually inserting text over time.",
+    },
+    {
+      question: "How does the document version tracking work?",
+      answer:
+        "You paste or upload your text, choose a duration (from 30 minutes to 1 week), and our tool drip-feeds the content into a new Google Doc sentence by sentence. This creates a realistic revision history that shows your document being written over time.",
+    },
+    {
+      question: "Can I track changes in my existing Google Docs?",
+      answer:
+        "Our tool creates new Google Docs with built-in version history. You can then use Google's native version history feature to see exactly how and when each part of your document was added.",
+    },
+    {
+      question: "Is the AI content detector accurate?",
+      answer:
+        "Yes, our AI detector achieves 99% accuracy in identifying AI-generated content. It provides sentence-level highlighting so you can see exactly which parts of your text may be flagged as machine-written.",
+    },
+    {
+      question: "Is Docs Version History free to use?",
+      answer:
+        "Yes! Our document history tool is completely free. No credit card required. Just sign in with your Google account and start creating version history for your documents.",
+    },
+  ];
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}

@@ -123,9 +123,10 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
   const durations = ["30 min", "1 hour", "2 hours", "6 hours", "1 day", "1 week"];
 
   return (
-    <section className="pt-16 pb-24 px-6">
+    <section className="pt-16 pb-24 px-6" aria-labelledby="hero-heading">
       <div className="max-w-5xl mx-auto text-center">
         <motion.h1
+          id="hero-heading"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -133,7 +134,7 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
         >
           Add Version History to
           <br />
-          <span className="text-emerald-400">Your Doc File</span>
+          <span className="text-emerald-400">Your Google Docs</span>
         </motion.h1>
 
         <motion.p
@@ -142,8 +143,8 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="mt-6 text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed"
         >
-          Paste your text, choose a duration, and watch it appear in Google Docs
-          gradually — creating realistic version history over time.
+          Create realistic document revision history by drip-feeding text into Google Docs over time.
+          Track writing progress and build authentic version history automatically.
         </motion.p>
 
         {/* Drip Input Box */}
@@ -256,11 +257,11 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
   );
 }
 
-// ─── Video Feature Section ───────────────────────────────────────────
+// ─── What Is Section ─────────────────────────────────────────────────
 
-function VideoFeature() {
+function WhatIsSection() {
   return (
-    <section className="py-20 px-6">
+    <section className="py-20 px-6" aria-labelledby="what-is-heading">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial="hidden"
@@ -272,21 +273,29 @@ function VideoFeature() {
           <div className="grid md:grid-cols-2">
             <div className="p-10 md:p-14 flex flex-col justify-center">
               <span className="text-sm font-semibold text-emerald-400 uppercase tracking-wide">
-                See it in action
+                Document Version Tracking
               </span>
-              <h2 className="mt-4 text-3xl md:text-4xl font-serif font-medium text-white leading-tight">
-                The first writing toolkit
+              <h2 id="what-is-heading" className="mt-4 text-3xl md:text-4xl font-bold text-white leading-tight">
+                What is Google Docs
                 <br />
-                built for modern creators
+                Version History?
               </h2>
               <p className="mt-4 text-gray-400 leading-relaxed">
-                Watch how Drip transforms your writing workflow with intelligent
-                scheduling, detection, and humanization tools.
+                Google Docs automatically tracks every change you make to a document,
+                creating a <strong className="text-gray-300">revision history</strong> that shows when and how your
+                document evolved. Our tool helps you create authentic version history
+                by gradually inserting text over time—perfect for demonstrating your
+                writing process.
               </p>
-              <button className="mt-8 inline-flex items-center gap-2 text-emerald-400 font-semibold hover:gap-3 transition-all">
-                Watch the demo
-                <ArrowRight className="w-4 h-4" />
-              </button>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link
+                  href="/about"
+                  className="inline-flex items-center gap-2 text-emerald-400 font-semibold hover:gap-3 transition-all"
+                >
+                  Learn more about us
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
             </div>
             <div className="relative bg-gradient-to-br from-emerald-600 to-emerald-800 min-h-[300px] md:min-h-[400px] flex items-center justify-center">
               <button className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors group">
@@ -309,30 +318,32 @@ function Features() {
     {
       id: "drip",
       number: "01",
-      title: "Drip Writing",
+      title: "Document Version History Creator",
       icon: Droplets,
       description:
-        "Schedule your content to appear in Google Docs over time. Set custom durations from 30 minutes to a full week.",
+        "Build authentic Google Docs revision history by scheduling text to appear gradually. Perfect for tracking document changes and demonstrating your writing progress over time.",
       benefits: [
-        "Create realistic version history",
-        "Schedule content delivery",
-        "Preserve all formatting",
-        "Works with any text length",
+        "Create realistic revision history",
+        "Track document changes over time",
+        "Schedule content from 30 min to 1 week",
+        "Export directly to Google Docs",
       ],
+      link: null,
     },
     {
       id: "detect",
       number: "02",
-      title: "AI Detection",
+      title: "AI Content Detection",
       icon: ScanSearch,
       description:
-        "Detect AI-generated content with 99% accuracy. See exactly which sentences might be flagged.",
+        "Detect AI-generated content with industry-leading 99% accuracy. Our AI detector highlights exactly which sentences may be flagged as machine-written.",
       benefits: [
-        "99% detection accuracy",
+        "99% AI detection accuracy",
         "Sentence-level highlighting",
-        "Detailed explanations",
-        "Instant results",
+        "Works with ChatGPT, Claude & more",
+        "Instant analysis results",
       ],
+      link: "/ai-detector",
     },
     {
       id: "humanize",
@@ -340,18 +351,19 @@ function Features() {
       title: "Text Humanization",
       icon: Sparkles,
       description:
-        "Transform AI-generated text to sound natural and authentic while preserving your original meaning.",
+        "Transform AI-generated text into natural, human-sounding content. Maintain your original meaning while making your writing undetectable.",
       benefits: [
         "Natural-sounding output",
         "Preserves original meaning",
-        "Multiple rewrite styles",
-        "One-click humanization",
+        "Bypass AI detection tools",
+        "One-click transformation",
       ],
+      link: "/ai-detector",
     },
   ];
 
   return (
-    <section id="features" className="py-24 px-6 bg-gray-900">
+    <section id="features" className="py-24 px-6 bg-gray-900" aria-labelledby="features-heading">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial="hidden"
@@ -361,11 +373,15 @@ function Features() {
           className="text-center mb-16"
         >
           <span className="text-sm font-semibold text-emerald-400 uppercase tracking-wide">
-            Features
+            Powerful Features
           </span>
-          <h2 className="mt-4 text-4xl md:text-5xl font-serif font-medium text-white">
-            What Drip can do for you
+          <h2 id="features-heading" className="mt-4 text-4xl md:text-5xl font-bold text-white">
+            Track Document Changes & Build Version History
           </h2>
+          <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
+            Everything you need to create realistic Google Docs revision history,
+            detect AI content, and humanize your writing.
+          </p>
         </motion.div>
 
         <div className="grid lg:grid-cols-[280px_1fr] gap-8">
@@ -442,6 +458,16 @@ function Features() {
                 </div>
               ))}
             </div>
+
+            {features[activeTab].link && (
+              <Link
+                href={features[activeTab].link}
+                className="mt-6 inline-flex items-center gap-2 text-emerald-400 font-semibold hover:gap-3 transition-all"
+              >
+                Try {features[activeTab].title}
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            )}
           </motion.div>
         </div>
       </div>
@@ -455,23 +481,23 @@ function HowItWorks() {
   const steps = [
     {
       icon: FileText,
-      title: "Import or write",
-      description: "Paste text, upload files, or write directly in our editor.",
+      title: "Import your document",
+      description: "Paste text, upload .txt, .docx, or .pdf files. We preserve your formatting.",
     },
     {
       icon: Clock,
-      title: "Choose your tool",
-      description: "Drip to Docs, detect AI, or humanize your content.",
+      title: "Set your schedule",
+      description: "Choose how long to drip your content—from 30 minutes to a full week.",
     },
     {
       icon: Zap,
-      title: "Get results",
-      description: "Instant processing with beautiful, actionable output.",
+      title: "Build version history",
+      description: "Watch as your document gains authentic revision history in Google Docs.",
     },
   ];
 
   return (
-    <section className="py-24 px-6">
+    <section className="py-24 px-6" aria-labelledby="how-it-works-heading">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial="hidden"
@@ -481,11 +507,14 @@ function HowItWorks() {
           className="text-center mb-16"
         >
           <span className="text-sm font-semibold text-emerald-400 uppercase tracking-wide">
-            How it works
+            How It Works
           </span>
-          <h2 className="mt-4 text-4xl md:text-5xl font-serif font-medium text-white">
-            Three steps. Endless possibilities.
+          <h2 id="how-it-works-heading" className="mt-4 text-4xl md:text-5xl font-bold text-white">
+            Create Google Docs Revision History in 3 Steps
           </h2>
+          <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
+            Our document history tool makes it easy to build authentic version tracking.
+          </p>
         </motion.div>
 
         <motion.div
@@ -527,29 +556,29 @@ function Personas() {
   const personas = [
     {
       icon: GraduationCap,
-      title: "Students",
+      title: "Students & Academics",
       description:
-        "Create realistic writing timelines for essays and assignments. Understand AI detection before submission.",
+        "Build authentic document revision history for essays and research papers. Show your writing progress and track changes over time.",
       featured: false,
     },
     {
       icon: PenTool,
-      title: "Content Creators",
+      title: "Writers & Content Creators",
       description:
-        "Humanize AI-assisted content while maintaining your unique voice. Schedule content delivery effortlessly.",
+        "Create realistic version history for your documents. Perfect for demonstrating your writing process to editors and clients.",
       featured: true,
     },
     {
       icon: Users,
-      title: "Educators",
+      title: "Teams & Educators",
       description:
-        "Detect AI-generated submissions with sentence-level accuracy. Understand how students are using AI tools.",
+        "Track document changes across your organization. Use our AI detector to understand AI-assisted content in submissions.",
       featured: false,
     },
   ];
 
   return (
-    <section className="py-24 px-6 bg-gray-900">
+    <section className="py-24 px-6 bg-gray-900" aria-labelledby="personas-heading">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial="hidden"
@@ -559,11 +588,14 @@ function Personas() {
           className="text-center mb-16"
         >
           <span className="text-sm font-semibold text-emerald-400 uppercase tracking-wide">
-            Who uses Drip
+            Who Uses Our Tool
           </span>
-          <h2 className="mt-4 text-4xl md:text-5xl font-serif font-medium text-white">
-            Built for creators of all kinds
+          <h2 id="personas-heading" className="mt-4 text-4xl md:text-5xl font-bold text-white">
+            Trusted by Writers Who Need Version History
           </h2>
+          <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
+            From students to professionals—anyone who needs to track document changes.
+          </p>
         </motion.div>
 
         <motion.div
@@ -616,11 +648,103 @@ function Personas() {
   );
 }
 
+// ─── FAQ Section ─────────────────────────────────────────────────────
+
+function FAQ() {
+  const faqs = [
+    {
+      question: "What is Google Docs version history?",
+      answer:
+        "Google Docs version history is a feature that automatically tracks every change made to a document. It shows who made changes, when they were made, and allows you to restore previous versions. Our tool helps you create authentic version history by gradually inserting text over time.",
+    },
+    {
+      question: "How does the document version tracking work?",
+      answer:
+        "You paste or upload your text, choose a duration (from 30 minutes to 1 week), and our tool drip-feeds the content into a new Google Doc sentence by sentence. This creates a realistic revision history that shows your document being written over time.",
+    },
+    {
+      question: "Can I track changes in my existing Google Docs?",
+      answer:
+        "Our tool creates new Google Docs with built-in version history. You can then use Google's native version history feature to see exactly how and when each part of your document was added.",
+    },
+    {
+      question: "Is the AI content detector accurate?",
+      answer:
+        "Yes, our AI detector achieves 99% accuracy in identifying AI-generated content. It provides sentence-level highlighting so you can see exactly which parts of your text may be flagged as machine-written.",
+    },
+    {
+      question: "Is Docs Version History free to use?",
+      answer:
+        "Yes! Our document history tool is completely free. No credit card required. Just sign in with your Google account and start creating version history for your documents.",
+    },
+  ];
+
+  return (
+    <section className="py-24 px-6" aria-labelledby="faq-heading">
+      <div className="max-w-3xl mx-auto">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={fadeInUp}
+          className="text-center mb-12"
+        >
+          <span className="text-sm font-semibold text-emerald-400 uppercase tracking-wide">
+            FAQ
+          </span>
+          <h2 id="faq-heading" className="mt-4 text-3xl md:text-4xl font-bold text-white">
+            Frequently Asked Questions
+          </h2>
+          <p className="mt-4 text-gray-400">
+            Everything you need to know about creating document version history.
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={staggerContainer}
+          className="space-y-4"
+        >
+          {faqs.map((faq) => (
+            <motion.details
+              key={faq.question}
+              variants={fadeInUp}
+              className="group rounded-2xl border border-gray-800 bg-gray-900 px-6 py-5"
+            >
+              <summary className="flex cursor-pointer list-none items-center justify-between font-semibold text-white">
+                <span>{faq.question}</span>
+                <span className="ml-4 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-800 text-gray-400 transition-transform group-open:rotate-45">
+                  <Plus className="h-4 w-4" />
+                </span>
+              </summary>
+              <p className="mt-4 text-gray-400 leading-relaxed">{faq.answer}</p>
+            </motion.details>
+          ))}
+        </motion.div>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="mt-8 text-center text-gray-500"
+        >
+          Have more questions?{" "}
+          <Link href="/about" className="text-emerald-400 hover:underline">
+            Contact us
+          </Link>
+        </motion.p>
+      </div>
+    </section>
+  );
+}
+
 // ─── CTA Section ─────────────────────────────────────────────────────
 
 function CTA({ onGetStarted }: { onGetStarted: () => void }) {
   return (
-    <section className="py-24 px-6">
+    <section className="py-24 px-6 bg-gray-900" aria-labelledby="cta-heading">
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -628,20 +752,21 @@ function CTA({ onGetStarted }: { onGetStarted: () => void }) {
         variants={fadeInUp}
         className="max-w-4xl mx-auto text-center"
       >
-        <h2 className="text-4xl md:text-5xl font-serif font-medium text-white leading-tight">
-          Your smartest writing companion
+        <h2 id="cta-heading" className="text-4xl md:text-5xl font-bold text-white leading-tight">
+          Start Building Document
           <br />
-          is ready to start
+          Version History Today
         </h2>
         <p className="mt-6 text-lg text-gray-400 max-w-xl mx-auto">
-          Join thousands of writers using Drip. Free forever, no credit card required.
+          Join thousands of users creating realistic Google Docs revision history.
+          Free forever, no credit card required.
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
           <button
             onClick={onGetStarted}
             className="bg-emerald-600 text-white px-8 py-4 rounded-full text-base font-semibold hover:bg-emerald-500 transition-all hover:shadow-xl hover:shadow-emerald-600/25"
           >
-            Start Free
+            Create Version History Free
           </button>
           <Link
             href="/pricing"
@@ -658,57 +783,89 @@ function CTA({ onGetStarted }: { onGetStarted: () => void }) {
 // ─── Footer ──────────────────────────────────────────────────────────
 
 function Footer() {
-  const footerLinks = {
-    Product: ["Features", "Pricing", "AI Detector"],
-    Company: ["About", "Blog", "Contact"],
-    Legal: ["Privacy", "Terms"],
-  };
-
   return (
-    <footer className="bg-[#1a1a1a] text-white py-16 px-6">
+    <footer className="bg-[#0d0d0d] text-white py-16 px-6" role="contentinfo">
       <div className="max-w-6xl mx-auto">
         <div className="grid md:grid-cols-4 gap-10">
           <div>
-            <div className="flex items-center gap-2.5 mb-4">
+            <Link href="/" className="flex items-center gap-2.5 mb-4">
               <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center">
                 <Droplets className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-semibold">Drip</span>
-            </div>
+              <span className="text-xl font-semibold">Docs Version History</span>
+            </Link>
             <p className="text-white/60 text-sm leading-relaxed">
-              Write smarter with tools that understand your flow.
+              Create realistic Google Docs revision history. Track document changes
+              and build authentic version history for your writing.
             </p>
           </div>
 
-          {Object.entries(footerLinks).map(([category, links]) => (
-            <div key={category}>
-              <h4 className="font-semibold text-white mb-4">{category}</h4>
-              <ul className="space-y-3">
-                {links.map((link) => (
-                  <li key={link}>
-                    <Link
-                      href={`/${link.toLowerCase().replace(" ", "-")}`}
-                      className="text-white/60 hover:text-white text-sm transition-colors"
-                    >
-                      {link}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <div>
+            <h4 className="font-semibold text-white mb-4">Product</h4>
+            <ul className="space-y-3">
+              <li>
+                <Link href="/#features" className="text-white/60 hover:text-white text-sm transition-colors">
+                  Version History Creator
+                </Link>
+              </li>
+              <li>
+                <Link href="/ai-detector" className="text-white/60 hover:text-white text-sm transition-colors">
+                  AI Content Detector
+                </Link>
+              </li>
+              <li>
+                <Link href="/pricing" className="text-white/60 hover:text-white text-sm transition-colors">
+                  Pricing
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-white mb-4">Resources</h4>
+            <ul className="space-y-3">
+              <li>
+                <Link href="/about" className="text-white/60 hover:text-white text-sm transition-colors">
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link href="/#faq-heading" className="text-white/60 hover:text-white text-sm transition-colors">
+                  FAQ
+                </Link>
+              </li>
+              <li>
+                <Link href="/#how-it-works-heading" className="text-white/60 hover:text-white text-sm transition-colors">
+                  How It Works
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-white mb-4">Legal</h4>
+            <ul className="space-y-3">
+              <li>
+                <Link href="/privacy" className="text-white/60 hover:text-white text-sm transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="text-white/60 hover:text-white text-sm transition-colors">
+                  Terms of Service
+                </Link>
+              </li>
+            </ul>
+          </div>
         </div>
 
         <div className="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-white/40 text-sm">&copy; 2026 Drip. All rights reserved.</p>
-          <div className="flex items-center gap-4">
-            <Link href="/privacy" className="text-white/40 hover:text-white text-sm transition-colors">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="text-white/40 hover:text-white text-sm transition-colors">
-              Terms of Service
-            </Link>
-          </div>
+          <p className="text-white/40 text-sm">
+            &copy; {new Date().getFullYear()} Docs Version History. Free Google Docs version history tool.
+          </p>
+          <p className="text-white/30 text-xs">
+            Track document changes · Create revision history · Writing progress tracker
+          </p>
         </div>
       </div>
     </footer>
@@ -722,12 +879,15 @@ export default function Landing({ onContinueWithGoogle }: Props) {
     <div className="min-h-screen bg-gray-950">
       <AnnouncementBar />
       <Navbar onGetStarted={onContinueWithGoogle} />
-      <Hero onGetStarted={onContinueWithGoogle} />
-      <VideoFeature />
-      <Features />
-      <HowItWorks />
-      <Personas />
-      <CTA onGetStarted={onContinueWithGoogle} />
+      <main>
+        <Hero onGetStarted={onContinueWithGoogle} />
+        <WhatIsSection />
+        <Features />
+        <HowItWorks />
+        <Personas />
+        <FAQ />
+        <CTA onGetStarted={onContinueWithGoogle} />
+      </main>
       <Footer />
     </div>
   );
