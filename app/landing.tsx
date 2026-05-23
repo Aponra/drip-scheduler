@@ -66,13 +66,13 @@ function AnnouncementBar() {
   return (
     <div className="bg-emerald-600 text-white py-2.5 px-4">
       <div className="max-w-6xl mx-auto flex items-center justify-center gap-3 text-sm">
-        <span className="bg-white/20 text-white text-xs font-semibold px-2 py-0.5 rounded">
+        <span className="bg-white/30 text-white text-xs font-semibold px-2 py-0.5 rounded">
           NEW
         </span>
-        <span className="text-white/90">
+        <span className="text-white">
           Drip now supports PDF imports with formatting
         </span>
-        <ArrowRight className="w-4 h-4 text-white/70" />
+        <ArrowRight className="w-4 h-4 text-white" aria-hidden="true" />
       </div>
     </div>
   );
@@ -169,7 +169,7 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
                 </div>
                 <div className="text-left">
                   <p className="text-sm font-semibold text-white">Drip to Google Docs</p>
-                  <p className="text-xs text-gray-500">Your text will appear gradually over time</p>
+                  <p className="text-xs text-gray-400">Your text will appear gradually over time</p>
                 </div>
               </div>
               <div className="flex items-center gap-1.5">
@@ -217,7 +217,7 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
                   <Plus className="w-4 h-4" />
                   Upload file
                 </button>
-                <span className="text-xs text-gray-600">.txt, .docx, .pdf</span>
+                <span className="text-xs text-gray-400">.txt, .docx, .pdf</span>
               </div>
               <button
                 onClick={() => {
@@ -233,7 +233,7 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
           </div>
 
           {/* Helper Text */}
-          <p className="mt-4 text-sm text-gray-500">
+          <p className="mt-4 text-sm text-gray-400">
             Text will be written to a new Google Doc sentence by sentence over your chosen duration
           </p>
         </div>
@@ -299,7 +299,10 @@ function WhatIsSection() {
               </div>
             </div>
             <div className="relative bg-gradient-to-br from-emerald-600 to-emerald-800 min-h-[300px] md:min-h-[400px] flex items-center justify-center">
-              <button className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors group">
+              <button
+                className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors group"
+                aria-label="Watch demo video"
+              >
                 <Play className="w-8 h-8 text-white ml-1 group-hover:scale-110 transition-transform" aria-hidden="true" />
               </button>
             </div>
@@ -802,7 +805,7 @@ function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold text-white mb-4">Product</h4>
+            <p className="font-semibold text-white mb-4">Product</p>
             <ul className="space-y-3">
               <li>
                 <Link href="/#features" className="text-white/60 hover:text-white text-sm transition-colors">
@@ -823,7 +826,7 @@ function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold text-white mb-4">Resources</h4>
+            <p className="font-semibold text-white mb-4">Resources</p>
             <ul className="space-y-3">
               <li>
                 <Link href="/about" className="text-white/60 hover:text-white text-sm transition-colors">
@@ -844,7 +847,7 @@ function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold text-white mb-4">Legal</h4>
+            <p className="font-semibold text-white mb-4">Legal</p>
             <ul className="space-y-3">
               <li>
                 <Link href="/privacy" className="text-white/60 hover:text-white text-sm transition-colors">
