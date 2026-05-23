@@ -66,6 +66,9 @@ const nextConfig: NextConfig = {
     optimizePackageImports: [
       "lucide-react",
       "framer-motion",
+      "@tiptap/core",
+      "@tiptap/react",
+      "@tiptap/starter-kit",
     ],
   },
 };

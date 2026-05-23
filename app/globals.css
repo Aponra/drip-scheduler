@@ -85,17 +85,23 @@ body {
     animation: fadeIn 180ms ease-out both;
   }
   .animate-slide-in-up {
-    animation: slideInUp 600ms ease-out both;
+    animation: slideInUp 400ms ease-out both;
   }
   .animate-scale-in {
-    animation: scaleIn 500ms ease-out both;
+    animation: scaleIn 400ms ease-out both;
   }
-  /* Staggered animation delays */
-  .animation-delay-100 { animation-delay: 100ms; }
-  .animation-delay-200 { animation-delay: 200ms; }
-  .animation-delay-300 { animation-delay: 300ms; }
-  .animation-delay-400 { animation-delay: 400ms; }
-  .animation-delay-500 { animation-delay: 500ms; }
+  /* Staggered animation delays - reduced for faster LCP */
+  .animation-delay-100 { animation-delay: 50ms; }
+  .animation-delay-200 { animation-delay: 100ms; }
+  .animation-delay-300 { animation-delay: 150ms; }
+  .animation-delay-400 { animation-delay: 200ms; }
+  .animation-delay-500 { animation-delay: 250ms; }
+
+  /* Content visibility optimization for below-fold sections */
+  .content-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 500px;
+  }
 }
 
 /* Reduce motion for accessibility */
