@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { trackEvent, trackCtaClick } from "@/lib/analytics";
+import { useAuth } from "@/lib/auth-context";
 import { Droplets } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────
@@ -186,6 +187,7 @@ function SentenceHighlight({
 // ─── Main Page ────────────────────────────────────────────────────────
 
 export default function AIDetectorPage() {
+  const { user } = useAuth();
   const [inputText, setInputText] = useState("");
   const [isDetecting, setIsDetecting] = useState(false);
   const [isRewriting, setIsRewriting] = useState(false);
@@ -306,24 +308,38 @@ export default function AIDetectorPage() {
             </Link>
           </nav>
           <div className="flex items-center gap-3">
-            <Link
-              href="/"
-              onClick={() =>
-                trackCtaClick({ cta_id: "ai-detector-navbar-login", cta_text: "Log in", location: "ai-detector-navbar" })
-              }
-              className="hidden sm:block text-sm font-medium text-gray-400 hover:text-white transition-colors"
-            >
-              Log in
-            </Link>
-            <Link
-              href="/"
-              onClick={() =>
-                trackCtaClick({ cta_id: "ai-detector-navbar-get-started", cta_text: "Get Started", location: "ai-detector-navbar" })
-              }
-              className="bg-emerald-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-all"
-            >
-              Get Started
-            </Link>
+            {user ? (
+              <Link
+                href="/"
+                onClick={() =>
+                  trackCtaClick({ cta_id: "ai-detector-navbar-dashboard", cta_text: "Go to Dashboard", location: "ai-detector-navbar" })
+                }
+                className="bg-emerald-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-all"
+              >
+                Go to Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/"
+                  onClick={() =>
+                    trackCtaClick({ cta_id: "ai-detector-navbar-login", cta_text: "Log in", location: "ai-detector-navbar" })
+                  }
+                  className="hidden sm:block text-sm font-medium text-gray-400 hover:text-white transition-colors"
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/"
+                  onClick={() =>
+                    trackCtaClick({ cta_id: "ai-detector-navbar-get-started", cta_text: "Get Started", location: "ai-detector-navbar" })
+                  }
+                  className="bg-emerald-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-all"
+                >
+                  Get Started
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
