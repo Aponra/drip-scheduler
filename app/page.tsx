@@ -130,6 +130,7 @@ export default function Home() {
   const { user, loading, signInWithGoogle, logout } = useAuth();
   const [docsConnected, setDocsConnected] = useState(false);
   const [toast, setToast] = useState<Toast | null>(null);
+  const [showLanding, setShowLanding] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -241,6 +242,17 @@ export default function Home() {
     );
   }
 
+  // Show landing page for logged-in users if they clicked "Home"
+  if (showLanding) {
+    return (
+      <Landing
+        onContinueWithGoogle={() => setShowLanding(false)}
+        isLoggedIn={true}
+        onGoToDashboard={() => setShowLanding(false)}
+      />
+    );
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
       {toast && (
@@ -318,9 +330,7 @@ export default function Home() {
         <div className="flex h-14 items-center justify-between gap-3 px-4">
           <div className="flex items-center gap-2">
             <button
-              onClick={() => {
-                handleLogout().catch((err) => console.error(err));
-              }}
+              onClick={() => setShowLanding(true)}
               aria-label="Back to Home"
               className="rounded-lg border border-gray-200 bg-white p-1.5 text-gray-700 shadow-sm transition-all hover:bg-gray-50"
             >
@@ -494,16 +504,12 @@ export default function Home() {
                 About
               </Link>
               <span className="text-gray-300">·</span>
-              <Link
-                href="/"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleLogout().catch((err) => console.error(err));
-                }}
+              <button
+                onClick={() => setShowLanding(true)}
                 className="text-xs text-gray-500 hover:text-gray-900 transition-colors"
               >
                 Landing Page
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -530,9 +536,7 @@ export default function Home() {
           {/* Desktop top bar with navigation */}
           <div className="hidden lg:flex items-center justify-start gap-3 px-6 py-3 border-b border-gray-100">
             <button
-              onClick={() => {
-                handleLogout().catch((err) => console.error(err));
-              }}
+              onClick={() => setShowLanding(true)}
               className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-600 shadow-sm transition-all hover:bg-gray-50 hover:text-gray-900"
             >
               <svg

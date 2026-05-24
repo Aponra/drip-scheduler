@@ -13,6 +13,8 @@ const BelowFoldSections = dynamic(() => import("./components/below-fold-sections
 
 type Props = {
   onContinueWithGoogle: () => void;
+  isLoggedIn?: boolean;
+  onGoToDashboard?: () => void;
 };
 
 // Inline SVG icons for above-fold content (avoids Lucide bundle in critical path)
@@ -88,7 +90,7 @@ function AnnouncementBar() {
 
 // ─── Navbar ──────────────────────────────────────────────────────────
 
-function Navbar({ onGetStarted }: { onGetStarted: () => void }) {
+function Navbar({ onGetStarted, isLoggedIn, onGoToDashboard }: { onGetStarted: () => void; isLoggedIn?: boolean; onGoToDashboard?: () => void }) {
   const navItems = [
     { label: "Home", href: "/" },
     { label: "Features", href: "#features" },
@@ -122,24 +124,38 @@ function Navbar({ onGetStarted }: { onGetStarted: () => void }) {
         </nav>
 
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => {
-              trackCtaClick({ cta_id: "navbar-login", cta_text: "Log in", location: "navbar" });
-              onGetStarted();
-            }}
-            className="hidden sm:block text-sm font-medium text-gray-400 hover:text-white transition-colors"
-          >
-            Log in
-          </button>
-          <button
-            onClick={() => {
-              trackCtaClick({ cta_id: "navbar-get-started", cta_text: "Get Started", location: "navbar" });
-              onGetStarted();
-            }}
-            className="bg-emerald-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-colors"
-          >
-            Get Started
-          </button>
+          {isLoggedIn && onGoToDashboard ? (
+            <button
+              onClick={() => {
+                trackCtaClick({ cta_id: "navbar-dashboard", cta_text: "Go to Dashboard", location: "navbar" });
+                onGoToDashboard();
+              }}
+              className="bg-emerald-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-colors"
+            >
+              Go to Dashboard
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={() => {
+                  trackCtaClick({ cta_id: "navbar-login", cta_text: "Log in", location: "navbar" });
+                  onGetStarted();
+                }}
+                className="hidden sm:block text-sm font-medium text-gray-400 hover:text-white transition-colors"
+              >
+                Log in
+              </button>
+              <button
+                onClick={() => {
+                  trackCtaClick({ cta_id: "navbar-get-started", cta_text: "Get Started", location: "navbar" });
+                  onGetStarted();
+                }}
+                className="bg-emerald-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-colors"
+              >
+                Get Started
+              </button>
+            </>
+          )}
         </div>
       </div>
     </header>
@@ -193,15 +209,15 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
 
 // ─── Main Landing Component ──────────────────────────────────────────
 
-export default function Landing({ onContinueWithGoogle }: Props) {
+export default function Landing({ onContinueWithGoogle, isLoggedIn, onGoToDashboard }: Props) {
   return (
     <div className="min-h-screen bg-gray-950">
       <AnnouncementBar />
-      <Navbar onGetStarted={onContinueWithGoogle} />
+      <Navbar onGetStarted={onContinueWithGoogle} isLoggedIn={isLoggedIn} onGoToDashboard={onGoToDashboard} />
       <main id="main-content">
-        <Hero onGetStarted={onContinueWithGoogle} />
+        <Hero onGetStarted={isLoggedIn && onGoToDashboard ? onGoToDashboard : onContinueWithGoogle} />
         {/* Below fold sections lazy loaded for better initial load */}
-        <BelowFoldSections onGetStarted={onContinueWithGoogle} />
+        <BelowFoldSections onGetStarted={isLoggedIn && onGoToDashboard ? onGoToDashboard : onContinueWithGoogle} />
       </main>
     </div>
   );
