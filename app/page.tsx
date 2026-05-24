@@ -349,9 +349,22 @@ export default function Home() {
               onClick={() => {
                 handleLogout().catch((err) => console.error(err));
               }}
-              className="rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition-all hover:bg-gray-50"
+              aria-label="Back to Home"
+              className="rounded-lg border border-gray-200 bg-white p-1.5 text-gray-700 shadow-sm transition-all hover:bg-gray-50"
             >
-              Log out
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+                className="h-4 w-4"
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+              </svg>
             </button>
           </div>
         </div>
@@ -499,6 +512,31 @@ export default function Home() {
 
         {/* Main */}
         <main className="relative flex-1 overflow-x-hidden">
+          {/* Desktop top bar with home button */}
+          <div className="hidden lg:flex items-center justify-end px-6 py-3 border-b border-gray-100">
+            <button
+              onClick={() => {
+                handleLogout().catch((err) => console.error(err));
+              }}
+              className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-600 shadow-sm transition-all hover:bg-gray-50 hover:text-gray-900"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+                className="h-4 w-4"
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+              </svg>
+              Back to Home
+            </button>
+          </div>
+
           {/* Soft pink/purple glow accent */}
           <div
             aria-hidden="true"
@@ -509,7 +547,7 @@ export default function Home() {
             className="pointer-events-none absolute -top-32 left-[-5%] h-[320px] w-[320px] rounded-full bg-purple-200/25 blur-3xl"
           />
 
-          <div className="relative mx-auto w-full max-w-3xl px-6 py-10 lg:py-12">
+          <div className="relative mx-auto w-full max-w-3xl px-6 py-10 lg:py-8">
             <div className="mb-8 animate-fade-in-up">
               <h1 className="text-3xl font-semibold tracking-tight text-gray-900">
                 Insert Text
