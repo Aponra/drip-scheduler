@@ -316,12 +316,48 @@ export default function Home() {
       {/* Mobile top bar (< lg) */}
       <header className="lg:hidden sticky top-0 z-10 border-b border-gray-200 bg-white/95 backdrop-blur">
         <div className="flex h-14 items-center justify-between gap-3 px-4">
-          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <div className="h-2.5 w-2.5 rounded-full bg-blue-600" />
-            <span className="text-sm font-semibold tracking-tight text-gray-900">
-              Docs Version History
-            </span>
-          </Link>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                handleLogout().catch((err) => console.error(err));
+              }}
+              aria-label="Back to Home"
+              className="rounded-lg border border-gray-200 bg-white p-1.5 text-gray-700 shadow-sm transition-all hover:bg-gray-50"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+                className="h-4 w-4"
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+              </svg>
+            </button>
+            <Link
+              href="/ai-detector"
+              aria-label="AI Detector"
+              className="rounded-lg border border-gray-200 bg-white p-1.5 text-gray-700 shadow-sm transition-all hover:bg-gray-50"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+                className="h-4 w-4"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21l-4.35-4.35" />
+              </svg>
+            </Link>
+          </div>
           <div className="flex items-center gap-2">
             <a
               href="/api/google-docs/auth"
@@ -345,27 +381,6 @@ export default function Home() {
                 {docsConnected ? "Connected" : "Connect"}
               </span>
             </a>
-            <button
-              onClick={() => {
-                handleLogout().catch((err) => console.error(err));
-              }}
-              aria-label="Back to Home"
-              className="rounded-lg border border-gray-200 bg-white p-1.5 text-gray-700 shadow-sm transition-all hover:bg-gray-50"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.75"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-                className="h-4 w-4"
-              >
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                <polyline points="9 22 9 12 15 12 15 22" />
-              </svg>
-            </button>
           </div>
         </div>
       </header>
@@ -512,8 +527,8 @@ export default function Home() {
 
         {/* Main */}
         <main className="relative flex-1 overflow-x-hidden">
-          {/* Desktop top bar with home button */}
-          <div className="hidden lg:flex items-center justify-end px-6 py-3 border-b border-gray-100">
+          {/* Desktop top bar with navigation */}
+          <div className="hidden lg:flex items-center justify-start gap-3 px-6 py-3 border-b border-gray-100">
             <button
               onClick={() => {
                 handleLogout().catch((err) => console.error(err));
@@ -533,8 +548,27 @@ export default function Home() {
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
                 <polyline points="9 22 9 12 15 12 15 22" />
               </svg>
-              Back to Home
+              Home
             </button>
+            <Link
+              href="/ai-detector"
+              className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-600 shadow-sm transition-all hover:bg-gray-50 hover:text-gray-900"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+                className="h-4 w-4"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21l-4.35-4.35" />
+              </svg>
+              AI Detector
+            </Link>
           </div>
 
           {/* Soft pink/purple glow accent */}
