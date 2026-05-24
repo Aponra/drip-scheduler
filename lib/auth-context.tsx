@@ -24,24 +24,43 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 // Session storage key for quick auth state hint
 const AUTH_HINT_KEY = "authHint";
-// Key to track if we're expecting a redirect result
-const REDIRECT_PENDING_KEY = "authRedirectPending";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const authInitializedRef = useRef(false);
 
-  // Initialize Firebase auth and set up listener
+  // Initialize Firebase auth, check redirect result, and set up listener
   const initializeAuth = useCallback(async () => {
     if (authInitializedRef.current) return;
 
     try {
       const auth = await getFirebaseAuth();
-      const { onAuthStateChanged } = await import("firebase/auth");
+      const { onAuthStateChanged, getRedirectResult } = await import("firebase/auth");
 
       authInitializedRef.current = true;
 
+      // Always check for redirect result first
+      try {
+        const result = await getRedirectResult(auth);
+        if (result?.user) {
+          // Track sign-up vs login based on whether this is a new user
+          const isNewUser =
+            result.user.metadata.creationTime ===
+            result.user.metadata.lastSignInTime;
+
+          if (isNewUser) {
+            trackSignUp("google");
+          } else {
+            trackLogin("google");
+          }
+        }
+      } catch (redirectError) {
+        // Redirect result errors are not critical, log and continue
+        console.error("Redirect result check failed:", redirectError);
+      }
+
+      // Set up auth state listener
       onAuthStateChanged(auth, (nextUser) => {
         setUser(nextUser);
         setLoading(false);
@@ -59,61 +78,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Check for redirect result or auth hint on mount
+  // Check auth on mount
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const checkAuth = async () => {
-      const redirectPending = sessionStorage.getItem(REDIRECT_PENDING_KEY);
+    const hint = sessionStorage.getItem(AUTH_HINT_KEY);
 
-      // If redirect is pending, check for the result
-      if (redirectPending) {
-        try {
-          const auth = await getFirebaseAuth();
-          const { getRedirectResult } = await import("firebase/auth");
+    // If user was previously logged in OR if we might be returning from a redirect,
+    // initialize Firebase to check auth state
+    // We check the URL for any signs of OAuth callback
+    const isOAuthCallback = window.location.href.includes("apiKey") ||
+                            window.location.href.includes("authUser") ||
+                            document.referrer.includes("accounts.google.com");
 
-          // Clear the pending flag
-          sessionStorage.removeItem(REDIRECT_PENDING_KEY);
+    if (hint || isOAuthCallback) {
+      initializeAuth();
+    } else {
+      // No hint of auth, but still initialize to catch redirect results
+      // Use a slight delay to not block initial render
+      const timer = setTimeout(() => {
+        initializeAuth();
+      }, 100);
 
-          const result = await getRedirectResult(auth);
+      // Show content immediately for non-authenticated users
+      setLoading(false);
 
-          if (result?.user) {
-            // Track sign-up vs login based on whether this is a new user
-            const isNewUser =
-              result.user.metadata.creationTime ===
-              result.user.metadata.lastSignInTime;
-
-            if (isNewUser) {
-              trackSignUp("google");
-            } else {
-              trackLogin("google");
-            }
-          }
-
-          // Initialize auth listener
-          await initializeAuth();
-        } catch (error) {
-          console.error("Failed to get redirect result:", error);
-          sessionStorage.removeItem(REDIRECT_PENDING_KEY);
-          setLoading(false);
-        }
-        return;
-      }
-
-      const hint = sessionStorage.getItem(AUTH_HINT_KEY);
-
-      // If no hint of previous auth, user is likely not logged in
-      // Show content immediately without waiting for Firebase
-      if (!hint) {
-        setLoading(false);
-        return;
-      }
-
-      // User was previously authenticated, initialize Firebase to verify
-      await initializeAuth();
-    };
-
-    checkAuth();
+      return () => clearTimeout(timer);
+    }
   }, [initializeAuth]);
 
   // Sign in with Google - uses redirect flow to avoid popup blockers
@@ -129,15 +120,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await initializeAuth();
       }
 
-      // Mark that we're expecting a redirect result
-      sessionStorage.setItem(REDIRECT_PENDING_KEY, "1");
+      // Set hint that user is attempting to auth
+      sessionStorage.setItem(AUTH_HINT_KEY, "pending");
 
       const provider = new GoogleAuthProvider();
       await signInWithRedirect(auth, provider);
-      // Note: This will redirect away from the page, tracking happens on return
+      // Note: This will redirect away from the page
     } catch (error) {
       console.error("Sign in failed:", error);
-      sessionStorage.removeItem(REDIRECT_PENDING_KEY);
+      sessionStorage.removeItem(AUTH_HINT_KEY);
       setLoading(false);
       throw error;
     }
