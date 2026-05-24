@@ -316,12 +316,12 @@ export default function Home() {
       {/* Mobile top bar (< lg) */}
       <header className="lg:hidden sticky top-0 z-10 border-b border-gray-200 bg-white/95 backdrop-blur">
         <div className="flex h-14 items-center justify-between gap-3 px-4">
-          <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <div className="h-2.5 w-2.5 rounded-full bg-blue-600" />
             <span className="text-sm font-semibold tracking-tight text-gray-900">
               Docs Version History
             </span>
-          </div>
+          </Link>
           <div className="flex items-center gap-2">
             <a
               href="/api/google-docs/auth"
@@ -360,12 +360,15 @@ export default function Home() {
       <div className="flex flex-1">
         {/* Sidebar (lg+) */}
         <aside className="hidden lg:flex lg:flex-col w-64 shrink-0 border-r border-gray-200 bg-white">
-          <div className="flex h-16 items-center gap-2.5 px-6 border-b border-gray-100">
+          <Link
+            href="/"
+            className="flex h-16 items-center gap-2.5 px-6 border-b border-gray-100 hover:bg-gray-50 transition-colors"
+          >
             <div className="h-2.5 w-2.5 rounded-full bg-blue-600" />
             <span className="text-base font-semibold tracking-tight text-gray-900">
               Docs Version History
             </span>
-          </div>
+          </Link>
 
           <nav className="flex-1 px-3 py-4">
             <ul className="space-y-1">
@@ -389,6 +392,27 @@ export default function Home() {
                   </svg>
                   New schedule
                 </span>
+              </li>
+              <li>
+                <Link
+                  href="/ai-detector"
+                  className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                    className="h-4 w-4"
+                  >
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="M21 21l-4.35-4.35" />
+                  </svg>
+                  AI Detector
+                </Link>
               </li>
             </ul>
 
@@ -422,6 +446,38 @@ export default function Home() {
               </a>
             </div>
           </nav>
+
+          <div className="border-t border-gray-100 px-3 py-3">
+            <p className="px-3 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
+              Site
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2 px-3">
+              <Link
+                href="/pricing"
+                className="text-xs text-gray-500 hover:text-gray-900 transition-colors"
+              >
+                Pricing
+              </Link>
+              <span className="text-gray-300">·</span>
+              <Link
+                href="/about"
+                className="text-xs text-gray-500 hover:text-gray-900 transition-colors"
+              >
+                About
+              </Link>
+              <span className="text-gray-300">·</span>
+              <Link
+                href="/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleLogout().catch((err) => console.error(err));
+                }}
+                className="text-xs text-gray-500 hover:text-gray-900 transition-colors"
+              >
+                Landing Page
+              </Link>
+            </div>
+          </div>
 
           <div className="border-t border-gray-100 p-4">
             <p
