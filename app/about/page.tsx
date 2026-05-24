@@ -1,32 +1,8 @@
-import Link from "next/link";
-import type { Metadata } from "next";
-import { Droplets, ScanSearch, Sparkles, Shield, Heart, Zap, Check } from "lucide-react";
+"use client";
 
-export const metadata: Metadata = {
-  title: "About Us - Document Version History Tool",
-  description:
-    "Learn about Docs Version History, the free tool that helps you add realistic version history to Google Docs. Track document changes, create revision history, and monitor writing progress.",
-  keywords: [
-    "about docs version history",
-    "document tracking tool",
-    "Google Docs revision tool",
-    "writing progress tracker",
-  ],
-  openGraph: {
-    title: "About Docs Version History - Document Tracking Tool",
-    description:
-      "Learn about the free tool that helps you add realistic version history to Google Docs and track document changes over time.",
-    url: "https://docsversionhistory.com/about",
-  },
-  twitter: {
-    title: "About Docs Version History",
-    description:
-      "Learn about the free tool that helps you add realistic version history to Google Docs.",
-  },
-  alternates: {
-    canonical: "https://docsversionhistory.com/about",
-  },
-};
+import Link from "next/link";
+import { Droplets, ScanSearch, Sparkles, Shield, Heart, Zap } from "lucide-react";
+import { trackCtaClick } from "@/lib/analytics";
 
 // ─── Navigation ──────────────────────────────────────────────────────
 
@@ -62,11 +38,20 @@ function Nav() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Link href="/" className="hidden sm:block text-sm font-medium text-gray-400 hover:text-white transition-colors">
+          <Link
+            href="/"
+            onClick={() =>
+              trackCtaClick({ cta_id: "about-navbar-login", cta_text: "Log in", location: "about-navbar" })
+            }
+            className="hidden sm:block text-sm font-medium text-gray-400 hover:text-white transition-colors"
+          >
             Log in
           </Link>
           <Link
             href="/"
+            onClick={() =>
+              trackCtaClick({ cta_id: "about-navbar-get-started", cta_text: "Get Started", location: "about-navbar" })
+            }
             className="bg-emerald-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-all"
           >
             Get Started
@@ -282,6 +267,13 @@ export default function AboutPage() {
           </p>
           <Link
             href="/"
+            onClick={() =>
+              trackCtaClick({
+                cta_id: "about-cta-get-started",
+                cta_text: "Get Started Free",
+                location: "about-cta-section",
+              })
+            }
             className="mt-8 inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3.5 rounded-full font-semibold hover:bg-emerald-500 transition-all"
           >
             Get Started Free

@@ -10,6 +10,7 @@ import {
 } from "react";
 import type { User } from "firebase/auth";
 import { getFirebaseAuth, isFirebaseInitialized } from "./firebase-lazy";
+import { trackSignUp, trackLogin } from "./analytics";
 
 type AuthContextValue = {
   user: User | null;
@@ -88,7 +89,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      const userCredential = await signInWithPopup(auth, provider);
+
+      // Track sign-up vs login based on whether this is a new user
+      const isNewUser =
+        userCredential.user.metadata.creationTime ===
+        userCredential.user.metadata.lastSignInTime;
+
+      if (isNewUser) {
+        trackSignUp("google");
+      } else {
+        trackLogin("google");
+      }
     } catch (error) {
       console.error("Sign in failed:", error);
       setLoading(false);

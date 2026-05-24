@@ -102,6 +102,19 @@ body {
     content-visibility: auto;
     contain-intrinsic-size: auto 500px;
   }
+
+  /* Touch target optimization for mobile (48x48px minimum) */
+  .touch-target {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  /* Landing page specific touch targets */
+  .lp-touch-target {
+    min-height: 48px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
 }
 
 /* Reduce motion for accessibility */

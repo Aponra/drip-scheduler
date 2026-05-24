@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AIDetectorFAQJsonLd } from "@/lib/structured-data";
 
 export const metadata: Metadata = {
   title: "AI Detector - Free AI Content Detection Tool",
@@ -34,5 +35,10 @@ export default function AIDetectorLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      <AIDetectorFAQJsonLd />
+    </>
+  );
 }

@@ -3,7 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
-import { WebsiteJsonLd, SoftwareAppJsonLd, HomepageFAQJsonLd } from "@/lib/structured-data";
+import { WebsiteJsonLd, SoftwareAppJsonLd, HomepageFAQJsonLd, OrganizationJsonLd } from "@/lib/structured-data";
+import Script from "next/script";
 
 // Optimize font loading with display swap to prevent FOIT
 const geistSans = Geist({
@@ -128,11 +129,28 @@ export default function RootLayout({
         </a>
         <WebsiteJsonLd />
         <SoftwareAppJsonLd />
+        <OrganizationJsonLd />
         <HomepageFAQJsonLd />
         <AuthProvider>{children}</AuthProvider>
       </body>
       {process.env.NEXT_PUBLIC_GA_ID && (
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+      )}
+      {process.env.NEXT_PUBLIC_GOOGLE_ADS_ID && (
+        <>
+          <Script
+            src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ADS_ID}`}
+            strategy="afterInteractive"
+          />
+          <Script id="google-ads" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ADS_ID}');
+            `}
+          </Script>
+        </>
       )}
     </html>
   );

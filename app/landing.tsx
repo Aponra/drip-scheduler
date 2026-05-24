@@ -3,6 +3,7 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import HeroClient from "./components/hero-client";
+import { trackCtaClick } from "@/lib/analytics";
 
 // Lazy load below-fold sections - reduces initial bundle significantly
 const BelowFoldSections = dynamic(() => import("./components/below-fold-sections"), {
@@ -122,13 +123,19 @@ function Navbar({ onGetStarted }: { onGetStarted: () => void }) {
 
         <div className="flex items-center gap-3">
           <button
-            onClick={onGetStarted}
+            onClick={() => {
+              trackCtaClick({ cta_id: "navbar-login", cta_text: "Log in", location: "navbar" });
+              onGetStarted();
+            }}
             className="hidden sm:block text-sm font-medium text-gray-400 hover:text-white transition-colors"
           >
             Log in
           </button>
           <button
-            onClick={onGetStarted}
+            onClick={() => {
+              trackCtaClick({ cta_id: "navbar-get-started", cta_text: "Get Started", location: "navbar" });
+              onGetStarted();
+            }}
             className="bg-emerald-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-colors"
           >
             Get Started

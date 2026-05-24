@@ -3,6 +3,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { trackCtaClick } from "@/lib/analytics";
 import {
   ArrowRight,
   Play,
@@ -260,6 +261,13 @@ function Features() {
             {features[activeTab].link && (
               <Link
                 href={features[activeTab].link}
+                onClick={() =>
+                  trackCtaClick({
+                    cta_id: `features-try-${features[activeTab].id}`,
+                    cta_text: `Try ${features[activeTab].title}`,
+                    location: "features-section",
+                  })
+                }
                 className="mt-6 inline-flex items-center gap-2 text-emerald-400 font-semibold hover:gap-3 transition-all"
               >
                 Try {features[activeTab].title}
@@ -561,13 +569,27 @@ function CTA({ onGetStarted }: { onGetStarted: () => void }) {
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
           <button
-            onClick={onGetStarted}
+            onClick={() => {
+              trackCtaClick({
+                cta_id: "cta-create-version-history",
+                cta_text: "Create Version History Free",
+                location: "cta-section",
+              });
+              onGetStarted();
+            }}
             className="bg-emerald-600 text-white px-8 py-4 rounded-full text-base font-semibold hover:bg-emerald-500 transition-colors"
           >
             Create Version History Free
           </button>
           <Link
             href="/pricing"
+            onClick={() =>
+              trackCtaClick({
+                cta_id: "cta-view-pricing",
+                cta_text: "View Pricing",
+                location: "cta-section",
+              })
+            }
             className="px-8 py-4 rounded-full text-base font-semibold text-white border border-gray-700 hover:border-emerald-500 transition-colors"
           >
             View Pricing

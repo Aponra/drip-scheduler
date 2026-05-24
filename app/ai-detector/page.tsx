@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { trackEvent } from "@/lib/analytics";
+import { trackEvent, trackCtaClick } from "@/lib/analytics";
 import { Droplets } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────
@@ -231,6 +231,7 @@ export default function AIDetectorPage() {
     setDetectionResult(null);
 
     trackEvent("ai_detect_clicked", { word_count: wordCount, char_count: charCount });
+    trackCtaClick({ cta_id: "ai-detector-scan", cta_text: "Scan for AI", location: "ai-detector-tool" });
 
     try {
       const result = await detectAI(inputText);
@@ -253,6 +254,7 @@ export default function AIDetectorPage() {
     setRewriteResult(null);
 
     trackEvent("rewrite_clicked", { word_count: wordCount, char_count: charCount });
+    trackCtaClick({ cta_id: "ai-detector-humanize", cta_text: "Humanize", location: "ai-detector-tool" });
 
     try {
       const result = await rewriteText(inputText);
@@ -304,11 +306,20 @@ export default function AIDetectorPage() {
             </Link>
           </nav>
           <div className="flex items-center gap-3">
-            <Link href="/" className="hidden sm:block text-sm font-medium text-gray-400 hover:text-white transition-colors">
+            <Link
+              href="/"
+              onClick={() =>
+                trackCtaClick({ cta_id: "ai-detector-navbar-login", cta_text: "Log in", location: "ai-detector-navbar" })
+              }
+              className="hidden sm:block text-sm font-medium text-gray-400 hover:text-white transition-colors"
+            >
               Log in
             </Link>
             <Link
               href="/"
+              onClick={() =>
+                trackCtaClick({ cta_id: "ai-detector-navbar-get-started", cta_text: "Get Started", location: "ai-detector-navbar" })
+              }
               className="bg-emerald-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-all"
             >
               Get Started

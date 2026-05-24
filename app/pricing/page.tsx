@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { Droplets, Check } from "lucide-react";
+import { trackCtaClick } from "@/lib/analytics";
 
 // ─── Navigation ──────────────────────────────────────────────────────
 
@@ -39,13 +40,19 @@ function Nav({ onGetStarted }: { onGetStarted: () => void }) {
 
         <div className="flex items-center gap-3">
           <button
-            onClick={onGetStarted}
+            onClick={() => {
+              trackCtaClick({ cta_id: "pricing-navbar-login", cta_text: "Log in", location: "pricing-navbar" });
+              onGetStarted();
+            }}
             className="hidden sm:block text-sm font-medium text-gray-400 hover:text-white transition-colors"
           >
             Log in
           </button>
           <button
-            onClick={onGetStarted}
+            onClick={() => {
+              trackCtaClick({ cta_id: "pricing-navbar-get-started", cta_text: "Get Started", location: "pricing-navbar" });
+              onGetStarted();
+            }}
             className="bg-emerald-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-all"
           >
             Get Started
@@ -196,7 +203,16 @@ export default function PricingPage() {
                 </ul>
 
                 <button
-                  onClick={() => !plan.disabled && signInWithGoogle()}
+                  onClick={() => {
+                    if (!plan.disabled) {
+                      trackCtaClick({
+                        cta_id: `pricing-${plan.name.toLowerCase()}-cta`,
+                        cta_text: plan.cta,
+                        location: "pricing-card",
+                      });
+                      signInWithGoogle();
+                    }
+                  }}
                   disabled={plan.disabled}
                   className={`mt-8 w-full rounded-xl py-3 text-sm font-semibold transition-all ${
                     plan.popular
