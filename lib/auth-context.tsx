@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const authInitializedRef = useRef(false);
 
-  // Initialize Firebase auth, check redirect result, and set up listener
+  // Initialize Firebase auth and set up listener
   const initializeAuth = useCallback(async () => {
     if (authInitializedRef.current) return;
 
@@ -40,11 +40,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       authInitializedRef.current = true;
 
-      // Always check for redirect result first
+      // Check for redirect result (in case user used redirect flow)
       try {
         const result = await getRedirectResult(auth);
         if (result?.user) {
-          // Track sign-up vs login based on whether this is a new user
           const isNewUser =
             result.user.metadata.creationTime ===
             result.user.metadata.lastSignInTime;
@@ -55,9 +54,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             trackLogin("google");
           }
         }
-      } catch (redirectError) {
-        // Redirect result errors are not critical, log and continue
-        console.error("Redirect result check failed:", redirectError);
+      } catch (e) {
+        // Ignore redirect errors
       }
 
       // Set up auth state listener
@@ -65,7 +63,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(nextUser);
         setLoading(false);
 
-        // Update session hint
         if (nextUser) {
           sessionStorage.setItem(AUTH_HINT_KEY, "1");
         } else {
@@ -78,57 +75,55 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Check auth on mount
+  // Always initialize auth on mount
   useEffect(() => {
     if (typeof window === "undefined") return;
-
-    const hint = sessionStorage.getItem(AUTH_HINT_KEY);
-
-    // If user was previously logged in OR if we might be returning from a redirect,
-    // initialize Firebase to check auth state
-    // We check the URL for any signs of OAuth callback
-    const isOAuthCallback = window.location.href.includes("apiKey") ||
-                            window.location.href.includes("authUser") ||
-                            document.referrer.includes("accounts.google.com");
-
-    if (hint || isOAuthCallback) {
-      initializeAuth();
-    } else {
-      // No hint of auth, but still initialize to catch redirect results
-      // Use a slight delay to not block initial render
-      const timer = setTimeout(() => {
-        initializeAuth();
-      }, 100);
-
-      // Show content immediately for non-authenticated users
-      setLoading(false);
-
-      return () => clearTimeout(timer);
-    }
+    initializeAuth();
   }, [initializeAuth]);
 
-  // Sign in with Google - uses redirect flow to avoid popup blockers
+  // Sign in with Google - try popup first, fall back to redirect
   const signInWithGoogle = useCallback(async () => {
     setLoading(true);
 
     try {
       const auth = await getFirebaseAuth();
-      const { GoogleAuthProvider, signInWithRedirect } = await import("firebase/auth");
+      const { GoogleAuthProvider, signInWithPopup, signInWithRedirect } = await import("firebase/auth");
 
-      // Set up auth listener if not already done
       if (!authInitializedRef.current) {
         await initializeAuth();
       }
 
-      // Set hint that user is attempting to auth
-      sessionStorage.setItem(AUTH_HINT_KEY, "pending");
-
       const provider = new GoogleAuthProvider();
-      await signInWithRedirect(auth, provider);
-      // Note: This will redirect away from the page
+
+      try {
+        // Try popup first (better UX)
+        const result = await signInWithPopup(auth, provider);
+
+        if (result?.user) {
+          const isNewUser =
+            result.user.metadata.creationTime ===
+            result.user.metadata.lastSignInTime;
+
+          if (isNewUser) {
+            trackSignUp("google");
+          } else {
+            trackLogin("google");
+          }
+        }
+      } catch (popupError: any) {
+        // If popup was blocked, fall back to redirect
+        if (popupError?.code === "auth/popup-blocked" ||
+            popupError?.code === "auth/popup-closed-by-user" ||
+            popupError?.code === "auth/cancelled-popup-request") {
+          console.log("Popup blocked, using redirect flow...");
+          sessionStorage.setItem(AUTH_HINT_KEY, "pending");
+          await signInWithRedirect(auth, provider);
+        } else {
+          throw popupError;
+        }
+      }
     } catch (error) {
       console.error("Sign in failed:", error);
-      sessionStorage.removeItem(AUTH_HINT_KEY);
       setLoading(false);
       throw error;
     }
@@ -137,7 +132,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Logout
   const logout = useCallback(async () => {
     if (!isFirebaseInitialized()) {
-      // Not signed in, nothing to do
       setUser(null);
       sessionStorage.removeItem(AUTH_HINT_KEY);
       return;
