@@ -1,12 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 type Props = {
   onGetStarted: () => void;
 };
 
 const durations = ["30 min", "1 hour", "2 hours", "6 hours", "1 day", "1 week"];
+
+// Session storage key for persisting draft before login
+const DRAFT_KEY = "schedulerDraft";
 
 // Inline SVGs for critical above-fold icons (avoids Lucide bundle)
 function DropletIcon({ className }: { className?: string }) {
@@ -64,8 +67,22 @@ function PlusIcon({ className }: { className?: string }) {
 
 export default function HeroClient({ onGetStarted }: Props) {
   const [duration, setDuration] = useState("1 hour");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleStart = () => {
+    // Save draft to sessionStorage before login redirect
+    const text = textareaRef.current?.value?.trim() || "";
+    if (text || duration !== "1 hour") {
+      try {
+        sessionStorage.setItem(
+          DRAFT_KEY,
+          JSON.stringify({ text, duration, timestamp: Date.now() })
+        );
+      } catch {
+        // sessionStorage may be unavailable; ignore
+      }
+    }
+
     // Lazy load analytics only when needed
     import("@/lib/analytics").then(({ trackEvent }) => {
       trackEvent("hero_cta_click", { duration });
@@ -97,6 +114,7 @@ export default function HeroClient({ onGetStarted }: Props) {
         {/* Text Area */}
         <div className="p-5">
           <textarea
+            ref={textareaRef}
             placeholder="Paste your essay, assignment, or any text here..."
             rows={5}
             className="w-full bg-transparent text-white placeholder:text-gray-600 outline-none resize-none text-base leading-relaxed"

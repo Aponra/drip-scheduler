@@ -209,6 +209,19 @@ const cardClass =
 
 const GOOGLE_DOC_BODY_START = 1;
 
+// Session storage key for draft from landing page (must match hero-client.tsx)
+const DRAFT_KEY = "schedulerDraft";
+
+// Map hero durations to scheduler preset keys
+const HERO_DURATION_MAP: Record<string, PresetKey> = {
+  "30 min": "30m",
+  "1 hour": "1h",
+  "2 hours": "2h",
+  "6 hours": "6h",
+  "1 day": "1d",
+  "1 week": "1w",
+};
+
 type Props = {
   docsConnected?: boolean;
 };
@@ -242,6 +255,49 @@ export default function Scheduler({ docsConnected = false }: Props) {
   );
   const exportStoppedRef = useRef(false);
   const exportSleepCancelRef = useRef<(() => void) | null>(null);
+  const draftRestoredRef = useRef(false);
+
+  // Restore draft from landing page on mount
+  useEffect(() => {
+    if (draftRestoredRef.current) return;
+    draftRestoredRef.current = true;
+
+    try {
+      const saved = sessionStorage.getItem(DRAFT_KEY);
+      if (!saved) return;
+
+      const draft = JSON.parse(saved) as {
+        text?: string;
+        duration?: string;
+        timestamp?: number;
+      };
+
+      // Only restore if draft is less than 1 hour old
+      const maxAge = 60 * 60 * 1000; // 1 hour
+      if (draft.timestamp && Date.now() - draft.timestamp > maxAge) {
+        sessionStorage.removeItem(DRAFT_KEY);
+        return;
+      }
+
+      // Restore text
+      if (draft.text) {
+        editorRef.current?.setText(draft.text);
+        setPlainText(draft.text);
+        const doc = plainTextToDocument(draft.text);
+        setDocJson(doc);
+      }
+
+      // Restore duration
+      if (draft.duration && HERO_DURATION_MAP[draft.duration]) {
+        setSelectedDuration(HERO_DURATION_MAP[draft.duration]);
+      }
+
+      // Clear the draft after restoring
+      sessionStorage.removeItem(DRAFT_KEY);
+    } catch {
+      // sessionStorage may be unavailable or JSON invalid; ignore
+    }
+  }, []);
 
   const chunks = useMemo(
     () => splitIntoChunks(plainText, chunkSize),
