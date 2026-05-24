@@ -279,17 +279,26 @@ export default function Scheduler({ docsConnected = false }: Props) {
         return;
       }
 
-      // Restore text
+      // Restore duration immediately
+      if (draft.duration && HERO_DURATION_MAP[draft.duration]) {
+        setSelectedDuration(HERO_DURATION_MAP[draft.duration]);
+      }
+
+      // Restore text with a small delay to ensure editor is mounted
       if (draft.text) {
-        editorRef.current?.setText(draft.text);
         setPlainText(draft.text);
         const doc = plainTextToDocument(draft.text);
         setDocJson(doc);
-      }
 
-      // Restore duration
-      if (draft.duration && HERO_DURATION_MAP[draft.duration]) {
-        setSelectedDuration(HERO_DURATION_MAP[draft.duration]);
+        // Wait for editor to mount, then set content
+        const trySetText = (attempts: number) => {
+          if (editorRef.current) {
+            editorRef.current.setText(draft.text!);
+          } else if (attempts < 10) {
+            setTimeout(() => trySetText(attempts + 1), 100);
+          }
+        };
+        setTimeout(() => trySetText(0), 100);
       }
 
       // Clear the draft after restoring
