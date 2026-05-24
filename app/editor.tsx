@@ -52,8 +52,8 @@ function ToolbarButton({
       className={
         "inline-flex h-8 min-w-8 items-center justify-center gap-1 rounded-md px-2 text-sm font-medium transition-colors " +
         (active
-          ? "bg-purple-100 text-purple-700"
-          : "text-gray-700 hover:bg-gray-100")
+          ? "bg-purple-500/20 text-purple-400"
+          : "text-gray-300 hover:bg-gray-700")
       }
     >
       {children}
@@ -62,7 +62,7 @@ function ToolbarButton({
 }
 
 function Divider() {
-  return <span className="mx-1 h-5 w-px bg-gray-200" aria-hidden="true" />;
+  return <span className="mx-1 h-5 w-px bg-gray-700" aria-hidden="true" />;
 }
 
 function Toolbar({ editor }: { editor: Editor | null }) {
@@ -101,7 +101,7 @@ function Toolbar({ editor }: { editor: Editor | null }) {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-1 border-b border-gray-200 bg-gray-50/60 px-2 py-1.5">
+    <div className="flex flex-wrap items-center gap-1 border-b border-gray-700 bg-gray-800/60 px-2 py-1.5">
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleBold().run()}
         active={editor.isActive("bold")}
@@ -196,9 +196,9 @@ function Toolbar({ editor }: { editor: Editor | null }) {
       <Divider />
       <label
         title="Text color"
-        className="inline-flex h-8 cursor-pointer items-center gap-1 rounded-md px-1.5 text-xs font-medium text-gray-700 hover:bg-gray-100"
+        className="inline-flex h-8 cursor-pointer items-center gap-1 rounded-md px-1.5 text-xs font-medium text-gray-300 hover:bg-gray-700"
       >
-        <span className="h-4 w-4 rounded border border-gray-300 bg-gradient-to-br from-purple-500 via-blue-500 to-emerald-500" />
+        <span className="h-4 w-4 rounded border border-gray-600 bg-gradient-to-br from-purple-500 via-blue-500 to-emerald-500" />
         <input
           type="color"
           className="sr-only"
@@ -212,9 +212,9 @@ function Toolbar({ editor }: { editor: Editor | null }) {
       <Divider />
       <label
         title="Highlight color"
-        className="inline-flex h-8 cursor-pointer items-center gap-1 rounded-md px-1.5 text-xs font-medium text-gray-700 hover:bg-gray-100"
+        className="inline-flex h-8 cursor-pointer items-center gap-1 rounded-md px-1.5 text-xs font-medium text-gray-300 hover:bg-gray-700"
       >
-        <span className="h-4 w-4 rounded border border-gray-300 bg-yellow-200" />
+        <span className="h-4 w-4 rounded border border-gray-600 bg-yellow-200" />
         <input
           type="color"
           className="sr-only"
@@ -252,7 +252,7 @@ const RichEditor = forwardRef(function RichEditor(
       editorProps: {
         attributes: {
           class:
-            "prose-editor min-h-[260px] max-w-none px-4 py-3 text-sm leading-relaxed text-gray-900 focus:outline-none",
+            "prose-editor prose-editor-dark min-h-[260px] max-w-none px-4 py-3 text-sm leading-relaxed text-gray-100 focus:outline-none",
           "data-placeholder": placeholder ?? "",
         },
       },
@@ -310,9 +310,9 @@ const RichEditor = forwardRef(function RichEditor(
 
   if (!mounted) {
     return (
-      <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
-        <div className="h-[40px] border-b border-gray-200 bg-gray-50/60" />
-        <div className="min-h-[260px] px-4 py-3 text-sm text-gray-400">
+      <div className="rounded-lg border border-gray-700 bg-gray-800 shadow-sm">
+        <div className="h-[40px] border-b border-gray-700 bg-gray-800/60" />
+        <div className="min-h-[260px] px-4 py-3 text-sm text-gray-500">
           Loading editor…
         </div>
       </div>
@@ -320,7 +320,7 @@ const RichEditor = forwardRef(function RichEditor(
   }
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white shadow-sm focus-within:border-purple-500 focus-within:ring-2 focus-within:ring-purple-500/20">
+    <div className="rounded-lg border border-gray-700 bg-gray-800 shadow-sm focus-within:border-purple-500 focus-within:ring-2 focus-within:ring-purple-500/20">
       <Toolbar editor={editor} />
       <EditorContent editor={editor} />
     </div>

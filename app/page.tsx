@@ -254,7 +254,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-gray-950">
       {toast && (
         <div
           role={toast.kind === "success" ? "status" : "alert"}
@@ -263,19 +263,19 @@ export default function Home() {
           <div
             className={
               toast.kind === "success"
-                ? "flex items-start gap-2.5 rounded-lg border border-emerald-200 bg-white px-4 py-2.5 shadow-md"
+                ? "flex items-start gap-2.5 rounded-lg border border-emerald-500/30 bg-gray-900 px-4 py-2.5 shadow-md"
                 : toast.kind === "warning"
-                  ? "flex items-start gap-2.5 rounded-lg border border-amber-200 bg-white px-4 py-2.5 shadow-md"
-                  : "flex items-start gap-2.5 rounded-lg border border-red-200 bg-white px-4 py-2.5 shadow-md"
+                  ? "flex items-start gap-2.5 rounded-lg border border-amber-500/30 bg-gray-900 px-4 py-2.5 shadow-md"
+                  : "flex items-start gap-2.5 rounded-lg border border-red-500/30 bg-gray-900 px-4 py-2.5 shadow-md"
             }
           >
             <span
               className={
                 toast.kind === "success"
-                  ? "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700"
+                  ? "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400"
                   : toast.kind === "warning"
-                    ? "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-700"
-                    : "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-700"
+                    ? "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500/20 text-amber-400"
+                    : "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-500/20 text-red-400"
               }
             >
               {toast.kind === "success" ? (
@@ -297,14 +297,14 @@ export default function Home() {
                 </svg>
               )}
             </span>
-            <span className="text-sm font-medium text-gray-800">
+            <span className="text-sm font-medium text-white">
               {toast.message}
             </span>
             {toast.kind !== "success" && (
               <button
                 onClick={() => setToast(null)}
                 aria-label="Dismiss"
-                className="-mr-1 ml-2 flex h-5 w-5 shrink-0 items-center justify-center rounded text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                className="-mr-1 ml-2 flex h-5 w-5 shrink-0 items-center justify-center rounded text-gray-400 transition-colors hover:bg-gray-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -326,13 +326,13 @@ export default function Home() {
       )}
 
       {/* Mobile top bar (< lg) */}
-      <header className="lg:hidden sticky top-0 z-10 border-b border-gray-200 bg-white/95 backdrop-blur">
+      <header className="lg:hidden sticky top-0 z-10 border-b border-gray-800 bg-gray-950/95 backdrop-blur">
         <div className="flex h-14 items-center justify-between gap-3 px-4">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowLanding(true)}
               aria-label="Back to Home"
-              className="rounded-lg border border-gray-200 bg-white p-1.5 text-gray-700 shadow-sm transition-all hover:bg-gray-50"
+              className="rounded-lg border border-gray-700 bg-gray-900 p-1.5 text-gray-300 shadow-sm transition-all hover:bg-gray-800"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -351,7 +351,7 @@ export default function Home() {
             <Link
               href="/ai-detector"
               aria-label="AI Detector"
-              className="rounded-lg border border-gray-200 bg-white p-1.5 text-gray-700 shadow-sm transition-all hover:bg-gray-50"
+              className="rounded-lg border border-gray-700 bg-gray-900 p-1.5 text-gray-300 shadow-sm transition-all hover:bg-gray-800"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -378,8 +378,8 @@ export default function Home() {
               }
               className={
                 docsConnected
-                  ? "inline-flex items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-xs font-medium text-emerald-700 shadow-sm transition-all hover:bg-emerald-100"
-                  : "inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition-all hover:bg-gray-50"
+                  ? "inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1.5 text-xs font-medium text-emerald-400 shadow-sm transition-all hover:bg-emerald-500/20"
+                  : "inline-flex items-center gap-1.5 rounded-lg border border-gray-700 bg-gray-900 px-2.5 py-1.5 text-xs font-medium text-gray-300 shadow-sm transition-all hover:bg-gray-800"
               }
             >
               {docsConnected ? (
@@ -397,13 +397,13 @@ export default function Home() {
 
       <div className="flex flex-1">
         {/* Sidebar (lg+) */}
-        <aside className="hidden lg:flex lg:flex-col w-64 shrink-0 border-r border-gray-200 bg-white">
+        <aside className="hidden lg:flex lg:flex-col w-64 shrink-0 border-r border-gray-800 bg-gray-900">
           <Link
             href="/"
-            className="flex h-16 items-center gap-2.5 px-6 border-b border-gray-100 hover:bg-gray-50 transition-colors"
+            className="flex h-16 items-center gap-2.5 px-6 border-b border-gray-800 hover:bg-gray-800 transition-colors"
           >
-            <div className="h-2.5 w-2.5 rounded-full bg-blue-600" />
-            <span className="text-base font-semibold tracking-tight text-gray-900">
+            <div className="h-2.5 w-2.5 rounded-full bg-blue-500" />
+            <span className="text-base font-semibold tracking-tight text-white">
               Docs Version History
             </span>
           </Link>
@@ -413,7 +413,7 @@ export default function Home() {
               <li>
                 <span
                   aria-current="page"
-                  className="flex items-center gap-2.5 rounded-lg bg-purple-50 px-3 py-2 text-sm font-medium text-purple-700"
+                  className="flex items-center gap-2.5 rounded-lg bg-purple-500/10 px-3 py-2 text-sm font-medium text-purple-400"
                 >
                   <svg
                     viewBox="0 0 24 24"
@@ -434,7 +434,7 @@ export default function Home() {
               <li>
                 <Link
                   href="/ai-detector"
-                  className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                  className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-400 hover:bg-gray-800 hover:text-white transition-colors"
                 >
                   <svg
                     viewBox="0 0 24 24"
@@ -454,8 +454,8 @@ export default function Home() {
               </li>
             </ul>
 
-            <div className="mt-6 border-t border-gray-100 pt-4">
-              <p className="px-3 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
+            <div className="mt-6 border-t border-gray-800 pt-4">
+              <p className="px-3 text-[11px] font-semibold uppercase tracking-wide text-gray-500">
                 Integrations
               </p>
               <a
@@ -467,8 +467,8 @@ export default function Home() {
                 }
                 className={
                   docsConnected
-                    ? "mt-2 flex w-full items-center gap-2.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-700 shadow-sm transition-all hover:-translate-y-px hover:bg-emerald-100 hover:shadow"
-                    : "mt-2 flex w-full items-center gap-2.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all hover:-translate-y-px hover:bg-gray-50 hover:shadow"
+                    ? "mt-2 flex w-full items-center gap-2.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm font-medium text-emerald-400 shadow-sm transition-all hover:-translate-y-px hover:bg-emerald-500/20 hover:shadow"
+                    : "mt-2 flex w-full items-center gap-2.5 rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-sm font-medium text-gray-300 shadow-sm transition-all hover:-translate-y-px hover:bg-gray-700 hover:shadow"
                 }
               >
                 {docsConnected ? (
@@ -485,37 +485,37 @@ export default function Home() {
             </div>
           </nav>
 
-          <div className="border-t border-gray-100 px-3 py-3">
-            <p className="px-3 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
+          <div className="border-t border-gray-800 px-3 py-3">
+            <p className="px-3 text-[11px] font-semibold uppercase tracking-wide text-gray-500">
               Site
             </p>
             <div className="mt-2 flex flex-wrap gap-2 px-3">
               <Link
                 href="/pricing"
-                className="text-xs text-gray-500 hover:text-gray-900 transition-colors"
+                className="text-xs text-gray-400 hover:text-white transition-colors"
               >
                 Pricing
               </Link>
-              <span className="text-gray-300">·</span>
+              <span className="text-gray-600">·</span>
               <Link
                 href="/about"
-                className="text-xs text-gray-500 hover:text-gray-900 transition-colors"
+                className="text-xs text-gray-400 hover:text-white transition-colors"
               >
                 About
               </Link>
-              <span className="text-gray-300">·</span>
+              <span className="text-gray-600">·</span>
               <button
                 onClick={() => setShowLanding(true)}
-                className="text-xs text-gray-500 hover:text-gray-900 transition-colors"
+                className="text-xs text-gray-400 hover:text-white transition-colors"
               >
                 Landing Page
               </button>
             </div>
           </div>
 
-          <div className="border-t border-gray-100 p-4">
+          <div className="border-t border-gray-800 p-4">
             <p
-              className="truncate text-xs text-gray-500"
+              className="truncate text-xs text-gray-400"
               title={user.email ?? undefined}
             >
               {user.email ?? user.displayName ?? "Signed in"}
@@ -524,7 +524,7 @@ export default function Home() {
               onClick={() => {
                 handleLogout().catch((err) => console.error(err));
               }}
-              className="mt-2 inline-flex w-full items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 shadow-sm transition-all hover:-translate-y-px hover:bg-gray-50 hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2"
+              className="mt-2 inline-flex w-full items-center justify-center rounded-lg border border-gray-700 bg-gray-800 px-3 py-1.5 text-sm font-medium text-gray-300 shadow-sm transition-all hover:-translate-y-px hover:bg-gray-700 hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
             >
               Log out
             </button>
@@ -534,10 +534,10 @@ export default function Home() {
         {/* Main */}
         <main className="relative flex-1 overflow-x-hidden">
           {/* Desktop top bar with navigation */}
-          <div className="hidden lg:flex items-center justify-start gap-3 px-6 py-3 border-b border-gray-100">
+          <div className="hidden lg:flex items-center justify-start gap-3 px-6 py-3 border-b border-gray-800">
             <button
               onClick={() => setShowLanding(true)}
-              className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-600 shadow-sm transition-all hover:bg-gray-50 hover:text-gray-900"
+              className="inline-flex items-center gap-2 rounded-lg border border-gray-700 bg-gray-800 px-3 py-1.5 text-sm font-medium text-gray-300 shadow-sm transition-all hover:bg-gray-700 hover:text-white"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -556,7 +556,7 @@ export default function Home() {
             </button>
             <Link
               href="/ai-detector"
-              className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-600 shadow-sm transition-all hover:bg-gray-50 hover:text-gray-900"
+              className="inline-flex items-center gap-2 rounded-lg border border-gray-700 bg-gray-800 px-3 py-1.5 text-sm font-medium text-gray-300 shadow-sm transition-all hover:bg-gray-700 hover:text-white"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -578,19 +578,19 @@ export default function Home() {
           {/* Soft pink/purple glow accent */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute -top-24 right-[-10%] h-[360px] w-[360px] rounded-full bg-fuchsia-200/30 blur-3xl"
+            className="pointer-events-none absolute -top-24 right-[-10%] h-[360px] w-[360px] rounded-full bg-fuchsia-500/10 blur-3xl"
           />
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute -top-32 left-[-5%] h-[320px] w-[320px] rounded-full bg-purple-200/25 blur-3xl"
+            className="pointer-events-none absolute -top-32 left-[-5%] h-[320px] w-[320px] rounded-full bg-purple-500/10 blur-3xl"
           />
 
           <div className="relative mx-auto w-full max-w-3xl px-6 py-10 lg:py-8">
             <div className="mb-8 animate-fade-in-up">
-              <h1 className="text-3xl font-semibold tracking-tight text-gray-900">
+              <h1 className="text-3xl font-semibold tracking-tight text-white">
                 Insert Text
               </h1>
-              <p className="mt-1.5 text-sm text-gray-500">
+              <p className="mt-1.5 text-sm text-gray-400">
                 Plan a schedule, save it for later, or send it slowly into Google
                 Docs.
               </p>

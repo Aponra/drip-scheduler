@@ -199,13 +199,13 @@ function formatInterval(seconds: number): string {
 }
 
 const inputClass =
-  "w-full rounded-lg border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 shadow-sm transition-all focus-visible:border-purple-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/20";
+  "w-full rounded-lg border border-gray-700 bg-gray-800 px-3.5 py-2.5 text-sm text-white placeholder-gray-500 shadow-sm transition-all focus-visible:border-purple-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/20";
 
 const labelClass =
-  "block text-xs font-medium uppercase tracking-wide text-gray-500 mb-1.5";
+  "block text-xs font-medium uppercase tracking-wide text-gray-400 mb-1.5";
 
 const cardClass =
-  "rounded-2xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md";
+  "rounded-2xl border border-gray-800 bg-gray-900 shadow-sm transition-shadow hover:shadow-md";
 
 const GOOGLE_DOC_BODY_START = 1;
 
@@ -727,11 +727,11 @@ export default function Scheduler({ docsConnected = false }: Props) {
   return (
     <div className="space-y-6">
       <section className={cardClass}>
-        <div className="border-b border-gray-100 px-6 py-5">
-          <h2 className="text-base font-semibold text-gray-900">
+        <div className="border-b border-gray-800 px-6 py-5">
+          <h2 className="text-base font-semibold text-white">
             New schedule
           </h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-gray-400">
             Write or import a document, pick a total duration, and schedule it.
           </p>
         </div>
@@ -760,8 +760,8 @@ export default function Scheduler({ docsConnected = false }: Props) {
                     onClick={() => setSelectedDuration(preset.key)}
                     className={
                       isActive
-                        ? "inline-flex items-center rounded-full bg-purple-600 px-3.5 py-1.5 text-sm font-medium text-white shadow-sm transition-all hover:-translate-y-px hover:bg-purple-700 hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2"
-                        : "inline-flex items-center rounded-full border border-gray-200 bg-white px-3.5 py-1.5 text-sm font-medium text-gray-700 shadow-sm transition-all hover:-translate-y-px hover:bg-gray-50 hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2"
+                        ? "inline-flex items-center rounded-full bg-purple-600 px-3.5 py-1.5 text-sm font-medium text-white shadow-sm transition-all hover:-translate-y-px hover:bg-purple-700 hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+                        : "inline-flex items-center rounded-full border border-gray-700 bg-gray-800 px-3.5 py-1.5 text-sm font-medium text-gray-300 shadow-sm transition-all hover:-translate-y-px hover:bg-gray-700 hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
                     }
                   >
                     {preset.label}
@@ -773,8 +773,8 @@ export default function Scheduler({ docsConnected = false }: Props) {
                 onClick={() => setSelectedDuration("custom")}
                 className={
                   selectedDuration === "custom"
-                    ? "inline-flex items-center rounded-full bg-purple-600 px-3.5 py-1.5 text-sm font-medium text-white shadow-sm transition-all hover:-translate-y-px hover:bg-purple-700 hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2"
-                    : "inline-flex items-center rounded-full border border-gray-200 bg-white px-3.5 py-1.5 text-sm font-medium text-gray-700 shadow-sm transition-all hover:-translate-y-px hover:bg-gray-50 hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2"
+                    ? "inline-flex items-center rounded-full bg-purple-600 px-3.5 py-1.5 text-sm font-medium text-white shadow-sm transition-all hover:-translate-y-px hover:bg-purple-700 hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+                    : "inline-flex items-center rounded-full border border-gray-700 bg-gray-800 px-3.5 py-1.5 text-sm font-medium text-gray-300 shadow-sm transition-all hover:-translate-y-px hover:bg-gray-700 hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
                 }
               >
                 Custom
@@ -799,9 +799,9 @@ export default function Scheduler({ docsConnected = false }: Props) {
             )}
 
             {chunks.length > 0 && (
-              <p className="mt-3 text-xs text-gray-500">
+              <p className="mt-3 text-xs text-gray-400">
                 Estimated interval:{" "}
-                <span className="font-medium text-gray-700 tabular-nums">
+                <span className="font-medium text-gray-200 tabular-nums">
                   {formatInterval(intervalSeconds)}
                 </span>{" "}
                 per chunk · {chunks.length} chunk
@@ -829,11 +829,11 @@ export default function Scheduler({ docsConnected = false }: Props) {
               className={
                 "flex cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed px-6 py-6 text-center transition-all " +
                 (isDraggingFile
-                  ? "border-purple-400 bg-purple-50/60"
-                  : "border-gray-200 bg-gray-50/40 hover:border-purple-300 hover:bg-purple-50/40")
+                  ? "border-purple-400 bg-purple-500/10"
+                  : "border-gray-700 bg-gray-800/40 hover:border-purple-500 hover:bg-purple-500/10")
               }
             >
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-purple-50 text-purple-600">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-purple-500/20 text-purple-400">
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
@@ -849,10 +849,10 @@ export default function Scheduler({ docsConnected = false }: Props) {
                   <path d="M5 21h14" />
                 </svg>
               </div>
-              <p className="text-sm font-medium text-gray-800">
+              <p className="text-sm font-medium text-gray-200">
                 Drop a file here, or click to browse
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-400">
                 .txt, .md, .docx, .pdf · up to {MAX_FILE_SIZE_LABEL}
               </p>
               <input
@@ -865,13 +865,13 @@ export default function Scheduler({ docsConnected = false }: Props) {
             </div>
 
             {uploadStatus.kind === "parsing" && (
-              <div className="mt-2 inline-flex items-center gap-2 rounded-full border border-purple-200 bg-purple-50 px-3 py-1 text-xs font-medium text-purple-700">
-                <span className="h-3 w-3 rounded-full border-2 border-purple-300 border-t-purple-600 animate-spin" />
+              <div className="mt-2 inline-flex items-center gap-2 rounded-full border border-purple-500/30 bg-purple-500/10 px-3 py-1 text-xs font-medium text-purple-400">
+                <span className="h-3 w-3 rounded-full border-2 border-purple-400/30 border-t-purple-400 animate-spin" />
                 Parsing {uploadStatus.filename}…
               </div>
             )}
             {uploadStatus.kind === "success" && (
-              <div className="mt-2 animate-fade-in-up inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
+              <div className="mt-2 animate-fade-in-up inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400">
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
@@ -888,7 +888,7 @@ export default function Scheduler({ docsConnected = false }: Props) {
               </div>
             )}
             {uploadStatus.kind === "error" && (
-              <div className="mt-2 animate-fade-in-up inline-flex max-w-full items-start rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-700 break-words whitespace-normal">
+              <div className="mt-2 animate-fade-in-up inline-flex max-w-full items-start rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs font-medium text-red-400 break-words whitespace-normal">
                 {uploadStatus.message}
               </div>
             )}
@@ -935,7 +935,7 @@ export default function Scheduler({ docsConnected = false }: Props) {
             <button
               onClick={handleSave}
               disabled={!canSave}
-              className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-all hover:-translate-y-px hover:bg-gray-50 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:shadow-sm"
+              className="inline-flex items-center gap-2 rounded-lg border border-gray-700 bg-gray-800 px-4 py-2.5 text-sm font-medium text-gray-300 shadow-sm transition-all hover:-translate-y-px hover:bg-gray-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-gray-800 disabled:hover:shadow-sm"
             >
               {isSaving && (
                 <span className="h-3.5 w-3.5 rounded-full border-2 border-gray-300 border-t-gray-700 animate-spin" />
@@ -951,7 +951,7 @@ export default function Scheduler({ docsConnected = false }: Props) {
                   ? "Export this schedule to Google Docs"
                   : "Connect Google Docs to enable export"
               }
-              className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-all hover:-translate-y-px hover:bg-gray-50 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-white disabled:hover:shadow-sm"
+              className="inline-flex items-center gap-2 rounded-lg border border-gray-700 bg-gray-800 px-4 py-2.5 text-sm font-medium text-gray-300 shadow-sm transition-all hover:-translate-y-px hover:bg-gray-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-gray-800 disabled:hover:shadow-sm"
             >
               {isExporting ? (
                 <span className="h-3.5 w-3.5 rounded-full border-2 border-gray-300 border-t-purple-600 animate-spin" />
@@ -994,7 +994,7 @@ export default function Scheduler({ docsConnected = false }: Props) {
 
             <Link
               href="/ai-detector"
-              className="inline-flex items-center gap-2 rounded-lg border border-purple-200 bg-gradient-to-r from-purple-50 to-fuchsia-50 px-4 py-2.5 text-sm font-medium text-purple-700 shadow-sm transition-all hover:-translate-y-px hover:from-purple-100 hover:to-fuchsia-100 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2"
+              className="inline-flex items-center gap-2 rounded-lg border border-purple-500/30 bg-gradient-to-r from-purple-500/10 to-fuchsia-500/10 px-4 py-2.5 text-sm font-medium text-purple-400 shadow-sm transition-all hover:-translate-y-px hover:from-purple-500/20 hover:to-fuchsia-500/20 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -1013,12 +1013,12 @@ export default function Scheduler({ docsConnected = false }: Props) {
             </Link>
 
             {saveStatus.kind === "success" && (
-              <span className="animate-fade-in-up inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
+              <span className="animate-fade-in-up inline-flex items-center rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400">
                 Saved successfully
               </span>
             )}
             {saveStatus.kind === "error" && (
-              <span className="animate-fade-in-up inline-flex items-center rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-medium text-red-700">
+              <span className="animate-fade-in-up inline-flex items-center rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1 text-xs font-medium text-red-400">
                 {saveStatus.message}
               </span>
             )}
@@ -1029,18 +1029,18 @@ export default function Scheduler({ docsConnected = false }: Props) {
             exportStatus.kind === "done" ||
             exportStatus.kind === "stopped" ||
             (exportStatus.kind === "error" && exportStatus.documentUrl)) && (
-            <div className="animate-fade-in-up rounded-lg border border-purple-100 bg-purple-50/60 px-4 py-3">
+            <div className="animate-fade-in-up rounded-lg border border-purple-500/30 bg-purple-500/10 px-4 py-3">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="min-w-0 text-sm text-gray-700">
+                <div className="min-w-0 text-sm text-gray-300">
                   {exportStatus.kind === "writing" && (
                     <span>
                       Writing to Google Docs:{" "}
-                      <span className="font-semibold tabular-nums text-gray-900">
+                      <span className="font-semibold tabular-nums text-white">
                         {exportStatus.written} / {exportStatus.total}
                       </span>{" "}
                       blocks
                       {exportStatus.failed > 0 && (
-                        <span className="ml-2 text-amber-700">
+                        <span className="ml-2 text-amber-400">
                           · {exportStatus.failed} failed
                         </span>
                       )}
@@ -1058,12 +1058,12 @@ export default function Scheduler({ docsConnected = false }: Props) {
                   )}
                   {exportStatus.kind === "done" &&
                     (exportStatus.failed === 0 ? (
-                      <span className="font-medium text-emerald-700">
+                      <span className="font-medium text-emerald-400">
                         Exported successfully — {exportStatus.total} blocks
                         written.
                       </span>
                     ) : (
-                      <span className="font-medium text-amber-700">
+                      <span className="font-medium text-amber-400">
                         Exported with {exportStatus.failed} error
                         {exportStatus.failed === 1 ? "" : "s"} —{" "}
                         {exportStatus.written} of {exportStatus.total}{" "}
@@ -1071,7 +1071,7 @@ export default function Scheduler({ docsConnected = false }: Props) {
                       </span>
                     ))}
                   {exportStatus.kind === "stopped" && (
-                    <span className="font-medium text-amber-700">
+                    <span className="font-medium text-amber-400">
                       Stopped at {exportStatus.written} /{" "}
                       {exportStatus.total} blocks
                       {exportStatus.failed > 0
@@ -1082,7 +1082,7 @@ export default function Scheduler({ docsConnected = false }: Props) {
                   )}
                   {exportStatus.kind === "error" &&
                     exportStatus.documentUrl && (
-                      <span className="font-medium text-red-700">
+                      <span className="font-medium text-red-400">
                         {exportStatus.message}
                       </span>
                     )}
@@ -1092,7 +1092,7 @@ export default function Scheduler({ docsConnected = false }: Props) {
                     href={exportStatus.documentUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-purple-200 bg-white px-3 py-1.5 text-xs font-semibold text-purple-700 shadow-sm transition-all hover:-translate-y-px hover:bg-purple-50 hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-1"
+                    className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-purple-500/30 bg-gray-800 px-3 py-1.5 text-xs font-semibold text-purple-400 shadow-sm transition-all hover:-translate-y-px hover:bg-gray-700 hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-1 focus-visible:ring-offset-gray-900"
                   >
                     Open Google Doc
                     <svg
@@ -1116,7 +1116,7 @@ export default function Scheduler({ docsConnected = false }: Props) {
           )}
 
           {exportStatus.kind === "error" && !exportStatus.documentUrl && (
-            <div className="animate-fade-in-up rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700 break-words">
+            <div className="animate-fade-in-up rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-sm font-medium text-red-400 break-words">
               {exportStatus.message}
             </div>
           )}
@@ -1125,19 +1125,19 @@ export default function Scheduler({ docsConnected = false }: Props) {
 
       {sentCount > 0 && (
         <section className={`${cardClass} animate-fade-in`}>
-          <div className="flex items-center justify-between border-b border-gray-100 px-6 py-5">
-            <h2 className="text-base font-semibold text-gray-900">Sent</h2>
-            <span className="text-sm tabular-nums text-gray-500">
+          <div className="flex items-center justify-between border-b border-gray-800 px-6 py-5">
+            <h2 className="text-base font-semibold text-white">Sent</h2>
+            <span className="text-sm tabular-nums text-gray-400">
               {sentCount} / {chunks.length}
             </span>
           </div>
-          <ul className="divide-y divide-gray-100">
+          <ul className="divide-y divide-gray-800">
             {chunks.slice(0, sentCount).map((chunk, i) => (
               <li
                 key={i}
-                className="flex gap-3 px-6 py-3.5 text-sm text-gray-800 animate-fade-in-up"
+                className="flex gap-3 px-6 py-3.5 text-sm text-gray-300 animate-fade-in-up"
               >
-                <span className="font-mono text-xs text-gray-400">
+                <span className="font-mono text-xs text-gray-500">
                   #{i + 1}
                 </span>
                 <span className="flex-1">{chunk}</span>
@@ -1149,19 +1149,19 @@ export default function Scheduler({ docsConnected = false }: Props) {
 
       {chunks.length > 0 && sentCount === 0 && (
         <section className={`${cardClass} animate-fade-in`}>
-          <div className="flex items-center justify-between border-b border-gray-100 px-6 py-5">
-            <h2 className="text-base font-semibold text-gray-900">Preview</h2>
-            <span className="text-sm tabular-nums text-gray-500">
+          <div className="flex items-center justify-between border-b border-gray-800 px-6 py-5">
+            <h2 className="text-base font-semibold text-white">Preview</h2>
+            <span className="text-sm tabular-nums text-gray-400">
               {chunks.length} chunks
             </span>
           </div>
-          <ul className="divide-y divide-gray-100">
+          <ul className="divide-y divide-gray-800">
             {chunks.map((chunk, i) => (
               <li
                 key={i}
-                className="flex gap-3 px-6 py-3.5 text-sm text-gray-800"
+                className="flex gap-3 px-6 py-3.5 text-sm text-gray-300"
               >
-                <span className="font-mono text-xs text-gray-400">
+                <span className="font-mono text-xs text-gray-500">
                   #{i + 1}
                 </span>
                 <span className="flex-1">{chunk}</span>
