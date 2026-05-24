@@ -124,16 +124,16 @@ function Navbar({ onGetStarted, isLoggedIn, onGoToDashboard }: { onGetStarted: (
         </nav>
 
         <div className="flex items-center gap-3">
-          {isLoggedIn && onGoToDashboard ? (
-            <button
+          {isLoggedIn ? (
+            <Link
+              href="/dashboard"
               onClick={() => {
                 trackCtaClick({ cta_id: "navbar-dashboard", cta_text: "Go to Dashboard", location: "navbar" });
-                onGoToDashboard();
               }}
               className="bg-emerald-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-colors"
             >
               Go to Dashboard
-            </button>
+            </Link>
           ) : (
             <>
               <button

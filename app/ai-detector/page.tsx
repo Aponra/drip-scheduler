@@ -310,7 +310,7 @@ export default function AIDetectorPage() {
           <div className="flex items-center gap-3">
             {user ? (
               <Link
-                href="/"
+                href="/dashboard"
                 onClick={() =>
                   trackCtaClick({ cta_id: "ai-detector-navbar-dashboard", cta_text: "Go to Dashboard", location: "ai-detector-navbar" })
                 }
