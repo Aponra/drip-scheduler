@@ -4,7 +4,7 @@
 export const RATE_LIMITS = {
   // ─── Session Validation ─────────────────────────────────────────────────
   // Minimum session duration in minutes - no exceptions
-  MIN_SESSION_DURATION_MINUTES: 30,
+  MIN_SESSION_DURATION_MINUTES: 10,
 
   // ─── Per-User Rate Limits ───────────────────────────────────────────────
   // Safe limit: comfortable margin below Google's quotas
@@ -14,7 +14,7 @@ export const RATE_LIMITS = {
 
   // ─── Write Timing ───────────────────────────────────────────────────────
   // Minimum milliseconds between consecutive writes
-  MIN_WRITE_INTERVAL_MS: 2000,
+  MIN_WRITE_INTERVAL_MS: 1000,
   // Target interval for comfortable pacing
   TARGET_WRITE_INTERVAL_MS: 3000,
   // Maximum interval (for very slow schedules)
@@ -30,9 +30,9 @@ export const RATE_LIMITS = {
 
   // ─── Queue Limits ───────────────────────────────────────────────────────
   // Maximum queued/pending jobs per free-tier user
-  MAX_QUEUED_JOBS_FREE_TIER: 3,
+  MAX_QUEUED_JOBS_FREE_TIER: 9,
   // Maximum concurrent running jobs per free-tier user
-  MAX_CONCURRENT_JOBS_FREE_TIER: 1,
+  MAX_CONCURRENT_JOBS_FREE_TIER: 3,
   // Maximum writes to process per cron invocation (keeps function under timeout)
   MAX_WRITES_PER_CRON_INVOCATION: 20,
   // Cron interval in milliseconds (informational - actual schedule in vercel.json)
