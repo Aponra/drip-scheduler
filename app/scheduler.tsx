@@ -14,6 +14,8 @@ import {
   prepareBlockExport,
   type GDocsRequest,
 } from "@/lib/google-docs-builder";
+import { validateSession, type ValidationResult } from "@/lib/session-validator";
+import { RATE_LIMITS } from "@/lib/rate-limit-config";
 import SavedSchedules from "./saved-schedules";
 import RichEditor, { type EditorHandle } from "./editor";
 
@@ -124,6 +126,7 @@ type ExportStatus =
       kind: "writing";
       documentUrl: string;
       documentId: string;
+      jobId: string;
       written: number;
       total: number;
       failed: number;
@@ -132,6 +135,7 @@ type ExportStatus =
       kind: "stopping";
       documentUrl: string;
       documentId: string;
+      jobId: string;
       written: number;
       total: number;
       failed: number;
@@ -139,6 +143,7 @@ type ExportStatus =
   | {
       kind: "done";
       documentUrl: string;
+      jobId?: string;
       written: number;
       total: number;
       failed: number;
@@ -146,11 +151,12 @@ type ExportStatus =
   | {
       kind: "stopped";
       documentUrl: string;
+      jobId?: string;
       written: number;
       total: number;
       failed: number;
     }
-  | { kind: "error"; message: string; documentUrl?: string };
+  | { kind: "error"; message: string; documentUrl?: string; jobId?: string };
 
 type UploadStatus =
   | { kind: "idle" }
@@ -256,6 +262,7 @@ export default function Scheduler({ docsConnected = false }: Props) {
   const exportStoppedRef = useRef(false);
   const exportSleepCancelRef = useRef<(() => void) | null>(null);
   const draftRestoredRef = useRef(false);
+  const jobPollingRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Restore draft from landing page on mount
   useEffect(() => {
@@ -324,6 +331,21 @@ export default function Scheduler({ docsConnected = false }: Props) {
     return Math.max(1, Math.floor(total / chunks.length));
   }, [selectedDuration, customInterval, chunks.length]);
 
+  // Session validation for rate limiting
+  const sessionValidation = useMemo((): ValidationResult | null => {
+    if (chunks.length === 0) return null;
+
+    // Calculate total duration based on selection
+    let durationSeconds: number;
+    if (selectedDuration === "custom") {
+      durationSeconds = customInterval * chunks.length;
+    } else {
+      durationSeconds = PRESET_BY_KEY[selectedDuration];
+    }
+
+    return validateSession(chunks.length, durationSeconds);
+  }, [chunks.length, selectedDuration, customInterval]);
+
   useEffect(() => {
     if (!isRunning) return;
 
@@ -355,6 +377,7 @@ export default function Scheduler({ docsConnected = false }: Props) {
       if (successTimerRef.current) clearTimeout(successTimerRef.current);
       if (uploadSuccessTimerRef.current)
         clearTimeout(uploadSuccessTimerRef.current);
+      if (jobPollingRef.current) clearTimeout(jobPollingRef.current);
       exportStoppedRef.current = true;
       exportSleepCancelRef.current?.();
     };
@@ -408,283 +431,223 @@ export default function Scheduler({ docsConnected = false }: Props) {
     }
   }
 
-  function cancellableSleep(ms: number): Promise<void> {
-    return new Promise<void>((resolve) => {
-      const id = setTimeout(() => {
-        exportSleepCancelRef.current = null;
-        resolve();
-      }, ms);
-      exportSleepCancelRef.current = () => {
-        clearTimeout(id);
-        exportSleepCancelRef.current = null;
-        resolve();
-      };
-    });
-  }
+  // ─── Job-based Export Functions ────────────────────────────────────────
 
-  function handleStopExport() {
-    exportStoppedRef.current = true;
-    exportSleepCancelRef.current?.();
-    setExportStatus((prev) => {
-      if (prev.kind === "writing") {
-        return { ...prev, kind: "stopping" };
-      }
-      return prev;
-    });
-  }
-
-  type RetryResult =
-    | { ok: true }
-    | { ok: false; aborted?: boolean; error?: string };
-
-  async function postWithRetry(
-    url: string,
-    body: object,
-  ): Promise<RetryResult> {
-    const MAX_ATTEMPTS = 5;
-    const BASE_DELAY_MS = 500;
-    let lastError = "Request failed";
-    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-      if (exportStoppedRef.current) return { ok: false, aborted: true };
-      try {
-        const res = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        });
-        if (res.ok) return { ok: true };
-        const data = (await res.json().catch(() => null)) as
-          | { error?: string }
-          | null;
-        const message = data?.error ?? `Request failed (HTTP ${res.status})`;
-        lastError = message;
-        if (res.status >= 400 && res.status < 500) {
-          return { ok: false, error: message };
-        }
-      } catch (err) {
-        lastError = err instanceof Error ? err.message : "Network error";
-      }
-      if (attempt < MAX_ATTEMPTS) {
-        const delay = BASE_DELAY_MS * Math.pow(2, attempt - 1);
-        await cancellableSleep(delay);
-        if (exportStoppedRef.current) return { ok: false, aborted: true };
-      }
+  function stopJobPolling() {
+    if (jobPollingRef.current) {
+      clearTimeout(jobPollingRef.current);
+      jobPollingRef.current = null;
     }
-    return { ok: false, error: lastError };
   }
 
-  function insertAtEnd(documentId: string, text: string): Promise<RetryResult> {
-    return postWithRetry("/api/google-docs/append", { documentId, text });
+  async function pollJobStatus(jobId: string) {
+    try {
+      const res = await fetch(`/api/jobs/${jobId}`);
+      if (!res.ok) {
+        const error = await res.json().catch(() => ({ error: "Failed to fetch job status" }));
+        throw new Error(error.error || `HTTP ${res.status}`);
+      }
+
+      const job = await res.json();
+      const { status, documentUrl, progress, lastError } = job;
+
+      // Update export status based on job status
+      switch (status) {
+        case "pending":
+        case "running":
+          setExportStatus({
+            kind: "writing",
+            documentUrl,
+            documentId: job.documentId,
+            jobId,
+            written: progress.written,
+            total: progress.total,
+            failed: progress.failed,
+          });
+          // Continue polling
+          jobPollingRef.current = setTimeout(() => pollJobStatus(jobId), 3000);
+          break;
+
+        case "paused":
+          setExportStatus({
+            kind: "stopping",
+            documentUrl,
+            documentId: job.documentId,
+            jobId,
+            written: progress.written,
+            total: progress.total,
+            failed: progress.failed,
+          });
+          break;
+
+        case "completed":
+          setExportStatus({
+            kind: "done",
+            documentUrl,
+            jobId,
+            written: progress.written,
+            total: progress.total,
+            failed: progress.failed,
+          });
+          stopJobPolling();
+          break;
+
+        case "cancelled":
+          setExportStatus({
+            kind: "stopped",
+            documentUrl,
+            jobId,
+            written: progress.written,
+            total: progress.total,
+            failed: progress.failed,
+          });
+          stopJobPolling();
+          break;
+
+        case "failed":
+          setExportStatus({
+            kind: "error",
+            message: lastError || "Job failed",
+            documentUrl,
+            jobId,
+          });
+          stopJobPolling();
+          break;
+
+        default:
+          // Unknown status, keep polling
+          jobPollingRef.current = setTimeout(() => pollJobStatus(jobId), 5000);
+      }
+    } catch (err) {
+      console.error("[job-polling] Error:", err);
+      // Retry polling on error
+      jobPollingRef.current = setTimeout(() => pollJobStatus(jobId), 5000);
+    }
   }
-  function batchUpdate(
-    documentId: string,
-    requests: GDocsRequest[],
-  ): Promise<RetryResult> {
-    return postWithRetry("/api/google-docs/batch", { documentId, requests });
+
+  async function handleStopExport() {
+    const currentStatus = exportStatus;
+    if (currentStatus.kind !== "writing" && currentStatus.kind !== "stopping") {
+      return;
+    }
+
+    const jobId = currentStatus.jobId;
+
+    // Update UI immediately
+    setExportStatus({
+      ...currentStatus,
+      kind: "stopping",
+    });
+
+    try {
+      const res = await fetch(`/api/jobs/${jobId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "cancel" }),
+      });
+
+      if (!res.ok) {
+        const error = await res.json().catch(() => ({ error: "Failed to cancel job" }));
+        console.error("[handleStopExport] Error:", error.error);
+      }
+
+      // Stop polling - the last poll will update the final status
+      stopJobPolling();
+
+      // Set stopped status
+      setExportStatus({
+        kind: "stopped",
+        documentUrl: currentStatus.documentUrl,
+        jobId,
+        written: currentStatus.written,
+        total: currentStatus.total,
+        failed: currentStatus.failed,
+      });
+    } catch (err) {
+      console.error("[handleStopExport] Error:", err);
+      // Still mark as stopped locally
+      setExportStatus({
+        kind: "stopped",
+        documentUrl: currentStatus.documentUrl,
+        jobId,
+        written: currentStatus.written,
+        total: currentStatus.total,
+        failed: currentStatus.failed,
+      });
+    }
   }
 
   async function handleExport() {
     if (!docsConnected || chunks.length === 0) return;
+    if (!user) return;
 
-    // Build drip blocks from the rich editor's JSON. Falls back to the plain
-    // text projection if no document is set yet (shouldn't happen, but safe).
-    const sourceJson = docJson ?? plainTextToDocument(plainText);
-    const blocks = documentToBlocks(sourceJson).filter(
-      (b) => b.text.length > 0 || b.type !== "paragraph",
-    );
-    if (blocks.length === 0) return;
-    const total = blocks.length;
-    const intervalMs = Math.max(0, intervalSeconds) * 1000;
-    const exportTitle = title.trim();
-
-    exportStoppedRef.current = false;
-    exportSleepCancelRef.current = null;
-    setExportStatus({ kind: "creating" });
-
-    let documentId: string;
-    let documentUrl: string;
-    try {
-      const res = await fetch("/api/google-docs/export", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: exportTitle }),
-      });
-      const data = (await res.json().catch(() => null)) as
-        | { documentId?: string; documentUrl?: string; error?: string }
-        | null;
-      if (!res.ok || !data?.documentId || !data?.documentUrl) {
-        throw new Error(
-          data?.error ?? `Failed to create document (HTTP ${res.status})`,
-        );
-      }
-      documentId = data.documentId;
-      documentUrl = data.documentUrl;
-    } catch (err) {
+    // Validate session before starting
+    if (sessionValidation && !sessionValidation.valid) {
       setExportStatus({
         kind: "error",
-        message:
-          err instanceof Error ? err.message : "Failed to create document",
+        message: sessionValidation.error || "Session validation failed",
       });
       return;
     }
 
-    const stoppedSnapshot = (
-      written: number,
-      failed: number,
-    ): ExportStatus => ({
-      kind: "stopped",
-      documentUrl,
-      written,
-      total,
-      failed,
-    });
+    // Build document JSON
+    const sourceJson = docJson ?? plainTextToDocument(plainText);
+    const exportTitle = title.trim() || "Docs Version History Export";
 
-    if (exportStoppedRef.current) {
-      setExportStatus(stoppedSnapshot(0, 0));
-      return;
+    // Calculate duration in seconds
+    let durationSeconds: number;
+    if (selectedDuration === "custom") {
+      durationSeconds = customInterval * chunks.length;
+    } else {
+      durationSeconds = PRESET_BY_KEY[selectedDuration];
     }
 
-    let written = 0;
-    let failed = 0;
-    setExportStatus({
-      kind: "writing",
-      documentUrl,
-      documentId,
-      written,
-      total,
-      failed,
-    });
+    // Stop any existing polling
+    stopJobPolling();
+    exportStoppedRef.current = false;
+    setExportStatus({ kind: "creating" });
 
-    // Track the live cursor (the index where the next end-of-segment insert
-    // will land). Google Docs body content starts at index 1.
-    let bodyEnd = GOOGLE_DOC_BODY_START;
-    // Pending list run state: when consecutive blocks are list-items of the
-    // same ordering, we accumulate their range; once the run ends we flush a
-    // single createParagraphBullets request.
-    let pendingList: {
-      ordering: "bullet" | "ordered";
-      startIndex: number;
-      endIndex: number;
-    } | null = null;
+    try {
+      // Create job via API
+      const res = await fetch("/api/jobs/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.uid,
+          title: exportTitle,
+          document: sourceJson,
+          durationSeconds,
+        }),
+      });
 
-    async function flushPendingBullets() {
-      if (!pendingList) return;
-      const { ordering, startIndex, endIndex } = pendingList;
-      pendingList = null;
-      if (endIndex <= startIndex) return;
-      const r = await batchUpdate(documentId, [
-        buildBulletsRequest(ordering, startIndex, endIndex),
-      ]);
-      if (!r.ok && !r.aborted) {
-        failed += 1;
-        console.error("[drip-export] bullets request failed:", r.error);
-      }
-    }
+      const data = await res.json();
 
-    for (let i = 0; i < total; i++) {
-      if (exportStoppedRef.current) {
-        await flushPendingBullets();
-        setExportStatus(stoppedSnapshot(written, failed));
-        return;
-      }
-      if (i > 0 && intervalMs > 0) {
-        await cancellableSleep(intervalMs);
-        if (exportStoppedRef.current) {
-          await flushPendingBullets();
-          setExportStatus(stoppedSnapshot(written, failed));
-          return;
-        }
+      if (!res.ok) {
+        throw new Error(data.error || `Failed to create job (HTTP ${res.status})`);
       }
 
-      const block = blocks[i];
-      const prepared = prepareBlockExport(block);
-      const insertStart = bodyEnd;
+      const { jobId, documentId, documentUrl, job } = data;
 
-      // 1) Insert the block's text at end-of-segment.
-      const insertRes = await insertAtEnd(documentId, prepared.insertText);
-      if (insertRes.ok) {
-        bodyEnd += prepared.insertText.length;
-      } else if (insertRes.aborted) {
-        await flushPendingBullets();
-        setExportStatus(stoppedSnapshot(written, failed));
-        return;
-      } else {
-        failed += 1;
-        console.error(
-          `[drip-export] block ${i + 1}/${total} insert failed:`,
-          insertRes.error,
-        );
-        // No styling possible without an insert; skip this block.
-        setExportStatus({
-          kind: "writing",
-          documentUrl,
-          documentId,
-          written,
-          total,
-          failed,
-        });
-        continue;
-      }
-
-      // 2) Apply inline marks + block-level styles (headings).
-      const styleReqs = prepared.buildStyleRequests(insertStart);
-      if (styleReqs.length > 0) {
-        const styleRes = await batchUpdate(documentId, styleReqs);
-        if (styleRes.ok) {
-          // styling succeeded
-        } else if (styleRes.aborted) {
-          await flushPendingBullets();
-          setExportStatus(stoppedSnapshot(written, failed));
-          return;
-        } else {
-          failed += 1;
-          console.error(
-            `[drip-export] block ${i + 1}/${total} style failed:`,
-            styleRes.error,
-          );
-        }
-      }
-
-      // 3) Track bullet runs: extend pendingList if this block is a list-item
-      // of the same ordering as the last; otherwise flush + start a new one
-      // (or none for non-list blocks).
-      if (block.type === "list-item") {
-        const blockEnd = insertStart + prepared.insertText.length;
-        if (pendingList && pendingList.ordering === block.ordering) {
-          pendingList.endIndex = blockEnd;
-        } else {
-          await flushPendingBullets();
-          pendingList = {
-            ordering: block.ordering,
-            startIndex: insertStart,
-            endIndex: blockEnd,
-          };
-        }
-      } else {
-        await flushPendingBullets();
-      }
-
-      written += 1;
+      // Set initial writing status
       setExportStatus({
         kind: "writing",
         documentUrl,
         documentId,
-        written,
-        total,
-        failed,
+        jobId,
+        written: 0,
+        total: job.progress.total,
+        failed: 0,
+      });
+
+      // Start polling for job status
+      jobPollingRef.current = setTimeout(() => pollJobStatus(jobId), 2000);
+
+    } catch (err) {
+      setExportStatus({
+        kind: "error",
+        message: err instanceof Error ? err.message : "Failed to create export job",
       });
     }
-
-    // Flush any remaining bullet run after the last block.
-    await flushPendingBullets();
-
-    setExportStatus({
-      kind: "done",
-      documentUrl,
-      written,
-      total,
-      failed,
-    });
   }
 
   function handleLoad(schedule: Schedule) {
@@ -873,6 +836,91 @@ export default function Scheduler({ docsConnected = false }: Props) {
                 {chunks.length === 1 ? "" : "s"}
               </p>
             )}
+
+            {/* Session Validation Display */}
+            {sessionValidation && (
+              <div className="mt-4 rounded-lg border border-gray-700 bg-gray-800/50 p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-xs font-medium uppercase tracking-wide text-gray-400">
+                    Session Estimate
+                  </h4>
+                  {sessionValidation.valid ? (
+                    sessionValidation.stats.isSafe ? (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-400">
+                        <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        Safe
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-400">
+                        <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        Warning
+                      </span>
+                    )
+                  ) : (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-red-500/10 px-2 py-0.5 text-xs font-medium text-red-400">
+                      <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      Invalid
+                    </span>
+                  )}
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <span className="text-gray-500">Blocks:</span>
+                    <span className="ml-2 font-medium text-gray-200 tabular-nums">
+                      {sessionValidation.stats.totalBlocks}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Duration:</span>
+                    <span className="ml-2 font-medium text-gray-200">
+                      {sessionValidation.stats.estimatedDuration.display}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Write Rate:</span>
+                    <span className={`ml-2 font-medium tabular-nums ${
+                      sessionValidation.stats.isSafe
+                        ? "text-emerald-400"
+                        : sessionValidation.stats.isAllowed
+                          ? "text-amber-400"
+                          : "text-red-400"
+                    }`}>
+                      ~{Math.round(sessionValidation.stats.writesPerMinute)}/min
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Limit:</span>
+                    <span className="ml-2 font-medium text-gray-200">
+                      {RATE_LIMITS.SAFE_WRITES_PER_MINUTE}/min
+                    </span>
+                  </div>
+                </div>
+
+                {/* Warnings */}
+                {sessionValidation.warnings.length > 0 && (
+                  <div className="mt-3 rounded border border-amber-500/30 bg-amber-500/10 px-3 py-2">
+                    {sessionValidation.warnings.map((warning, i) => (
+                      <p key={i} className="text-xs text-amber-400">
+                        {warning}
+                      </p>
+                    ))}
+                  </div>
+                )}
+
+                {/* Error */}
+                {!sessionValidation.valid && sessionValidation.error && (
+                  <div className="mt-3 rounded border border-red-500/30 bg-red-500/10 px-3 py-2">
+                    <p className="text-xs text-red-400">{sessionValidation.error}</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Upload zone */}
@@ -1010,11 +1058,13 @@ export default function Scheduler({ docsConnected = false }: Props) {
 
             <button
               onClick={handleExport}
-              disabled={!docsConnected || chunks.length === 0 || isExporting}
+              disabled={!docsConnected || chunks.length === 0 || isExporting || (sessionValidation !== null && !sessionValidation.valid)}
               title={
-                docsConnected
-                  ? "Export this schedule to Google Docs"
-                  : "Connect Google Docs to enable export"
+                !docsConnected
+                  ? "Connect Google Docs to enable export"
+                  : sessionValidation && !sessionValidation.valid
+                    ? "Session parameters are invalid - check the validation above"
+                    : "Export this schedule to Google Docs"
               }
               className="inline-flex items-center gap-2 rounded-lg border border-gray-700 bg-gray-800 px-4 py-2.5 text-sm font-medium text-gray-300 shadow-sm transition-all hover:-translate-y-px hover:bg-gray-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-gray-800 disabled:hover:shadow-sm"
             >
