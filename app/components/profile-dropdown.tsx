@@ -83,11 +83,11 @@ export function ProfileDropdown({ user, onLogout }: ProfileDropdownProps) {
           <img
             src={photoURL}
             alt={displayName}
-            className="h-8 w-8 rounded-full object-cover"
+            className="h-8 w-8 aspect-square rounded-full object-cover"
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-purple-600 text-xs font-semibold text-white">
+          <div className="flex h-8 w-8 aspect-square items-center justify-center rounded-full bg-purple-600 text-xs font-semibold text-white">
             {initials}
           </div>
         )}
