@@ -307,8 +307,8 @@ export default function Dashboard() {
               ) : (
                 <DocsIcon className="h-3.5 w-3.5 text-purple-600" />
               )}
-              <span className="hidden sm:inline">
-                {docsConnected ? "Connected" : "Connect"}
+              <span className="text-xs">
+                {docsConnected ? "Docs" : "Connect Docs"}
               </span>
             </a>
             <ProfileDropdown user={user} onLogout={handleLogout} />
