@@ -6,7 +6,12 @@ import Landing from "./landing";
 
 export default function Home() {
   const router = useRouter();
-  const { user, loading, signInWithGoogle } = useAuth();
+  const { user, loading, signInWithGoogle, logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    router.push("/");
+  };
 
   if (loading) {
     return (
@@ -25,6 +30,8 @@ export default function Home() {
         onContinueWithGoogle={() => router.push("/dashboard")}
         isLoggedIn={true}
         onGoToDashboard={() => router.push("/dashboard")}
+        user={user}
+        onLogout={handleLogout}
       />
     );
   }

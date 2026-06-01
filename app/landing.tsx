@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import type { User } from "firebase/auth";
 import HeroClient from "./components/hero-client";
+import ProfileDropdown from "./components/profile-dropdown";
 import { trackCtaClick } from "@/lib/analytics";
 
 // Lazy load below-fold sections - reduces initial bundle significantly
@@ -15,6 +17,8 @@ type Props = {
   onContinueWithGoogle: () => void;
   isLoggedIn?: boolean;
   onGoToDashboard?: () => void;
+  user?: User | null;
+  onLogout?: () => void;
 };
 
 // Inline SVG icons for above-fold content (avoids Lucide bundle in critical path)
@@ -90,7 +94,7 @@ function AnnouncementBar() {
 
 // ─── Navbar ──────────────────────────────────────────────────────────
 
-function Navbar({ onGetStarted, isLoggedIn, onGoToDashboard }: { onGetStarted: () => void; isLoggedIn?: boolean; onGoToDashboard?: () => void }) {
+function Navbar({ onGetStarted, isLoggedIn, user, onLogout }: { onGetStarted: () => void; isLoggedIn?: boolean; user?: User | null; onLogout?: () => void }) {
   const navItems = [
     { label: "Home", href: "/" },
     { label: "Features", href: "#features" },
@@ -124,16 +128,19 @@ function Navbar({ onGetStarted, isLoggedIn, onGoToDashboard }: { onGetStarted: (
         </nav>
 
         <div className="flex items-center gap-3">
-          {isLoggedIn ? (
-            <Link
-              href="/dashboard"
-              onClick={() => {
-                trackCtaClick({ cta_id: "navbar-dashboard", cta_text: "Go to Dashboard", location: "navbar" });
-              }}
-              className="bg-emerald-600 text-white px-4 py-2 md:px-5 md:py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-colors touch-target"
-            >
-              Go to Dashboard
-            </Link>
+          {isLoggedIn && user ? (
+            <>
+              <Link
+                href="/dashboard"
+                onClick={() => {
+                  trackCtaClick({ cta_id: "navbar-dashboard", cta_text: "Go to Dashboard", location: "navbar" });
+                }}
+                className="bg-emerald-600 text-white px-4 py-2 md:px-5 md:py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-colors touch-target"
+              >
+                Go to Dashboard
+              </Link>
+              <ProfileDropdown user={user} onLogout={onLogout || (() => {})} />
+            </>
           ) : (
             <>
               <button
@@ -209,11 +216,11 @@ function Hero({ onGetStarted }: { onGetStarted: () => void }) {
 
 // ─── Main Landing Component ──────────────────────────────────────────
 
-export default function Landing({ onContinueWithGoogle, isLoggedIn, onGoToDashboard }: Props) {
+export default function Landing({ onContinueWithGoogle, isLoggedIn, onGoToDashboard, user, onLogout }: Props) {
   return (
     <div className="min-h-screen bg-gray-950">
       <AnnouncementBar />
-      <Navbar onGetStarted={onContinueWithGoogle} isLoggedIn={isLoggedIn} onGoToDashboard={onGoToDashboard} />
+      <Navbar onGetStarted={onContinueWithGoogle} isLoggedIn={isLoggedIn} user={user} onLogout={onLogout} />
       <main id="main-content">
         <Hero onGetStarted={isLoggedIn && onGoToDashboard ? onGoToDashboard : onContinueWithGoogle} />
         {/* Below fold sections lazy loaded for better initial load */}

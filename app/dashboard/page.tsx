@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import Scheduler from "../scheduler";
+import ProfileDropdown from "../components/profile-dropdown";
 
 const DOCS_CONNECTED_KEY = "googleDocsConnected";
 
@@ -310,28 +311,7 @@ export default function Dashboard() {
                 {docsConnected ? "Connected" : "Connect"}
               </span>
             </a>
-            <button
-              onClick={() => {
-                handleLogout().catch((err) => console.error(err));
-              }}
-              aria-label="Log out"
-              className="rounded-lg border border-gray-700 bg-gray-900 p-1.5 text-gray-300 shadow-sm transition-all hover:bg-gray-800"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.75"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-                className="h-4 w-4"
-              >
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                <polyline points="16 17 21 12 16 7" />
-                <line x1="21" y1="12" x2="9" y2="12" />
-              </svg>
-            </button>
+            <ProfileDropdown user={user} onLogout={handleLogout} />
           </div>
         </div>
       </header>
@@ -475,45 +455,48 @@ export default function Dashboard() {
         {/* Main */}
         <main className="relative flex-1 overflow-x-hidden">
           {/* Desktop top bar with navigation */}
-          <div className="hidden lg:flex items-center justify-start gap-3 px-6 py-3 border-b border-gray-800">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 rounded-lg border border-gray-700 bg-gray-800 px-3 py-1.5 text-sm font-medium text-gray-300 shadow-sm transition-all hover:bg-gray-700 hover:text-white"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.75"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-                className="h-4 w-4"
+          <div className="hidden lg:flex items-center justify-between px-6 py-3 border-b border-gray-800">
+            <div className="flex items-center gap-3">
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2 rounded-lg border border-gray-700 bg-gray-800 px-3 py-1.5 text-sm font-medium text-gray-300 shadow-sm transition-all hover:bg-gray-700 hover:text-white"
               >
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                <polyline points="9 22 9 12 15 12 15 22" />
-              </svg>
-              Home
-            </Link>
-            <Link
-              href="/ai-detector"
-              className="inline-flex items-center gap-2 rounded-lg border border-gray-700 bg-gray-800 px-3 py-1.5 text-sm font-medium text-gray-300 shadow-sm transition-all hover:bg-gray-700 hover:text-white"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.75"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-                className="h-4 w-4"
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  className="h-4 w-4"
+                >
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                  <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+                Home
+              </Link>
+              <Link
+                href="/ai-detector"
+                className="inline-flex items-center gap-2 rounded-lg border border-gray-700 bg-gray-800 px-3 py-1.5 text-sm font-medium text-gray-300 shadow-sm transition-all hover:bg-gray-700 hover:text-white"
               >
-                <circle cx="11" cy="11" r="8" />
-                <path d="M21 21l-4.35-4.35" />
-              </svg>
-              AI Detector
-            </Link>
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  className="h-4 w-4"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="M21 21l-4.35-4.35" />
+                </svg>
+                AI Detector
+              </Link>
+            </div>
+            <ProfileDropdown user={user} onLogout={handleLogout} />
           </div>
 
           {/* Soft pink/purple glow accent */}
