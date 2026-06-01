@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import Landing from "./landing";
@@ -8,13 +7,6 @@ import Landing from "./landing";
 export default function Home() {
   const router = useRouter();
   const { user, loading, signInWithGoogle } = useAuth();
-
-  // Redirect logged-in users to dashboard
-  useEffect(() => {
-    if (!loading && user) {
-      router.push("/dashboard");
-    }
-  }, [loading, user, router]);
 
   if (loading) {
     return (
@@ -27,7 +19,6 @@ export default function Home() {
     );
   }
 
-  // Show landing for logged-in users while redirecting
   if (user) {
     return (
       <Landing
