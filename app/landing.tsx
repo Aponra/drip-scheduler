@@ -130,7 +130,7 @@ function Navbar({ onGetStarted, isLoggedIn, onGoToDashboard }: { onGetStarted: (
               onClick={() => {
                 trackCtaClick({ cta_id: "navbar-dashboard", cta_text: "Go to Dashboard", location: "navbar" });
               }}
-              className="bg-emerald-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-colors"
+              className="bg-emerald-600 text-white px-4 py-2 md:px-5 md:py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-colors touch-target"
             >
               Go to Dashboard
             </Link>
@@ -150,7 +150,7 @@ function Navbar({ onGetStarted, isLoggedIn, onGoToDashboard }: { onGetStarted: (
                   trackCtaClick({ cta_id: "navbar-get-started", cta_text: "Get Started", location: "navbar" });
                   onGetStarted();
                 }}
-                className="bg-emerald-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-colors"
+                className="bg-emerald-600 text-white px-4 py-2 md:px-5 md:py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-colors touch-target"
               >
                 Get Started
               </button>

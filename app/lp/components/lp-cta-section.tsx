@@ -94,7 +94,7 @@ export function LPCtaSection({
           {onCtaClick ? (
             <button
               onClick={handlePrimaryClick}
-              className="inline-flex items-center gap-2 bg-emerald-600 text-white px-8 py-4 rounded-full text-base font-semibold hover:bg-emerald-500 transition-colors touch-target"
+              className="inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 md:px-8 md:py-4 rounded-full text-sm md:text-base font-semibold hover:bg-emerald-500 transition-colors touch-target"
             >
               {ctaText}
               <ArrowRightIcon className="w-5 h-5" />
@@ -103,7 +103,7 @@ export function LPCtaSection({
             <Link
               href={ctaHref}
               onClick={handlePrimaryClick}
-              className="inline-flex items-center gap-2 bg-emerald-600 text-white px-8 py-4 rounded-full text-base font-semibold hover:bg-emerald-500 transition-colors touch-target"
+              className="inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 md:px-8 md:py-4 rounded-full text-sm md:text-base font-semibold hover:bg-emerald-500 transition-colors touch-target"
             >
               {ctaText}
               <ArrowRightIcon className="w-5 h-5" />
@@ -114,7 +114,7 @@ export function LPCtaSection({
             <Link
               href={secondaryCta.href}
               onClick={handleSecondaryClick}
-              className="px-8 py-4 rounded-full text-base font-semibold text-white border border-gray-700 hover:border-emerald-500 transition-colors touch-target"
+              className="px-6 py-3 md:px-8 md:py-4 rounded-full text-sm md:text-base font-semibold text-white border border-gray-700 hover:border-emerald-500 transition-colors touch-target"
             >
               {secondaryCta.text}
             </Link>

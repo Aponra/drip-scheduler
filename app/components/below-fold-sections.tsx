@@ -577,7 +577,7 @@ function CTA({ onGetStarted }: { onGetStarted: () => void }) {
               });
               onGetStarted();
             }}
-            className="bg-emerald-600 text-white px-8 py-4 rounded-full text-base font-semibold hover:bg-emerald-500 transition-colors"
+            className="bg-emerald-600 text-white px-6 py-3 md:px-8 md:py-4 rounded-full text-sm md:text-base font-semibold hover:bg-emerald-500 transition-colors touch-target"
           >
             Create Version History Free
           </button>
@@ -590,7 +590,7 @@ function CTA({ onGetStarted }: { onGetStarted: () => void }) {
                 location: "cta-section",
               })
             }
-            className="px-8 py-4 rounded-full text-base font-semibold text-white border border-gray-700 hover:border-emerald-500 transition-colors"
+            className="px-6 py-3 md:px-8 md:py-4 rounded-full text-sm md:text-base font-semibold text-white border border-gray-700 hover:border-emerald-500 transition-colors touch-target"
           >
             View Pricing
           </Link>

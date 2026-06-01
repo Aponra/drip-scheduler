@@ -45,7 +45,7 @@ const variantStyles = {
 } as const;
 
 const baseStyles =
-  "inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 touch-target";
+  "inline-flex items-center justify-center gap-2 px-5 py-2.5 md:px-6 md:py-3 rounded-full text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 touch-target";
 
 /**
  * A CTA button/link that automatically tracks click events to GA4.

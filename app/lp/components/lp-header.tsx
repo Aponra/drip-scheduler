@@ -68,7 +68,7 @@ export function LPHeader({
         {onCtaClick ? (
           <button
             onClick={handleClick}
-            className="bg-emerald-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-colors touch-target"
+            className="bg-emerald-600 text-white px-4 py-2 md:px-5 md:py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-colors touch-target"
           >
             {ctaText}
           </button>
@@ -76,7 +76,7 @@ export function LPHeader({
           <Link
             href={ctaHref}
             onClick={handleClick}
-            className="bg-emerald-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-colors touch-target"
+            className="bg-emerald-600 text-white px-4 py-2 md:px-5 md:py-2.5 rounded-full text-sm font-semibold hover:bg-emerald-500 transition-colors touch-target"
           >
             {ctaText}
           </Link>
