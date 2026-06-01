@@ -154,7 +154,7 @@ export default function HeroClient({ onGetStarted }: Props) {
           </div>
           <button
             onClick={handleStart}
-            className="flex items-center gap-1.5 px-3 py-1.5 md:px-5 md:py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 transition-colors text-white font-semibold text-xs touch-target"
+            className="flex items-center gap-1.5 px-3 py-1.5 md:px-4 md:py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 transition-colors text-white font-semibold text-xs"
           >
             Start Scheduling
             <ArrowRightIcon className="w-4 h-4" />
