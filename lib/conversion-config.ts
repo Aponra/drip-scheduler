@@ -27,6 +27,8 @@ export const CONVERSIONS = {
   START_TRIAL: "start_trial_conversion_label",
   /** Tracks a purchase event */
   PURCHASE: "purchase_conversion_label",
+  /** Tracks when a user creates their first version history */
+  FIRST_VERSION_HISTORY: "N9uLCNK0vsYcEPiJ3t9D",
 } as const;
 
 export type ConversionType = keyof typeof CONVERSIONS;

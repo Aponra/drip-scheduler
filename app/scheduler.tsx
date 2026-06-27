@@ -16,6 +16,7 @@ import {
 } from "@/lib/google-docs-builder";
 import { validateSession, type ValidationResult } from "@/lib/session-validator";
 import { RATE_LIMITS } from "@/lib/rate-limit-config";
+import { trackFirstVersionHistory } from "@/lib/analytics";
 import SavedSchedules from "./saved-schedules";
 import RichEditor, { type EditorHandle } from "./editor";
 
@@ -490,6 +491,8 @@ export default function Scheduler({ docsConnected = false }: Props) {
             failed: progress.failed,
           });
           stopJobPolling();
+          // Track first version history creation (fires only once per user)
+          trackFirstVersionHistory();
           break;
 
         case "cancelled":

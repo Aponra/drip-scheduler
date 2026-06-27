@@ -112,5 +112,39 @@ export function trackConnectDocs(): void {
   trackConversion(CONVERSIONS.CONNECT_DOCS);
 }
 
+const FIRST_VERSION_HISTORY_KEY = "drip_first_version_history_tracked";
+
+/**
+ * Track when a user creates their first version history.
+ * Only fires once per user (persisted in localStorage).
+ */
+export function trackFirstVersionHistory(): void {
+  if (typeof window === "undefined") return;
+
+  // Check if already tracked
+  try {
+    if (localStorage.getItem(FIRST_VERSION_HISTORY_KEY)) {
+      return;
+    }
+  } catch {
+    // localStorage may not be available
+    return;
+  }
+
+  // Fire the conversion
+  if (typeof window.gtag === "function" && GOOGLE_ADS_ID) {
+    window.gtag("event", "conversion", {
+      send_to: `${GOOGLE_ADS_ID}/${CONVERSIONS.FIRST_VERSION_HISTORY}`,
+    });
+  }
+
+  // Mark as tracked
+  try {
+    localStorage.setItem(FIRST_VERSION_HISTORY_KEY, "true");
+  } catch {
+    // Ignore localStorage errors
+  }
+}
+
 // Re-export official API for convenience
 export { sendGAEvent } from "@next/third-parties/google";
